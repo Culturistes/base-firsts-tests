@@ -1,8 +1,31 @@
 <template>
   <div class="game">
-    <JoinOrCreate v-if="currentStep === steps.JOIN_OR_CREATE" />
+    <!-- Début de partie -->
 
-    <p v-if="undefined != player && player.isMDR">Tu es MDR</p>
+    <!-- Choix pseudo + Rejoindre ou créer une partie -->
+
+    <!-- Ecran choix région? -->
+
+    <!-- Ecran choix perso + paramètrage par le MDR + bouton "pret" -->
+
+    <!-- En jeu -->
+
+    <!-- Ecran titre de mini jeu -->
+
+    <!-- Question -->
+
+    <!-- Résultat question -->
+
+    <!-- Résultat mini-jeu -->
+
+    <!-- Résultat du jeu -->
+
+    <JoinOrCreate
+      v-if="currentStep === steps.JOIN_OR_CREATE"
+      v-bind="{ streamerMode: streamerMode }"
+    />
+
+    <p v-if="!!player && player.isMDR">Tu es MDR</p>
 
     <button v-if="currentStep === steps.GAME_PARAMETERS" v-on:click="copyCode">
       Copier le code
@@ -17,6 +40,14 @@
         {{ player.username }}
       </li>
     </ul>
+
+    <label htmlFor="streamMode"
+      >Stream mode
+      <input
+        id="streamMode"
+        type="checkbox"
+        v-on:change="() => (streamerMode = !streamerMode)"
+    /></label>
   </div>
 </template>
 
@@ -31,6 +62,11 @@ import JoinOrCreate from "@/components/JoinOrCreate.vue";
 enum STEPS {
   JOIN_OR_CREATE,
   GAME_PARAMETERS,
+  MINI_GAME_TITLE,
+  QUESTION,
+  QUESTION_RESULT,
+  MINI_GAME_RESULT,
+  FINAL_RESULT,
 }
 
 @Options({
@@ -40,15 +76,29 @@ enum STEPS {
 })
 export default class Game extends Vue {
   currentStep = STEPS.JOIN_OR_CREATE;
-  player!: { id: string; username: string; isMDR: boolean; score: number };
+  player: {
+    id: string;
+    username: string;
+    isMDR: boolean;
+    score: number;
+  } | null = null;
   notifications: Array<string> = [];
   players: Array<{ id: string; username: string; score: number }> = [];
+
+  streamerMode = false;
 
   steps = STEPS;
 
   $store!: Store<StoreState>;
 
   async created(): Promise<void> {
+    let settingsItem = localStorage.getItem("settings");
+
+    if (settingsItem) {
+      let settings = JSON.parse(settingsItem);
+      this.streamerMode = settings.streamerMode;
+    }
+
     try {
       let client = await new Client("ws://localhost:2567");
       this.$store.commit("updateClient", client);
@@ -86,6 +136,13 @@ export default class Game extends Vue {
       }
       if (type == "your_infos") {
         this.player = data;
+        let datas = {
+          data: data,
+          roomId: room.id,
+          expiration: new Date().getTime() + 120 * 1000,
+        };
+        localStorage.setItem(`player_infos`, JSON.stringify(datas));
+        localStorage.setItem(`username`, data.username);
       }
     });
   }
