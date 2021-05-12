@@ -1,5 +1,5 @@
 <template>
-  <div class="joinOrCreate">
+  <div class="joinOrCreate step">
     <div class="inputContainer">
       <label htmlFor="username">
         <span>Pseudo</span>
@@ -17,7 +17,7 @@
         <input
           id="inputRoomId"
           ref="inputRoomID"
-          :type="streamerMode ? 'password' : 'text'"
+          :type="$store.state.settings.modeStreamer ? 'password' : 'text'"
         />
       </label>
     </div>
@@ -64,6 +64,10 @@ export default class JoinOrCreate extends Vue {
         creator: true,
       });
       this.$store.commit("updateRoom", room);
+      this.$store.commit("updateLiveGame", {
+        index: "currentStep",
+        value: this.$store.state.livegame.currentStep + 1,
+      });
     } catch (e) {
       console.error("join error", e);
     }
@@ -101,6 +105,10 @@ export default class JoinOrCreate extends Vue {
         { username: this.$refs.inputPlayername.value }
       );
       this.$store.commit("updateRoom", room);
+      this.$store.commit("updateLiveGame", {
+        index: "currentStep",
+        value: this.$store.state.livegame.currentStep + 1,
+      });
     } catch (e) {
       console.error("join error", e);
     }

@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import JoinOrCreate from "@/components/JoinOrCreate.vue"; // @ is an alias to /src
+import JoinOrCreate from "@/components/game/JoinOrCreate.vue"; // @ is an alias to /src
 
 @Options({
   components: {
