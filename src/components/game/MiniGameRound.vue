@@ -1,6 +1,9 @@
 <template>
   <div class="minigameRound step">
     <p>Mini game round</p>
+    <button v-on:click="$store.dispatch('readyForNext')">
+      J'ai fini de jouer
+    </button>
   </div>
 </template>
 

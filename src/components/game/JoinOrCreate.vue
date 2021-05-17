@@ -64,10 +64,7 @@ export default class JoinOrCreate extends Vue {
         creator: true,
       });
       this.$store.commit("updateRoom", room);
-      this.$store.commit("updateLiveGame", {
-        index: "currentStep",
-        value: this.$store.state.livegame.currentStep + 1,
-      });
+      this.$store.dispatch("goNextStep");
     } catch (e) {
       console.error("join error", e);
     }
@@ -105,12 +102,10 @@ export default class JoinOrCreate extends Vue {
         { username: this.$refs.inputPlayername.value }
       );
       this.$store.commit("updateRoom", room);
-      this.$store.commit("updateLiveGame", {
-        index: "currentStep",
-        value: this.$store.state.livegame.currentStep + 1,
-      });
+      this.$store.dispatch("goNextStep");
     } catch (e) {
-      console.error("join error", e);
+      console.error("Join error");
+      console.log();
     }
   }
 

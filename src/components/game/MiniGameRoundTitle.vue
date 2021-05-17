@@ -1,7 +1,7 @@
 <template>
-  <div class="minigameResult step">
-    <p>Mini game result</p>
-    <button v-on:click="$store.dispatch('readyForNext')">Next</button>
+  <div class="minigameRoundTitle step">
+    <p>Mini game round title</p>
+    <button v-on:click="$store.dispatch('readyForNext')">Start round</button>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import StoreState from "@/interfaces/StoreState";
 /* @Options({
   props: ["streamerMode"],
 }) */
-export default class MiniGameResult extends Vue {
+export default class MiniGameTitle extends Vue {
   $refs!: any;
   $store!: Store<StoreState>;
 }

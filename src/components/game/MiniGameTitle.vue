@@ -1,6 +1,7 @@
 <template>
   <div class="minigameTitle step">
     <p>Mini game title</p>
+    <button v-on:click="$store.dispatch('readyForNext')">Start game</button>
   </div>
 </template>
 

@@ -43,10 +43,10 @@ export default class GameParameters extends Vue {
 
   playerReady(): void {
     this.playerIsReady = !this.playerIsReady;
-    if (this.$store.state.client.isMDR) {
+    if (this.$store.state.player.isMDR) {
       let params = {
-        minigameNumber: this.$refs.inputNbMiniGame.value,
-        roundNumber: this.$refs.inputNbRound.value,
+        minigameNumber: parseInt(this.$refs.inputNbMiniGame.value),
+        roundNumber: parseInt(this.$refs.inputNbRound.value),
       };
       this.$store.state.room.send("player_ready", {
         ready: this.playerIsReady,

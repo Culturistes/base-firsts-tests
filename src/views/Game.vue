@@ -1,9 +1,58 @@
 <template>
   <div class="game">
     <!-- Début de partie -->
-    <p>Game page</p>
-    <button v-on:click="goNextStep">Go next</button>
-    <p>{{ $store.state.livegame.currentStep }}</p>
+    <div class="game_infos">
+      <p>Game page</p>
+      <p>
+        Step: {{ steps[$store.state.livegame.currentStep] }} | Round:
+        {{ $store.state.livegame.currentRound }} /
+        {{ $store.state.livegame.roundNumber }} | Mini game:
+        {{ $store.state.livegame.currentMiniGame }} /
+        {{ $store.state.livegame.minigameNumber }}
+      </p>
+      <p v-if="!!$store.state.player && $store.state.player.isMDR">Tu es MDR</p>
+
+      <button
+        v-if="$store.state.livegame.currentStep === steps.GAME_PARAMETERS"
+        v-on:click="copyCode"
+      >
+        Copier le code
+      </button>
+
+      <div class="logs">
+        <p v-for="notif in notifications" v-bind:key="notif">{{ notif }}</p>
+      </div>
+
+      <ul class="playersList">
+        <p>Joueurs connecté</p>
+        <li
+          class="playerName"
+          v-bind:class="{ active: player.isReady }"
+          v-for="player in players"
+          v-bind:key="player.id"
+        >
+          <span>{{ player.username }}</span>
+          <span class="readyCircle">
+            <span class="readyCircle_inner"></span>
+          </span>
+        </li>
+      </ul>
+
+      <label htmlFor="streamMode"
+        >Stream mode
+        <input
+          id="streamMode"
+          type="checkbox"
+          v-on:change="
+            () => {
+              $store.commit('updateSettings', {
+                index: 'modeStreamer',
+                value: !$store.state.settings.modeStreamer,
+              });
+            }
+          "
+      /></label>
+    </div>
 
     <div class="steps">
       <!-- Choix pseudo + Rejoindre ou créer une partie -->
@@ -17,6 +66,9 @@
       <!-- Ecran titre de mini jeu -->
       <MiniGameTitle />
 
+      <!-- Ecran titre de round -->
+      <MiniGameRoundTitle />
+
       <!-- Mini Game Round -->
       <MiniGameRound />
 
@@ -29,49 +81,6 @@
       <!-- Résultat du jeu -->
       <GameResult />
     </div>
-
-    <p v-if="!!$store.state.player && $store.state.player.isMDR">Tu es MDR</p>
-
-    <button
-      v-if="$store.state.livegame.currentStep === steps.GAME_PARAMETERS"
-      v-on:click="copyCode"
-    >
-      Copier le code
-    </button>
-
-    <div class="logs">
-      <p v-for="notif in notifications" v-bind:key="notif">{{ notif }}</p>
-    </div>
-
-    <ul class="playersList">
-      <p>Joueurs connecté</p>
-      <li
-        class="playerName"
-        v-bind:class="{ active: player.isReady }"
-        v-for="player in players"
-        v-bind:key="player.id"
-      >
-        <span>{{ player.username }}</span>
-        <span class="readyCircle">
-          <span class="readyCircle_inner"></span>
-        </span>
-      </li>
-    </ul>
-
-    <label htmlFor="streamMode"
-      >Stream mode
-      <input
-        id="streamMode"
-        type="checkbox"
-        v-on:change="
-          () => {
-            $store.commit('updateSettings', {
-              index: 'modeStreamer',
-              value: !$store.state.settings.modeStreamer,
-            });
-          }
-        "
-    /></label>
   </div>
 </template>
 
@@ -84,6 +93,7 @@ import StoreState from "@/interfaces/StoreState";
 import JoinOrCreate from "@/components/game/JoinOrCreate.vue";
 import GameParameters from "@/components/game/GameParameters.vue";
 import MiniGameTitle from "@/components/game/MiniGameTitle.vue";
+import MiniGameRoundTitle from "@/components/game/MiniGameRoundTitle.vue";
 import MiniGameRound from "@/components/game/MiniGameRound.vue";
 import MiniGameRoundResult from "@/components/game/MiniGameRoundResult.vue";
 import MiniGameResult from "@/components/game/MiniGameResult.vue";
@@ -93,6 +103,7 @@ export enum STEPS {
   JOIN_OR_CREATE,
   GAME_PARAMETERS,
   MINI_GAME_TITLE,
+  MINI_GAME_ROUND_TITLE,
   MINI_GAME_ROUND,
   MINI_GAME_ROUND_RESULT,
   MINI_GAME_RESULT,
@@ -104,6 +115,7 @@ export enum STEPS {
     JoinOrCreate,
     GameParameters,
     MiniGameTitle,
+    MiniGameRoundTitle,
     MiniGameRound,
     MiniGameRoundResult,
     MiniGameResult,
@@ -158,10 +170,27 @@ export default class Game extends Vue {
             this.listenToServer(room, "game_state");
             this.listenToServer(room, "players_list");
             this.listenToServer(room, "your_infos");
+            this.listenToServer(room, "livegame");
 
             if (oldVal == null) {
               this.currentStep = STEPS.GAME_PARAMETERS;
             }
+          }
+        }
+      );
+
+      //DEBUG ONLY
+      store.watch(
+        () => this.$store.state.livegame.currentStep,
+        (newStep, oldStep) => {
+          let container = document.querySelector(".steps");
+          if (container) {
+            let items = container.children;
+            let item = items.item(this.$store.state.livegame.currentStep);
+            container.querySelectorAll(".step")?.forEach((item) => {
+              item.classList.remove("active");
+            });
+            item?.classList.add("active");
           }
         }
       );
@@ -172,7 +201,7 @@ export default class Game extends Vue {
   }
 
   listenToServer(room: any, type: string): void {
-    room.onMessage(type, (data: any) => {
+    room.onMessage(type, async (data: any) => {
       if (type == "messages") {
         console.log(`Received message (${type}):`, data);
       }
@@ -194,13 +223,48 @@ export default class Game extends Vue {
       }
       if (type == "game_state") {
         if (data.type == "all_ready" && data.content == true) {
-          this.goNextStep();
+          this.$store.dispatch("goNextStep");
+          let player = this.$store.state.player;
+          player.isReady = false;
+          this.$store.commit("updatePlayer", player);
+        }
+        if (data.type == "goOnStep") {
+          this.$store.commit("updateLiveGame", {
+            index: "currentStep",
+            value: data.content.step,
+          });
+          if (data.content.minigame) {
+            this.$store.commit("updateLiveGame", {
+              index: "currentMiniGame",
+              value: data.content.minigame,
+            });
+          }
+          if (data.content.round) {
+            this.$store.commit("updateLiveGame", {
+              index: "currentRound",
+              value: data.content.round,
+            });
+          }
+          let player = this.$store.state.player;
+          player.isReady = false;
+          this.$store.commit("updatePlayer", player);
+        }
+
+        if (data.type == "params") {
+          this.$store.commit("updateLiveGame", {
+            index: "minigameNumber",
+            value: data.content.minigameNumber,
+          });
+          this.$store.commit("updateLiveGame", {
+            index: "roundNumber",
+            value: data.content.roundNumber,
+          });
         }
       }
     });
   }
 
-  sendToServer(type: string, message: string): void {
+  sendToServer(type: string, message: any): void {
     if (this.$store.state.room != null) {
       this.$store.state.room.send(type, message);
     }
@@ -214,21 +278,6 @@ export default class Game extends Vue {
     el.select();
     document.execCommand("copy");
     document.body.removeChild(el);
-  }
-
-  goNextStep(): void {
-    this.$store.commit("updateLiveGame", {
-      index: "currentStep",
-      value: this.$store.state.livegame.currentStep + 1,
-    });
-    let container = document.querySelector(".steps");
-    if (container) {
-      let items = container.children;
-      let item = items.item(this.$store.state.livegame.currentStep);
-      let lastItem = items.item(this.$store.state.livegame.currentStep - 1);
-      lastItem?.classList.remove("active");
-      item?.classList.add("active");
-    }
   }
 }
 </script>

@@ -1,11 +1,12 @@
 <template>
   <div class="minigameRoundResult step">
     <p>Mini game round result</p>
+    <button v-on:click="$store.dispatch('readyForNext')">Next</button>
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue } from "vue-class-component";
 import { Store } from "node_modules/vuex/types";
 import StoreState from "@/interfaces/StoreState";
 
@@ -13,7 +14,7 @@ import StoreState from "@/interfaces/StoreState";
   props: ["streamerMode"],
 }) */
 export default class MiniGameRoundResult extends Vue {
-  $refs!: {};
+  $refs!: any;
   $store!: Store<StoreState>;
 }
 </script>

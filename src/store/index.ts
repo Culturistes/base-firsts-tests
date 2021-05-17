@@ -8,6 +8,11 @@ export default createStore({
     player: null,
     livegame: {
       currentStep: 0,
+      isReadyForNext: false,
+      minigameNumber: 1,
+      roundNumber: 1,
+      currentMiniGame: 1,
+      currentRound: 1,
     },
     settings: {
       modeStreamer: false,
@@ -36,6 +41,23 @@ export default createStore({
       state.settings[data.index] = data.value;
     },
   },
-  actions: {},
+  actions: {
+    goNextStep(ctx): void {
+      ctx.commit("updateLiveGame", {
+        index: "currentStep",
+        value: ctx.state.livegame.currentStep + 1,
+      });
+      ctx.commit("updateLiveGame", {
+        index: "isReadyForNext",
+        value: false,
+      });
+    },
+    readyForNext(ctx): void {
+      const player = ctx.state.player;
+      player.isReady = !player.isReady;
+      ctx.commit("updatePlayer", player);
+      ctx.state.room.send("playerReadyForNext", player.isReady);
+    },
+  },
   modules: {},
 });
