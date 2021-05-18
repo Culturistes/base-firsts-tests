@@ -56,30 +56,46 @@
 
     <div class="steps">
       <!-- Choix pseudo + Rejoindre ou créer une partie -->
-      <JoinOrCreate />
+      <JoinOrCreate
+        v-if="steps.JOIN_OR_CREATE == $store.state.livegame.currentStep"
+      />
 
       <!-- Ecran choix perso + paramètrage par le MDR + bouton "pret" -->
-      <GameParameters />
+      <GameParameters
+        v-if="steps.GAME_PARAMETERS == $store.state.livegame.currentStep"
+      />
 
       <!-- En jeu -->
 
       <!-- Ecran titre de mini jeu -->
-      <MiniGameTitle />
+      <MiniGameTitle
+        v-if="steps.MINI_GAME_TITLE == $store.state.livegame.currentStep"
+      />
 
       <!-- Ecran titre de round -->
-      <MiniGameRoundTitle />
+      <MiniGameRoundTitle
+        v-if="steps.MINI_GAME_ROUND_TITLE == $store.state.livegame.currentStep"
+      />
 
       <!-- Mini Game Round -->
-      <MiniGameRound />
+      <MiniGameRound
+        v-if="steps.MINI_GAME_ROUND == $store.state.livegame.currentStep"
+      />
 
       <!-- Résultat round -->
-      <MiniGameRoundResult />
+      <MiniGameRoundResult
+        v-if="steps.MINI_GAME_ROUND_RESULT == $store.state.livegame.currentStep"
+      />
 
       <!-- Résultat mini-jeu -->
-      <MiniGameResult />
+      <MiniGameResult
+        v-if="steps.MINI_GAME_RESULT == $store.state.livegame.currentStep"
+      />
 
       <!-- Résultat du jeu -->
-      <GameResult />
+      <GameResult
+        v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
+      />
     </div>
   </div>
 </template>
@@ -107,7 +123,7 @@ export enum STEPS {
   MINI_GAME_ROUND,
   MINI_GAME_ROUND_RESULT,
   MINI_GAME_RESULT,
-  FINAL_RESULT,
+  GAME_RESULT,
 }
 
 @Options({
@@ -123,7 +139,6 @@ export enum STEPS {
   },
 })
 export default class Game extends Vue {
-  currentStep = STEPS.JOIN_OR_CREATE;
   player: {
     id: string;
     username: string;
@@ -142,7 +157,7 @@ export default class Game extends Vue {
   async created(): Promise<void> {
     this.$store.commit("updateLiveGame", {
       index: "currentStep",
-      value: STEPS.JOIN_OR_CREATE,
+      value: this.steps.JOIN_OR_CREATE,
     });
 
     let settingsItem = localStorage.getItem("settings");
@@ -173,7 +188,10 @@ export default class Game extends Vue {
             this.listenToServer(room, "livegame");
 
             if (oldVal == null) {
-              this.currentStep = STEPS.GAME_PARAMETERS;
+              this.$store.commit("updateLiveGame", {
+                index: "currentStep",
+                value: STEPS.GAME_PARAMETERS,
+              });
             }
           }
         }
@@ -260,6 +278,20 @@ export default class Game extends Vue {
             value: data.content.roundNumber,
           });
         }
+      }
+      if (type == "livegame") {
+        console.log(data.content.datas[0]);
+        let content = data.content.datas[0];
+        this.$store.commit("updateLiveGame", {
+          index: "minigame",
+          value: {
+            name: data.content.type,
+            question: content.title,
+            answers: content.answers,
+            goodAnswer: 0,
+            desc: content.desc,
+          },
+        });
       }
     });
   }

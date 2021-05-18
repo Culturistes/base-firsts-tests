@@ -1,17 +1,11 @@
 <template>
   <div class="home">
-    <JoinOrCreate msg="wsh" />
+    <router-link to="/game">Go to the game</router-link>
   </div>
 </template>
 
 <script lang="ts">
-import { Options, Vue } from "vue-class-component";
-import JoinOrCreate from "@/components/game/JoinOrCreate.vue"; // @ is an alias to /src
+import { Vue } from "vue-class-component";
 
-@Options({
-  components: {
-    JoinOrCreate,
-  },
-})
 export default class Home extends Vue {}
 </script>

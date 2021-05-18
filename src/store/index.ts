@@ -13,6 +13,14 @@ export default createStore({
       roundNumber: 1,
       currentMiniGame: 1,
       currentRound: 1,
+      miniGame: {
+        name: "",
+        question: "",
+        answers: [],
+        chosenAnswer: null,
+        goodAnswer: null,
+        desc: "",
+      },
     },
     settings: {
       modeStreamer: false,
