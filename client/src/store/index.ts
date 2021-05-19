@@ -1,5 +1,6 @@
 import StoreState from "@/interfaces/StoreState";
 import { createStore } from "vuex";
+import { Client, Room } from "colyseus.js";
 
 export default createStore({
   state: {
@@ -8,33 +9,36 @@ export default createStore({
     player: null,
     livegame: {
       currentStep: 0,
-      isReadyForNext: false,
-      minigameNumber: 1,
-      roundNumber: 1,
       currentMiniGame: 1,
       currentRound: 1,
+      paramsChosen: {
+        minigameNumber: 1,
+        roundNumber: 1,
+      },
       miniGame: {
         name: "",
         question: "",
         answers: [],
         chosenAnswer: null,
-        goodAnswer: null,
         desc: "",
       },
     },
     settings: {
-      modeStreamer: false,
+      streamerMode: false,
     },
   },
   mutations: {
-    updateClient(state: StoreState, value: string): void {
+    updateClient(state: StoreState, value: Client): void {
       state.client = value;
     },
-    updateRoom(state: StoreState, value: string): void {
+    updateRoom(state: StoreState, value: Room): void {
       state.room = value;
     },
     updatePlayer(state: StoreState, value: string): void {
       state.player = value;
+    },
+    setPlayerIsReady(state: StoreState, value: boolean): void {
+      state.player.isReady = value;
     },
     updateLiveGame(
       state: StoreState,
@@ -55,16 +59,21 @@ export default createStore({
         index: "currentStep",
         value: ctx.state.livegame.currentStep + 1,
       });
-      ctx.commit("updateLiveGame", {
-        index: "isReadyForNext",
-        value: false,
-      });
+      if (ctx.state.player) ctx.commit("setPlayerIsReady", false);
     },
-    readyForNext(ctx): void {
-      const player = ctx.state.player;
+    readyForNext(ctx, payload?): void {
+      const player = { ...ctx.state.player };
       player.isReady = !player.isReady;
-      ctx.commit("updatePlayer", player);
-      ctx.state.room.send("playerReadyForNext", player.isReady);
+      ctx.commit("setPlayerIsReady", !player.isReady);
+
+      const chosenAnswer = payload != undefined ? payload.chosenAnswer : null;
+      ctx.state.room?.send("clientPacket", {
+        type: "playerReadyForNext",
+        datas: {
+          isReady: player.isReady,
+          chosenAnswer: chosenAnswer,
+        },
+      });
     },
   },
   modules: {},

@@ -1,6 +1,8 @@
+import { Client, Room } from "colyseus.js";
+
 export default interface StoreState {
-    client: any;
-    room: any;
+    client: Client | null;
+    room: Room | null;
     player: any;
     livegame: {
         [key: string]: any,
@@ -8,6 +10,6 @@ export default interface StoreState {
     }
     settings: {
         [key: string]: any,
-        modeStreamer: boolean
+        streamerMode: boolean
     }
 }

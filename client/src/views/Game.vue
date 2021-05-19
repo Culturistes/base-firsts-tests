@@ -32,6 +32,7 @@
           v-bind:key="player.id"
         >
           <span>{{ player.username }}</span>
+          <span>{{ player.score }}</span>
           <span class="readyCircle">
             <span class="readyCircle_inner"></span>
           </span>
@@ -46,8 +47,8 @@
           v-on:change="
             () => {
               $store.commit('updateSettings', {
-                index: 'modeStreamer',
-                value: !$store.state.settings.modeStreamer,
+                index: 'streamerMode',
+                value: !$store.state.settings.streamerMode,
               });
             }
           "
@@ -97,12 +98,16 @@
         v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
       />
     </div>
+
+    <div class="loader" v-if="isLoading">
+      <span>Loading... Wait please :)</span>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Client } from "colyseus.js";
+import { Client, Room } from "colyseus.js";
 import { Store } from "vuex";
 import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
@@ -147,10 +152,9 @@ export default class Game extends Vue {
   } | null = null;
   notifications: Array<string> = [];
   players: Array<{ id: string; username: string; score: number }> = [];
-
   streamerMode = false;
-
   steps = STEPS;
+  isLoading = false;
 
   $store!: Store<StoreState>;
 
@@ -165,8 +169,8 @@ export default class Game extends Vue {
     if (settingsItem) {
       let settings = JSON.parse(settingsItem);
       this.$store.commit("updateSettings", {
-        index: "modeStreamer",
-        value: settings.modeStreamer,
+        index: "streamerMode",
+        value: settings.streamerMode,
       });
     }
 
@@ -177,15 +181,8 @@ export default class Game extends Vue {
         () => this.$store.state.room,
         (room, oldVal) => {
           if (room !== null) {
-            //For testing
-            this.listenToServer(room, "messages");
-            this.listenToServer(room, "user_notifs");
-
-            // Used
-            this.listenToServer(room, "game_state");
-            this.listenToServer(room, "players_list");
-            this.listenToServer(room, "your_infos");
-            this.listenToServer(room, "livegame");
+            // Final global listener
+            this.listenToServer(room, "serverPacket");
 
             if (oldVal == null) {
               this.$store.commit("updateLiveGame", {
@@ -200,7 +197,7 @@ export default class Game extends Vue {
       //DEBUG ONLY
       store.watch(
         () => this.$store.state.livegame.currentStep,
-        (newStep, oldStep) => {
+        () => {
           let container = document.querySelector(".steps");
           if (container) {
             let items = container.children;
@@ -218,98 +215,87 @@ export default class Game extends Vue {
     }
   }
 
-  listenToServer(room: any, type: string): void {
-    room.onMessage(type, async (data: any) => {
-      if (type == "messages") {
-        console.log(`Received message (${type}):`, data);
-      }
-      if (type == "user_notifs") {
-        this.notifications.push(data);
-      }
-      if (type == "players_list") {
-        this.players = data;
-      }
-      if (type == "your_infos") {
-        this.$store.commit("updatePlayer", data);
-        let datas = {
-          data: data,
-          roomId: room.id,
-          expiration: new Date().getTime() + 120 * 1000,
-        };
-        localStorage.setItem(`player_infos`, JSON.stringify(datas));
-        localStorage.setItem(`username`, data.username);
-      }
-      if (type == "game_state") {
-        if (data.type == "all_ready" && data.content == true) {
-          this.$store.dispatch("goNextStep");
-          let player = this.$store.state.player;
-          player.isReady = false;
-          this.$store.commit("updatePlayer", player);
-        }
-        if (data.type == "goOnStep") {
+  listenToServer(room: Room, type: string): void {
+    room.onMessage(type, async (packet: any) => {
+      let { type, datas } = packet;
+
+      let newDatas = null;
+
+      console.log(`Received packet from server (${type})`);
+
+      switch (type) {
+        case "playerInfos":
+          this.$store.commit("updatePlayer", datas);
+          newDatas = {
+            infos: datas,
+            roomId: room.id,
+            expiration: new Date().getTime() + 120 * 1000,
+          };
+          localStorage.setItem(`player_params`, JSON.stringify(newDatas));
+          localStorage.setItem(`username`, datas.username);
+          break;
+        case "playersList":
+          this.players = datas;
+          break;
+        case "minigame":
+          this.$store.commit("updateLiveGame", {
+            index: "minigame",
+            value: {
+              name: datas.type,
+              question: datas.content.title,
+              answers: datas.content.answers,
+              desc: datas.content.desc,
+            },
+          });
+          break;
+        case "chosenParams":
+          this.$store.commit("updateLiveGame", {
+            index: "chosenParams",
+            value: datas,
+          });
+          break;
+        case "canGoNext":
+          if (datas) {
+            this.isLoading = false;
+            this.$store.dispatch("goNextStep");
+          }
+          break;
+        case "goOnStep":
           this.$store.commit("updateLiveGame", {
             index: "currentStep",
-            value: data.content.step,
+            value: datas.step,
           });
-          if (data.content.minigame) {
+
+          if (datas.minigame) {
             this.$store.commit("updateLiveGame", {
               index: "currentMiniGame",
-              value: data.content.minigame,
+              value: datas.minigame,
             });
           }
-          if (data.content.round) {
+          if (datas.round) {
             this.$store.commit("updateLiveGame", {
               index: "currentRound",
-              value: data.content.round,
+              value: datas.round,
             });
           }
-          let player = this.$store.state.player;
-          player.isReady = false;
-          this.$store.commit("updatePlayer", player);
-        }
-
-        if (data.type == "params") {
-          this.$store.commit("updateLiveGame", {
-            index: "minigameNumber",
-            value: data.content.minigameNumber,
-          });
-          this.$store.commit("updateLiveGame", {
-            index: "roundNumber",
-            value: data.content.roundNumber,
-          });
-        }
-      }
-      if (type == "livegame") {
-        console.log(data.content.datas[0]);
-        let content = data.content.datas[0];
-        this.$store.commit("updateLiveGame", {
-          index: "minigame",
-          value: {
-            name: data.content.type,
-            question: content.title,
-            answers: content.answers,
-            goodAnswer: 0,
-            desc: content.desc,
-          },
-        });
+          this.$store.commit("setPlayerIsReady", false);
+          break;
+        case "loading":
+          this.isLoading = true;
+          break;
       }
     });
   }
 
-  sendToServer(type: string, message: any): void {
-    if (this.$store.state.room != null) {
-      this.$store.state.room.send(type, message);
-    }
-  }
-
   copyCode(): void {
-    console.log(this.$store.state.room.id);
-    const el = document.createElement("textarea");
-    el.value = this.$store.state.room.id;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
+    if (this.$store.state.room) {
+      const el = document.createElement("textarea");
+      el.value = this.$store.state.room.id;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
   }
 }
 </script>
@@ -369,6 +355,19 @@ export default class Game extends Vue {
     &.active {
       color: green;
     }
+  }
+
+  .loader {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 </style>

@@ -48,13 +48,17 @@ export default class GameParameters extends Vue {
         minigameNumber: parseInt(this.$refs.inputNbMiniGame.value),
         roundNumber: parseInt(this.$refs.inputNbRound.value),
       };
-      this.$store.state.room.send("player_ready", {
-        ready: this.playerIsReady,
-        params: params,
+      this.$store.state.room?.send("clientPacket", {
+        type: "playerReadyToStart",
+        datas: {
+          isReady: this.playerIsReady,
+          params: params,
+        },
       });
     } else {
-      this.$store.state.room.send("player_ready", {
-        ready: this.playerIsReady,
+      this.$store.state.room?.send("clientPacket", {
+        type: "playerReadyToStart",
+        datas: { isReady: this.playerIsReady },
       });
     }
   }

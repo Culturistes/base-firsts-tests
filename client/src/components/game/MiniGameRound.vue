@@ -12,9 +12,6 @@
         {{ answer }}
       </li>
     </ul>
-    <button v-on:click="$store.dispatch('readyForNext')">
-      J'ai fini de jouer
-    </button>
   </div>
 </template>
 
@@ -31,6 +28,7 @@ export default class MiniGameRound extends Vue {
   $store!: Store<StoreState>;
 
   selectedElmt!: HTMLElement;
+  selectedIndex = null;
 
   chooseAnswer(e: any, index: number): void {
     e.target.classList.add("active");
@@ -38,14 +36,17 @@ export default class MiniGameRound extends Vue {
     if (this.selectedElmt != undefined) {
       this.selectedElmt.classList.remove("active");
     }
-    this.selectedElmt = e.target;
 
-    this.$store.commit("updateLiveGame", {
-      index: "minigame",
-      value: { ...this.$store.state.livegame.minigame, chosenAnswer: index },
-    });
+    if (index != this.selectedIndex) {
+      this.selectedElmt = e.target;
 
-    console.log(this.$store.state.livegame.minigame);
+      this.$store.commit("updateLiveGame", {
+        index: "minigame",
+        value: { ...this.$store.state.livegame.minigame, chosenAnswer: index },
+      });
+
+      this.$store.dispatch("readyForNext", { chosenAnswer: index });
+    }
   }
 }
 </script>
