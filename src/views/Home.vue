@@ -1,16 +1,16 @@
 <template>
   <div class="home">
-    <HelloWorld msg="wsh" />
+    <JoinOrCreate msg="wsh" />
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
+import JoinOrCreate from "@/components/JoinOrCreate.vue"; // @ is an alias to /src
 
 @Options({
   components: {
-    HelloWorld,
+    JoinOrCreate,
   },
 })
 export default class Home extends Vue {}
