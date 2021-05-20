@@ -1,4 +1,5 @@
-import { Schema, MapSchema, ArraySchema, type } from "@colyseus/schema";
+import { MapSchema, ArraySchema } from "@colyseus/schema";
+import { RoomState, Player, QuizRoundState, LmeRoundState, CocRoundState, MiniGameState, RoundState } from './schema/RoomStates';
 import { Room, Client } from "colyseus";
 import request from 'request';
 
@@ -9,84 +10,7 @@ export enum STEPS {
     MINI_GAME_ROUND,
     MINI_GAME_ROUND_RESULT,
     MINI_GAME_RESULT,
-    FINAL_RESULT,
-}
-
-class Player extends Schema {
-    @type("string")
-    id: string;
-
-    @type("string")
-    username: string;
-
-    @type("boolean")
-    isMDR: boolean;
-
-    @type("boolean")
-    isReady: boolean = false;
-
-    @type("boolean")
-    connected: boolean = false;
-
-    @type("number")
-    score: number = 0;
-
-    @type("number")
-    chosenAnswer: number = 0;
-}
-
-class Parameters extends Schema {
-    @type("number")
-    minigameNumber: number = 1;
-
-    @type("number")
-    roundNumber: number = 1;
-
-    @type("number")
-    currentMiniGame: number = 1;
-
-    @type("number")
-    currentRound: number = 1;
-}
-
-class RoundParams extends Schema {
-    @type("number")
-    goodAnswer: number = null;
-
-    @type("number")
-    answerPoints: number = 100;
-
-    @type("string")
-    title: string = "";
-
-    @type(["string"])
-    answers = new ArraySchema<string>();
-
-    @type("string")
-    desc: string = "";
-}
-
-class RoomState extends Schema {
-    @type('boolean')
-    gameRunning: boolean = false;
-
-    @type(Parameters)
-    parameters: Parameters = new Parameters;
-
-    @type("number")
-    currentStep: number = 0;
-
-    @type({ map: Player })
-    players = new MapSchema<Player>();
-
-    @type(["string"])
-    playersPositions = new ArraySchema<string>();
-
-    @type('number')
-    playersReady: number = 0;
-
-    @type(RoundParams)
-    roundParams: RoundParams = new RoundParams;
+    GAME_RESULT,
 }
 
 export default class OwnRoom extends Room<RoomState> {
@@ -131,6 +55,7 @@ export default class OwnRoom extends Room<RoomState> {
 
     async onLeave(client: Client, consented: boolean) {
         console.log(client.sessionId, "left, consented?:", consented);
+
         this.state.players.get(client.sessionId).connected = false;
         this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
 
@@ -148,6 +73,7 @@ export default class OwnRoom extends Room<RoomState> {
         } catch (e) {
             // 20 seconds expired. let's remove the client.
             this.state.players.delete(client.sessionId);
+            this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
         }
     }
 
@@ -171,8 +97,10 @@ export default class OwnRoom extends Room<RoomState> {
             console.log("he is MDR, save parameters");
             this.state.parameters.minigameNumber = packet.datas.params.minigameNumber;
             this.state.parameters.roundNumber = packet.datas.params.roundNumber;
+
             this.broadcast("serverPacket", { type: "chosenParams", datas: packet.datas.params })
         }
+
         if (this.state.playersReady == this.state.players.size) {
             console.log("everyone's ready, start the game!")
 
@@ -181,9 +109,12 @@ export default class OwnRoom extends Room<RoomState> {
             })
 
             this.broadcast("serverPacket", { type: "loading", datas: true });
-            
+
             // Wait for questions / games to load ? show wait screen ?
-            await this.getQuestion("quiz");
+            await this.generateQuestions();
+
+            let question = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
+            this.broadcast("serverPacket", { type: "minigame", datas: { type: question.type, content: question } });
 
             this.broadcast("serverPacket", { type: "canGoNext", datas: true });
             this.state.currentStep++;
@@ -236,6 +167,9 @@ export default class OwnRoom extends Room<RoomState> {
                     this.state.parameters.currentRound++;
                     this.state.currentStep = STEPS.MINI_GAME_ROUND_TITLE
 
+                    let question = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
+                    this.broadcast("serverPacket", { type: "minigame", datas: { type: question.type, content: question } });
+
                     this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, round: this.state.parameters.currentRound } });
                     return false;
                 }
@@ -247,6 +181,9 @@ export default class OwnRoom extends Room<RoomState> {
                     this.state.parameters.currentMiniGame++;
                     this.state.parameters.currentRound = 1;
                     this.state.currentStep = STEPS.MINI_GAME_TITLE
+
+                    let question = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
+                    this.broadcast("serverPacket", { type: "minigame", datas: { type: question.type, content: question } });
 
                     this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
                     return false;
@@ -260,21 +197,67 @@ export default class OwnRoom extends Room<RoomState> {
         }
     }
 
-    getQuestion(type: string) {
+    generateQuestions() {
+        return new Promise(async (resolve, rej) => {
+            // quiz , lme, coc
+            const gameTags = ['quiz', 'lme', 'coc'];
+            let minigames = new ArraySchema<MiniGameState>();
+
+            for (let i = 0; i < this.state.parameters.minigameNumber; i++) {
+                let url = `${this.apiURL}/${gameTags[i]}/get?n=${this.state.parameters.roundNumber}`;
+
+                let minigame = new MiniGameState();
+                minigame.name = gameTags[i];
+                let rounds = await this.getQuestions(gameTags[i], url);
+                // @ts-ignore: Unreachable code error
+                minigame.rounds = rounds;
+                minigames.push(minigame);
+            }
+
+            this.state.minigames = minigames;
+            resolve(true)
+        })
+    }
+
+    getQuestions(type: string, url: string) {
         return new Promise((resolve, rej) => {
-            let url = `${this.apiURL}/${type}/get?n=1`;
             request(url, (err, res, body) => {
                 if (!err && res.statusCode == 200) {
-                    let datas = JSON.parse(body)[0];
+                    let datas = JSON.parse(body);
 
-                    this.state.roundParams.title = datas.title;
-                    this.state.roundParams.answers = datas.answers;
-                    this.state.roundParams.desc = datas.description;
-                    this.state.roundParams.goodAnswer = 0; // TODO: datas.goodAnswer when available
-                    this.state.roundParams.answerPoints = 100; // TODO: work on it     
+                    let rounds = new ArraySchema<RoundState>();
 
-                    this.broadcast("serverPacket", { type: "minigame", datas: { type: "quiz", content: datas } });
-                    resolve(true);
+                    datas.forEach((data: any) => {
+                        let round;
+                        switch (type) {
+                            case 'quiz':
+                                round = new QuizRoundState()
+                                round.type = type;
+                                round.title = data.title;
+                                round.answers = data.answers;
+                                round.description = data.description;
+                                break;
+                            case 'lme':
+                                round = new LmeRoundState()
+                                round.type = type;
+                                round.title = data.title;
+                                round.answers = data.answers;
+                                round.description = data.description;
+                                break;
+                            case 'coc':
+                                round = new CocRoundState()
+                                round.type = type;
+                                round.name = data.name;
+                                round.latitude = data.latitude;
+                                round.longitude = data.longitude;
+                                round.gentileM = data.gentileM
+                                round.gentileF = data.gentileF
+                                break;
+                        }
+                        rounds.push(round);
+                    })
+
+                    resolve(rounds)
                 } else {
                     rej(err);
                 }
@@ -287,9 +270,10 @@ export default class OwnRoom extends Room<RoomState> {
 
     calculateScore() {
         this.state.players.forEach((player) => {
-            if (player.chosenAnswer == this.state.roundParams.goodAnswer) {
+            // TODO
+            /* if (player.chosenAnswer == this.state.roundParams.goodAnswer) {
                 player.score += this.state.roundParams.answerPoints;
-            }
+            } */
         })
         this.sortPlayers();
     }

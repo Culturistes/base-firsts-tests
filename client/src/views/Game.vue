@@ -1,55 +1,6 @@
 <template>
   <div class="game">
     <!-- Début de partie -->
-<<<<<<< HEAD
-
-    <!-- Choix pseudo + Rejoindre ou créer une partie -->
-
-    <!-- Ecran choix région? -->
-
-    <!-- Ecran choix perso + paramètrage par le MDR + bouton "pret" -->
-
-    <!-- En jeu -->
-
-    <!-- Ecran titre de mini jeu -->
-
-    <!-- Question -->
-
-    <!-- Résultat question -->
-
-    <!-- Résultat mini-jeu -->
-
-    <!-- Résultat du jeu -->
-
-    <JoinOrCreate
-      v-if="currentStep === steps.JOIN_OR_CREATE"
-      v-bind="{ streamerMode: streamerMode }"
-    />
-
-    <p v-if="!!player && player.isMDR">Tu es MDR</p>
-
-    <button v-if="currentStep === steps.GAME_PARAMETERS" v-on:click="copyCode">
-      Copier le code
-    </button>
-
-    <div class="logs">
-      <p v-for="notif in notifications" v-bind:key="notif">{{ notif }}</p>
-    </div>
-
-    <ul class="playersList">
-      <li v-for="player in players" v-bind:key="player.id">
-        {{ player.username }}
-      </li>
-    </ul>
-
-    <label htmlFor="streamMode"
-      >Stream mode
-      <input
-        id="streamMode"
-        type="checkbox"
-        v-on:change="() => (streamerMode = !streamerMode)"
-    /></label>
-=======
     <div class="game_infos">
       <p>Game page</p>
       <p>
@@ -151,28 +102,11 @@
     <div class="loader" v-if="isLoading">
       <span>Loading... Wait please :)</span>
     </div>
->>>>>>> develop
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-<<<<<<< HEAD
-import { Client } from "colyseus.js";
-import { Store } from "vuex";
-import store from "@/store";
-import StoreState from "@/interfaces/StoreState";
-import JoinOrCreate from "@/components/JoinOrCreate.vue";
-
-enum STEPS {
-  JOIN_OR_CREATE,
-  GAME_PARAMETERS,
-  MINI_GAME_TITLE,
-  QUESTION,
-  QUESTION_RESULT,
-  MINI_GAME_RESULT,
-  FINAL_RESULT,
-=======
 import { Client, Room } from "colyseus.js";
 import { Store } from "vuex";
 import store from "@/store";
@@ -195,18 +129,11 @@ export enum STEPS {
   MINI_GAME_ROUND_RESULT,
   MINI_GAME_RESULT,
   GAME_RESULT,
->>>>>>> develop
 }
 
 @Options({
   components: {
     JoinOrCreate,
-<<<<<<< HEAD
-  },
-})
-export default class Game extends Vue {
-  currentStep = STEPS.JOIN_OR_CREATE;
-=======
     GameParameters,
     MiniGameTitle,
     MiniGameRoundTitle,
@@ -217,7 +144,6 @@ export default class Game extends Vue {
   },
 })
 export default class Game extends Vue {
->>>>>>> develop
   player: {
     id: string;
     username: string;
@@ -226,40 +152,26 @@ export default class Game extends Vue {
   } | null = null;
   notifications: Array<string> = [];
   players: Array<{ id: string; username: string; score: number }> = [];
-<<<<<<< HEAD
-
-  streamerMode = false;
-
-  steps = STEPS;
-=======
   streamerMode = false;
   steps = STEPS;
   isLoading = false;
->>>>>>> develop
 
   $store!: Store<StoreState>;
 
   async created(): Promise<void> {
-<<<<<<< HEAD
-=======
     this.$store.commit("updateLiveGame", {
       index: "currentStep",
       value: this.steps.JOIN_OR_CREATE,
     });
 
->>>>>>> develop
     let settingsItem = localStorage.getItem("settings");
 
     if (settingsItem) {
       let settings = JSON.parse(settingsItem);
-<<<<<<< HEAD
-      this.streamerMode = settings.streamerMode;
-=======
       this.$store.commit("updateSettings", {
         index: "streamerMode",
         value: settings.streamerMode,
       });
->>>>>>> develop
     }
 
     try {
@@ -269,15 +181,6 @@ export default class Game extends Vue {
         () => this.$store.state.room,
         (room, oldVal) => {
           if (room !== null) {
-<<<<<<< HEAD
-            this.listenToServer(room, "messages");
-            this.listenToServer(room, "user_notifs");
-            this.listenToServer(room, "players_list");
-            this.listenToServer(room, "your_infos");
-
-            if (oldVal == null) {
-              this.currentStep = STEPS.GAME_PARAMETERS;
-=======
             // Final global listener
             this.listenToServer(room, "serverPacket");
 
@@ -286,58 +189,17 @@ export default class Game extends Vue {
                 index: "currentStep",
                 value: STEPS.GAME_PARAMETERS,
               });
->>>>>>> develop
             }
           }
         }
       );
-<<<<<<< HEAD
-=======
 
-      //DEBUG ONLY
-      store.watch(
-        () => this.$store.state.livegame.currentStep,
-        () => {
-          let container = document.querySelector(".steps");
-          if (container) {
-            let items = container.children;
-            let item = items.item(this.$store.state.livegame.currentStep);
-            container.querySelectorAll(".step")?.forEach((item) => {
-              item.classList.remove("active");
-            });
-            item?.classList.add("active");
-          }
-        }
-      );
->>>>>>> develop
       console.log("Client initialized");
     } catch (e) {
       console.log("Client couldn't be initialized:", e);
     }
   }
 
-<<<<<<< HEAD
-  listenToServer(room: any, type: string): void {
-    room.onMessage(type, (data: any) => {
-      if (type == "messages") {
-        console.log(`Received message (${type}):`, data);
-      }
-      if (type == "user_notifs") {
-        this.notifications.push(data);
-      }
-      if (type == "players_list") {
-        this.players = data;
-      }
-      if (type == "your_infos") {
-        this.player = data;
-        let datas = {
-          data: data,
-          roomId: room.id,
-          expiration: new Date().getTime() + 120 * 1000,
-        };
-        localStorage.setItem(`player_infos`, JSON.stringify(datas));
-        localStorage.setItem(`username`, data.username);
-=======
   listenToServer(room: Room, type: string): void {
     room.onMessage(type, async (packet: any) => {
       let { type, datas } = packet;
@@ -354,6 +216,7 @@ export default class Game extends Vue {
             roomId: room.id,
             expiration: new Date().getTime() + 120 * 1000,
           };
+          // TODO: work on the 2min reconnect without localStorage
           localStorage.setItem(`player_params`, JSON.stringify(newDatas));
           localStorage.setItem(`username`, datas.username);
           break;
@@ -406,27 +269,10 @@ export default class Game extends Vue {
         case "loading":
           this.isLoading = true;
           break;
->>>>>>> develop
       }
     });
   }
 
-<<<<<<< HEAD
-  sendToServer(type: string, message: string): void {
-    if (this.$store.state.room != null) {
-      this.$store.state.room.send(type, message);
-    }
-  }
-
-  copyCode(): void {
-    console.log(this.$store.state.room.id);
-    const el = document.createElement("textarea");
-    el.value = this.$store.state.room.id;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
-=======
   copyCode(): void {
     if (this.$store.state.room) {
       const el = document.createElement("textarea");
@@ -436,7 +282,6 @@ export default class Game extends Vue {
       document.execCommand("copy");
       document.body.removeChild(el);
     }
->>>>>>> develop
   }
 }
 </script>
@@ -447,13 +292,6 @@ export default class Game extends Vue {
   height: 100%;
 
   .playersList {
-<<<<<<< HEAD
-    width: 300px;
-    text-align: left;
-    li {
-    }
-  }
-=======
     text-align: left;
     position: absolute;
     left: 20px;
@@ -517,6 +355,5 @@ export default class Game extends Vue {
     justify-content: center;
     align-items: center;
   }
->>>>>>> develop
 }
 </style>

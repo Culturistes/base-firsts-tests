@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-export default interface StoreState {
-    client: any;
-    room: any;
-    settings: {
-        modeStreamer: boolean
-=======
 import { Client, Room } from "colyseus.js";
 
 export default interface StoreState {
@@ -18,6 +11,5 @@ export default interface StoreState {
     settings: {
         [key: string]: any,
         streamerMode: boolean
->>>>>>> develop
     }
 }

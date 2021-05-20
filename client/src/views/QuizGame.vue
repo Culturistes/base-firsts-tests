@@ -1,15 +1,17 @@
 <template>
-  <p>{{ question.title }}</p>
-  <button
-    :key="i"
-    v-for="(answer, i) in question.answers"
-    @click="selectAnswer(i)"
-  >
-    {{ $filters.hideDollar(answer) }}
-  </button>
-  <div v-if="selectedAnswer.length > 0">
-    <p>{{ $filters.hideDollar(selectedAnswer) }}</p>
-    <button>Valider</button>
+  <div>
+    <p>{{ question.title }}</p>
+    <button
+      :key="i"
+      v-for="(answer, i) in question.answers"
+      @click="selectAnswer(i)"
+    >
+      {{ $filters.hideDollar(answer) }}
+    </button>
+    <div v-if="selectedAnswer.length > 0">
+      <p>{{ $filters.hideDollar(selectedAnswer) }}</p>
+      <button>Valider</button>
+    </div>
   </div>
 </template>
 

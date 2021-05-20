@@ -7,11 +7,11 @@
     >
       <label>
         Nb Mini-jeu
-        <input value="1" type="number" ref="inputNbMiniGame" onChange />
+        <input value="3" type="number" ref="inputNbMiniGame" onChange />
       </label>
       <label>
         Nb round par mini jeu (test)
-        <input value="1" type="number" ref="inputNbRound" />
+        <input value="3" type="number" ref="inputNbRound" />
       </label>
     </div>
 
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Store } from "node_modules/vuex/types";
+import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 
 /* @Options({

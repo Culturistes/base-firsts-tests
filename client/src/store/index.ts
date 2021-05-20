@@ -1,29 +1,11 @@
 import StoreState from "@/interfaces/StoreState";
 import { createStore } from "vuex";
-<<<<<<< HEAD
-=======
 import { Client, Room } from "colyseus.js";
->>>>>>> develop
 
 export default createStore({
   state: {
     client: null,
     room: null,
-<<<<<<< HEAD
-    settings: {
-      modeStreamer: false,
-    },
-  },
-  mutations: {
-    updateClient(state: StoreState, value: string) {
-      state.client = value;
-    },
-    updateRoom(state: StoreState, value: string) {
-      state.room = value;
-    },
-  },
-  actions: {},
-=======
     player: null,
     livegame: {
       currentStep: 0,
@@ -94,6 +76,5 @@ export default createStore({
       });
     },
   },
->>>>>>> develop
   modules: {},
 });
