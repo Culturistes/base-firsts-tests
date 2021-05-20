@@ -24,6 +24,24 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "game" */ "../views/Game.vue"),
   },
+  {
+    path: "/map",
+    name: "MapGame",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "game" */ "../views/MapGame.vue"),
+  },
+  {
+    path: "/quiz",
+    name: "QuizGame",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "game" */ "../views/QuizGame.vue"),
+  },
 ];
 
 const router = createRouter({
