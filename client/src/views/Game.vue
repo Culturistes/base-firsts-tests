@@ -1,6 +1,7 @@
 <template>
   <div class="game">
     <!-- Début de partie -->
+<<<<<<< HEAD
 
     <!-- Choix pseudo + Rejoindre ou créer une partie -->
 
@@ -48,11 +49,115 @@
         type="checkbox"
         v-on:change="() => (streamerMode = !streamerMode)"
     /></label>
+=======
+    <div class="game_infos">
+      <p>Game page</p>
+      <p>
+        Step: {{ steps[$store.state.livegame.currentStep] }} | Round:
+        {{ $store.state.livegame.currentRound }} /
+        {{ $store.state.livegame.roundNumber }} | Mini game:
+        {{ $store.state.livegame.currentMiniGame }} /
+        {{ $store.state.livegame.minigameNumber }}
+      </p>
+      <p v-if="!!$store.state.player && $store.state.player.isMDR">Tu es MDR</p>
+
+      <button
+        v-if="$store.state.livegame.currentStep === steps.GAME_PARAMETERS"
+        v-on:click="copyCode"
+      >
+        Copier le code
+      </button>
+
+      <div class="logs">
+        <p v-for="notif in notifications" v-bind:key="notif">{{ notif }}</p>
+      </div>
+
+      <ul class="playersList">
+        <p>Joueurs connecté</p>
+        <li
+          class="playerName"
+          v-bind:class="{ active: player.isReady }"
+          v-for="player in players"
+          v-bind:key="player.id"
+        >
+          <span>{{ player.username }}</span>
+          <span>{{ player.score }}</span>
+          <span class="readyCircle">
+            <span class="readyCircle_inner"></span>
+          </span>
+        </li>
+      </ul>
+
+      <label htmlFor="streamMode"
+        >Stream mode
+        <input
+          id="streamMode"
+          type="checkbox"
+          v-on:change="
+            () => {
+              $store.commit('updateSettings', {
+                index: 'streamerMode',
+                value: !$store.state.settings.streamerMode,
+              });
+            }
+          "
+      /></label>
+    </div>
+
+    <div class="steps">
+      <!-- Choix pseudo + Rejoindre ou créer une partie -->
+      <JoinOrCreate
+        v-if="steps.JOIN_OR_CREATE == $store.state.livegame.currentStep"
+      />
+
+      <!-- Ecran choix perso + paramètrage par le MDR + bouton "pret" -->
+      <GameParameters
+        v-if="steps.GAME_PARAMETERS == $store.state.livegame.currentStep"
+      />
+
+      <!-- En jeu -->
+
+      <!-- Ecran titre de mini jeu -->
+      <MiniGameTitle
+        v-if="steps.MINI_GAME_TITLE == $store.state.livegame.currentStep"
+      />
+
+      <!-- Ecran titre de round -->
+      <MiniGameRoundTitle
+        v-if="steps.MINI_GAME_ROUND_TITLE == $store.state.livegame.currentStep"
+      />
+
+      <!-- Mini Game Round -->
+      <MiniGameRound
+        v-if="steps.MINI_GAME_ROUND == $store.state.livegame.currentStep"
+      />
+
+      <!-- Résultat round -->
+      <MiniGameRoundResult
+        v-if="steps.MINI_GAME_ROUND_RESULT == $store.state.livegame.currentStep"
+      />
+
+      <!-- Résultat mini-jeu -->
+      <MiniGameResult
+        v-if="steps.MINI_GAME_RESULT == $store.state.livegame.currentStep"
+      />
+
+      <!-- Résultat du jeu -->
+      <GameResult
+        v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
+      />
+    </div>
+
+    <div class="loader" v-if="isLoading">
+      <span>Loading... Wait please :)</span>
+    </div>
+>>>>>>> develop
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
+<<<<<<< HEAD
 import { Client } from "colyseus.js";
 import { Store } from "vuex";
 import store from "@/store";
@@ -67,15 +172,52 @@ enum STEPS {
   QUESTION_RESULT,
   MINI_GAME_RESULT,
   FINAL_RESULT,
+=======
+import { Client, Room } from "colyseus.js";
+import { Store } from "vuex";
+import store from "@/store";
+import StoreState from "@/interfaces/StoreState";
+import JoinOrCreate from "@/components/game/JoinOrCreate.vue";
+import GameParameters from "@/components/game/GameParameters.vue";
+import MiniGameTitle from "@/components/game/MiniGameTitle.vue";
+import MiniGameRoundTitle from "@/components/game/MiniGameRoundTitle.vue";
+import MiniGameRound from "@/components/game/MiniGameRound.vue";
+import MiniGameRoundResult from "@/components/game/MiniGameRoundResult.vue";
+import MiniGameResult from "@/components/game/MiniGameResult.vue";
+import GameResult from "@/components/game/GameResult.vue";
+
+export enum STEPS {
+  JOIN_OR_CREATE,
+  GAME_PARAMETERS,
+  MINI_GAME_TITLE,
+  MINI_GAME_ROUND_TITLE,
+  MINI_GAME_ROUND,
+  MINI_GAME_ROUND_RESULT,
+  MINI_GAME_RESULT,
+  GAME_RESULT,
+>>>>>>> develop
 }
 
 @Options({
   components: {
     JoinOrCreate,
+<<<<<<< HEAD
   },
 })
 export default class Game extends Vue {
   currentStep = STEPS.JOIN_OR_CREATE;
+=======
+    GameParameters,
+    MiniGameTitle,
+    MiniGameRoundTitle,
+    MiniGameRound,
+    MiniGameRoundResult,
+    MiniGameResult,
+    GameResult,
+  },
+})
+export default class Game extends Vue {
+>>>>>>> develop
   player: {
     id: string;
     username: string;
@@ -84,19 +226,40 @@ export default class Game extends Vue {
   } | null = null;
   notifications: Array<string> = [];
   players: Array<{ id: string; username: string; score: number }> = [];
+<<<<<<< HEAD
 
   streamerMode = false;
 
   steps = STEPS;
+=======
+  streamerMode = false;
+  steps = STEPS;
+  isLoading = false;
+>>>>>>> develop
 
   $store!: Store<StoreState>;
 
   async created(): Promise<void> {
+<<<<<<< HEAD
+=======
+    this.$store.commit("updateLiveGame", {
+      index: "currentStep",
+      value: this.steps.JOIN_OR_CREATE,
+    });
+
+>>>>>>> develop
     let settingsItem = localStorage.getItem("settings");
 
     if (settingsItem) {
       let settings = JSON.parse(settingsItem);
+<<<<<<< HEAD
       this.streamerMode = settings.streamerMode;
+=======
+      this.$store.commit("updateSettings", {
+        index: "streamerMode",
+        value: settings.streamerMode,
+      });
+>>>>>>> develop
     }
 
     try {
@@ -106,6 +269,7 @@ export default class Game extends Vue {
         () => this.$store.state.room,
         (room, oldVal) => {
           if (room !== null) {
+<<<<<<< HEAD
             this.listenToServer(room, "messages");
             this.listenToServer(room, "user_notifs");
             this.listenToServer(room, "players_list");
@@ -113,16 +277,46 @@ export default class Game extends Vue {
 
             if (oldVal == null) {
               this.currentStep = STEPS.GAME_PARAMETERS;
+=======
+            // Final global listener
+            this.listenToServer(room, "serverPacket");
+
+            if (oldVal == null) {
+              this.$store.commit("updateLiveGame", {
+                index: "currentStep",
+                value: STEPS.GAME_PARAMETERS,
+              });
+>>>>>>> develop
             }
           }
         }
       );
+<<<<<<< HEAD
+=======
+
+      //DEBUG ONLY
+      store.watch(
+        () => this.$store.state.livegame.currentStep,
+        () => {
+          let container = document.querySelector(".steps");
+          if (container) {
+            let items = container.children;
+            let item = items.item(this.$store.state.livegame.currentStep);
+            container.querySelectorAll(".step")?.forEach((item) => {
+              item.classList.remove("active");
+            });
+            item?.classList.add("active");
+          }
+        }
+      );
+>>>>>>> develop
       console.log("Client initialized");
     } catch (e) {
       console.log("Client couldn't be initialized:", e);
     }
   }
 
+<<<<<<< HEAD
   listenToServer(room: any, type: string): void {
     room.onMessage(type, (data: any) => {
       if (type == "messages") {
@@ -143,10 +337,81 @@ export default class Game extends Vue {
         };
         localStorage.setItem(`player_infos`, JSON.stringify(datas));
         localStorage.setItem(`username`, data.username);
+=======
+  listenToServer(room: Room, type: string): void {
+    room.onMessage(type, async (packet: any) => {
+      let { type, datas } = packet;
+
+      let newDatas = null;
+
+      console.log(`Received packet from server (${type})`);
+
+      switch (type) {
+        case "playerInfos":
+          this.$store.commit("updatePlayer", datas);
+          newDatas = {
+            infos: datas,
+            roomId: room.id,
+            expiration: new Date().getTime() + 120 * 1000,
+          };
+          localStorage.setItem(`player_params`, JSON.stringify(newDatas));
+          localStorage.setItem(`username`, datas.username);
+          break;
+        case "playersList":
+          this.players = datas;
+          break;
+        case "minigame":
+          this.$store.commit("updateLiveGame", {
+            index: "minigame",
+            value: {
+              name: datas.type,
+              question: datas.content.title,
+              answers: datas.content.answers,
+              desc: datas.content.desc,
+            },
+          });
+          break;
+        case "chosenParams":
+          this.$store.commit("updateLiveGame", {
+            index: "chosenParams",
+            value: datas,
+          });
+          break;
+        case "canGoNext":
+          if (datas) {
+            this.isLoading = false;
+            this.$store.dispatch("goNextStep");
+          }
+          break;
+        case "goOnStep":
+          this.$store.commit("updateLiveGame", {
+            index: "currentStep",
+            value: datas.step,
+          });
+
+          if (datas.minigame) {
+            this.$store.commit("updateLiveGame", {
+              index: "currentMiniGame",
+              value: datas.minigame,
+            });
+          }
+          if (datas.round) {
+            this.$store.commit("updateLiveGame", {
+              index: "currentRound",
+              value: datas.round,
+            });
+          }
+          this.$store.commit("setPlayerIsReady", false);
+          break;
+        case "loading":
+          this.isLoading = true;
+          break;
+>>>>>>> develop
       }
     });
   }
 
+<<<<<<< HEAD
   sendToServer(type: string, message: string): void {
     if (this.$store.state.room != null) {
       this.$store.state.room.send(type, message);
@@ -161,6 +426,17 @@ export default class Game extends Vue {
     el.select();
     document.execCommand("copy");
     document.body.removeChild(el);
+=======
+  copyCode(): void {
+    if (this.$store.state.room) {
+      const el = document.createElement("textarea");
+      el.value = this.$store.state.room.id;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+>>>>>>> develop
   }
 }
 </script>
@@ -171,10 +447,76 @@ export default class Game extends Vue {
   height: 100%;
 
   .playersList {
+<<<<<<< HEAD
     width: 300px;
     text-align: left;
     li {
     }
   }
+=======
+    text-align: left;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    border: 1px solid black;
+    padding: 10px;
+    background-color: white;
+
+    .playerName {
+      background-color: white;
+      border: 1px solid black;
+      padding: 5px;
+      list-style-type: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .readyCircle {
+        width: 20px;
+        height: 20px;
+        border: 1px solid black;
+        border-radius: 50%;
+        position: relative;
+
+        .readyCircle_inner {
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      &.active {
+        .readyCircle_inner {
+          background-color: green;
+        }
+      }
+    }
+  }
+
+  .step {
+    border-top: 1px solid black;
+    padding-top: 20px;
+    &.active {
+      color: green;
+    }
+  }
+
+  .loader {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+>>>>>>> develop
 }
 </style>
