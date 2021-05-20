@@ -1,5 +1,5 @@
 <template>
-  <div class="joinOrCreate">
+  <div class="joinOrCreate step">
     <div class="inputContainer">
       <label htmlFor="username">
         <span>Pseudo</span>
@@ -17,7 +17,7 @@
         <input
           id="inputRoomId"
           ref="inputRoomID"
-          :type="streamerMode ? 'password' : 'text'"
+          :type="$store.state.settings.streamerMode ? 'password' : 'text'"
         />
       </label>
     </div>
@@ -35,13 +35,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { Store } from "node_modules/vuex/types";
+import { Vue } from "vue-class-component";
+import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 
-@Options({
-  props: ["streamerMode"],
-})
 export default class JoinOrCreate extends Vue {
   $refs!: {
     inputPlayername: HTMLInputElement;
@@ -59,11 +56,12 @@ export default class JoinOrCreate extends Vue {
 
   async createRoom(): Promise<void> {
     try {
-      let room = await this.$store.state.client.create("chat", {
+      let room = await this.$store.state.client?.create("chat", {
         username: this.$refs.inputPlayername.value,
         creator: true,
       });
       this.$store.commit("updateRoom", room);
+      this.$store.dispatch("goNextStep");
     } catch (e) {
       console.error("join error", e);
     }
@@ -96,19 +94,21 @@ export default class JoinOrCreate extends Vue {
 
   async connect(): Promise<void> {
     try {
-      let room = await this.$store.state.client.joinById(
+      let room = await this.$store.state.client?.joinById(
         this.$refs.inputRoomID.value,
         { username: this.$refs.inputPlayername.value }
       );
       this.$store.commit("updateRoom", room);
+      this.$store.dispatch("goNextStep");
     } catch (e) {
-      console.error("join error", e);
+      console.error("Join error");
+      console.log();
     }
   }
 
   async reconnect(item: any): Promise<void> {
     try {
-      const room = await this.$store.state.client.reconnect(
+      const room = await this.$store.state.client?.reconnect(
         this.$refs.inputRoomID.value,
         item.data.id
       );
