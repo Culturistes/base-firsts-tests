@@ -28,7 +28,7 @@
         <li
           class="playerName"
           v-bind:class="{ active: player.isReady }"
-          v-for="player in players"
+          v-for="player in $store.state.players"
           v-bind:key="player.id"
         >
           <span>{{ player.username }}</span>
@@ -80,13 +80,16 @@
 
       <!-- Mini Game Round -->
       <MiniGameRound
-        v-if="steps.MINI_GAME_ROUND == $store.state.livegame.currentStep"
+        v-if="
+          steps.MINI_GAME_ROUND == $store.state.livegame.currentStep ||
+          steps.MINI_GAME_ROUND_RESULT == $store.state.livegame.currentStep
+        "
       />
 
       <!-- Résultat round -->
-      <MiniGameRoundResult
+      <!-- <MiniGameRoundResult
         v-if="steps.MINI_GAME_ROUND_RESULT == $store.state.livegame.currentStep"
-      />
+      /> -->
 
       <!-- Résultat mini-jeu -->
       <MiniGameResult
@@ -151,7 +154,6 @@ export default class Game extends Vue {
     score: number;
   } | null = null;
   notifications: Array<string> = [];
-  players: Array<{ id: string; username: string; score: number }> = [];
   streamerMode = false;
   steps = STEPS;
   isLoading = false;
@@ -221,16 +223,24 @@ export default class Game extends Vue {
           localStorage.setItem(`username`, datas.username);
           break;
         case "playersList":
-          this.players = datas;
+          this.$store.commit("updatePlayers", datas);
           break;
         case "minigame":
           this.$store.commit("updateLiveGame", {
             index: "minigame",
             value: {
-              name: datas.type,
-              question: datas.content.title,
+              type: datas.type,
+              title:
+                datas.type == "coc" ? datas.content.name : datas.content.title,
               answers: datas.content.answers,
-              desc: datas.content.desc,
+              description: datas.content.description,
+              latLong:
+                datas.content.latitude && datas.content.longitude
+                  ? [datas.content.latitude, datas.content.longitude]
+                  : [],
+              gentileM: datas.content.gentileM ? datas.content.gentileM : "",
+              gentileF: datas.content.gentileF ? datas.content.gentileF : "",
+              goodAnswers: datas.content.goodAnswer,
             },
           });
           break;

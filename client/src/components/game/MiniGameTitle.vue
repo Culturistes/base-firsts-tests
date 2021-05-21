@@ -1,6 +1,6 @@
 <template>
   <div class="minigameTitle step">
-    <p>Mini game title : {{ $store.state.livegame.minigame.name }}</p>
+    <p>Mini game title : {{ gameTitle }}</p>
     <button v-on:click="$store.dispatch('readyForNext')">Start game</button>
   </div>
 </template>
@@ -16,6 +16,21 @@ import StoreState from "@/interfaces/StoreState";
 export default class MiniGameTitle extends Vue {
   $refs!: any;
   $store!: Store<StoreState>;
+  gameTitle!: string;
+
+  created(): void {
+    switch (this.$store.state.livegame.minigame.type) {
+      case "quiz":
+        this.gameTitle = "Le quiz";
+        break;
+      case "lme":
+        this.gameTitle = "La majorité l'emporte";
+        break;
+      case "coc":
+        this.gameTitle = "Ché où ça";
+        break;
+    }
+  }
 }
 </script>
 

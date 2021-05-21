@@ -20,8 +20,7 @@ export class Player extends Schema {
   @type("number")
   score: number = 0;
 
-  @type("number")
-  chosenAnswer: number = 0;
+  chosenAnswer: any;
 }
 
 class Parameters extends Schema {
@@ -44,54 +43,40 @@ export class RoundState extends Schema {
 
   @type('string')
   type: string = "";
-}
 
-export class QuizRoundState extends RoundState {
   @type("string")
-  title: string = "";
+  title?: string = "";
 
   @type(["string"])
-  answers = new ArraySchema<string>();
+  answers?= new ArraySchema<string>();
 
   @type("string")
-  description: string = "";
-}
-
-export class LmeRoundState extends RoundState {
-  @type("string")
-  title: string = "";
-
-  @type(["string"])
-  answers = new ArraySchema<string>();
+  description?: string = "";
 
   @type("string")
-  description: string = "";
-}
-
-export class CocRoundState extends RoundState {
-  @type("string")
-  name: string;
+  name?: string;
 
   @type("number")
-  latitude: number;
+  latitude?: number;
 
   @type("number")
-  longitude: number;
+  longitude?: number;
 
   @type("string")
-  gentileM: string;
+  gentileM?: string;
 
   @type("string")
-  gentileF: string;
+  gentileF?: string;
+
+  goodAnswer: any;
 }
-
 
 export class MiniGameState extends Schema {
   @type("string")
   name: string
 
   @type([RoundState])
-  rounds = new ArraySchema<RoundState>();
+  rounds: ArraySchema<RoundState> = new ArraySchema<RoundState>();
 }
 
 export class RoomState extends Schema {
@@ -99,7 +84,7 @@ export class RoomState extends Schema {
   gameRunning: boolean = false;
 
   @type(Parameters)
-  parameters: Parameters = new Parameters;
+  parameters = new Parameters;
 
   @type("number")
   currentStep: number = 0;
@@ -112,7 +97,7 @@ export class RoomState extends Schema {
 
   // Array => minigame: array => round
   @type([MiniGameState])
-  minigames = new Array<MiniGameState>();
+  minigames = new ArraySchema<MiniGameState>();
 
   @type(RoundState)
   currRoundParams: RoundState = new RoundState;

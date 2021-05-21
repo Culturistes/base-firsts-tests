@@ -1,6 +1,6 @@
 <template>
   <div class="minigameRoundTitle step">
-    <p>Mini game round title {{ $store.state.livegame.minigame.question }}</p>
+    <p>Mini game round title {{ $store.state.livegame.minigame.title }}</p>
     <button v-on:click="$store.dispatch('readyForNext')">Start round</button>
   </div>
 </template>

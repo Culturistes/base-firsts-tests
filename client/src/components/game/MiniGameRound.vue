@@ -1,6 +1,6 @@
 <template>
   <div class="minigameRound step">
-    <p>Mini game round</p>
+    <!-- <p>Mini game round</p>
     <p>{{ $store.state.livegame.minigame.name }}</p>
     <ul class="answers">
       <li
@@ -11,24 +11,39 @@
       >
         {{ answer }}
       </li>
-    </ul>
+    </ul> -->
+
+    <QuizGame
+      v-if="
+        $store.state.livegame.minigame.type == 'quiz' ||
+        $store.state.livegame.minigame.type == 'lme'
+      "
+    />
+
+    <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
-import { Store } from "node_modules/vuex/types";
+import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
+import QuizGame from "@/components/game/minigames/QuizGame.vue";
+import MapGame from "@/components/game/minigames/MapGame.vue";
 
-/* @Options({
-  props: ["streamerMode"],
-}) */
+@Options({
+  components: { QuizGame, MapGame },
+})
 export default class MiniGameRound extends Vue {
   $refs!: any;
   $store!: Store<StoreState>;
 
   selectedElmt!: HTMLElement;
   selectedIndex = null;
+
+  created() {
+    console.log(this.$store.state.livegame.minigame);
+  }
 
   chooseAnswer(e: any, index: number): void {
     e.target.classList.add("active");

@@ -7,6 +7,7 @@ export default createStore({
     client: null,
     room: null,
     player: null,
+    players: [],
     livegame: {
       currentStep: 0,
       currentMiniGame: 1,
@@ -17,10 +18,13 @@ export default createStore({
       },
       miniGame: {
         name: "",
-        question: "",
+        title: "",
         answers: [],
-        chosenAnswer: null,
-        desc: "",
+        latLong: [],
+        gentileM: "",
+        gentileF: "",
+        chosenAnswer: "",
+        description: "",
       },
     },
     settings: {
@@ -36,6 +40,9 @@ export default createStore({
     },
     updatePlayer(state: StoreState, value: string): void {
       state.player = value;
+    },
+    updatePlayers(state: StoreState, value: Array<any>): void {
+      state.players = value;
     },
     setPlayerIsReady(state: StoreState, value: boolean): void {
       state.player.isReady = value;

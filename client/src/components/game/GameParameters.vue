@@ -11,7 +11,7 @@
       </label>
       <label>
         Nb round par mini jeu (test)
-        <input value="3" type="number" ref="inputNbRound" />
+        <input value="1" type="number" ref="inputNbRound" />
       </label>
     </div>
 

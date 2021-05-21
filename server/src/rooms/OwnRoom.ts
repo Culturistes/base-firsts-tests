@@ -1,5 +1,5 @@
 import { MapSchema, ArraySchema } from "@colyseus/schema";
-import { RoomState, Player, QuizRoundState, LmeRoundState, CocRoundState, MiniGameState, RoundState } from './schema/RoomStates';
+import { RoomState, Player, MiniGameState, RoundState } from './schema/RoomStates';
 import { Room, Client } from "colyseus";
 import request from 'request';
 
@@ -50,14 +50,14 @@ export default class OwnRoom extends Room<RoomState> {
 
         client.send("serverPacket", { type: "playerInfos", datas: newPlayer });
 
-        this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+        this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
     }
 
     async onLeave(client: Client, consented: boolean) {
         console.log(client.sessionId, "left, consented?:", consented);
 
         this.state.players.get(client.sessionId).connected = false;
-        this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+        this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
         try {
             if (consented || !this.state.gameRunning) {
@@ -69,11 +69,11 @@ export default class OwnRoom extends Room<RoomState> {
 
             // client returned! let's re-activate it.
             this.state.players.get(client.sessionId).connected = true;
-            this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
         } catch (e) {
             // 20 seconds expired. let's remove the client.
             this.state.players.delete(client.sessionId);
-            this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
         }
     }
 
@@ -91,7 +91,7 @@ export default class OwnRoom extends Room<RoomState> {
         }
 
         this.state.players.get(client.sessionId).isReady = packet.datas.isReady;
-        this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+        this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
         if (this.state.players.get(client.sessionId).isMDR && packet.datas.isReady) {
             console.log("he is MDR, save parameters");
@@ -113,13 +113,12 @@ export default class OwnRoom extends Room<RoomState> {
             // Wait for questions / games to load ? show wait screen ?
             await this.generateQuestions();
 
-            let question = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
-            this.broadcast("serverPacket", { type: "minigame", datas: { type: question.type, content: question } });
+            this.getCurrentRound();
 
             this.broadcast("serverPacket", { type: "canGoNext", datas: true });
             this.state.currentStep++;
             this.lock();
-            this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
             this.state.playersReady = 0;
         }
@@ -137,10 +136,10 @@ export default class OwnRoom extends Room<RoomState> {
         }
 
         this.state.players.get(client.sessionId).isReady = packet.datas.isReady;
-        this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+        this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
-            console.log("packet:", packet)
+            console.log("client", client.sessionId, "packet:", packet)
             if (packet.datas.chosenAnswer != null) {
                 this.state.players.get(client.sessionId).chosenAnswer = packet.datas.chosenAnswer;
             }
@@ -153,7 +152,7 @@ export default class OwnRoom extends Room<RoomState> {
                 player.isReady = false;
             })
 
-            this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
             this.state.playersReady = 0;
 
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
@@ -167,8 +166,7 @@ export default class OwnRoom extends Room<RoomState> {
                     this.state.parameters.currentRound++;
                     this.state.currentStep = STEPS.MINI_GAME_ROUND_TITLE
 
-                    let question = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
-                    this.broadcast("serverPacket", { type: "minigame", datas: { type: question.type, content: question } });
+                    this.getCurrentRound();
 
                     this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, round: this.state.parameters.currentRound } });
                     return false;
@@ -182,8 +180,7 @@ export default class OwnRoom extends Room<RoomState> {
                     this.state.parameters.currentRound = 1;
                     this.state.currentStep = STEPS.MINI_GAME_TITLE
 
-                    let question = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
-                    this.broadcast("serverPacket", { type: "minigame", datas: { type: question.type, content: question } });
+                    this.getCurrentRound();
 
                     this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
                     return false;
@@ -192,6 +189,7 @@ export default class OwnRoom extends Room<RoomState> {
 
 
             // Go next step for client and server
+            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
             this.broadcast("serverPacket", { type: "canGoNext", datas: true });
             this.state.currentStep++;
         }
@@ -200,7 +198,9 @@ export default class OwnRoom extends Room<RoomState> {
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
             // quiz , lme, coc
-            const gameTags = ['quiz', 'lme', 'coc'];
+            const gameTags = ['coc', 'quiz', 'lme'];
+
+            //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();
 
             for (let i = 0; i < this.state.parameters.minigameNumber; i++) {
@@ -225,33 +225,35 @@ export default class OwnRoom extends Room<RoomState> {
                 if (!err && res.statusCode == 200) {
                     let datas = JSON.parse(body);
 
-                    let rounds = new ArraySchema<RoundState>();
+                    let rounds = new ArraySchema();
 
                     datas.forEach((data: any) => {
-                        let round;
+                        let round = new RoundState()
+                        round.type = type;
+
                         switch (type) {
                             case 'quiz':
-                                round = new QuizRoundState()
-                                round.type = type;
                                 round.title = data.title;
                                 round.answers = data.answers;
                                 round.description = data.description;
+
+                                data.answers.forEach((answer: string) => {
+                                    if (answer.slice(0, 1) == "$") {
+                                        round.goodAnswer = answer.slice(0, 1) == "$"
+                                    }
+                                })
                                 break;
                             case 'lme':
-                                round = new LmeRoundState()
-                                round.type = type;
                                 round.title = data.title;
                                 round.answers = data.answers;
                                 round.description = data.description;
                                 break;
                             case 'coc':
-                                round = new CocRoundState()
-                                round.type = type;
                                 round.name = data.name;
                                 round.latitude = data.latitude;
                                 round.longitude = data.longitude;
-                                round.gentileM = data.gentileM
-                                round.gentileF = data.gentileF
+                                round.gentileM = data.gentileM;
+                                round.gentileF = data.gentileF;
                                 break;
                         }
                         rounds.push(round);
@@ -259,28 +261,77 @@ export default class OwnRoom extends Room<RoomState> {
 
                     resolve(rounds)
                 } else {
+                    console.log("err", res.statusCode, err)
                     rej(err);
                 }
             })
         })
     }
 
-    // TODO: get user response broadcast message to receive make user send his response
-
+    getCurrentRound() {
+        let round = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
+        this.state.currRoundParams = round;
+        console.log(round.gentileM ? round.gentileM : "gentile null")
+        this.broadcast("serverPacket", { type: "minigame", datas: { type: round.type, content: round } });
+    }
 
     calculateScore() {
-        this.state.players.forEach((player) => {
-            // TODO
-            /* if (player.chosenAnswer == this.state.roundParams.goodAnswer) {
-                player.score += this.state.roundParams.answerPoints;
-            } */
-        })
+        console.log("calculating score...");
+
+        switch (this.state.currRoundParams.type) {
+            case 'quiz':
+                this.state.players.forEach((player) => {
+                    if (player.chosenAnswer.slice(0, 1) == "$") {
+                        player.score += this.state.currRoundParams.answerPoints;
+                    }
+                })
+                break;
+            case 'lme':
+                let choices: Array<Array<Player>> = [];
+                this.state.players.forEach((player) => {
+                    if (choices[player.chosenAnswer] == undefined) {
+                        choices[player.chosenAnswer] = [];
+                    }
+                    choices[player.chosenAnswer].push(player);
+                })
+                if (choices[0] && choices[1] && choices[0].length == choices[1].length) {
+                    this.state.players.forEach((player) => {
+                        player.score += this.state.currRoundParams.answerPoints / 2;
+                    })
+                } else {
+                    let mostPicked: Array<Player> = [];
+                    choices.forEach(choice => {
+                        if (mostPicked.length < choice.length) {
+                            mostPicked = choice;
+                        }
+                    })
+                    mostPicked.forEach(player => {
+                        player.score += this.state.currRoundParams.answerPoints;
+                    })
+                }
+                break;
+            case 'coc':
+                let players = this.sortPlayersByAnswers([...this.state.players]);
+                let index = 0;
+                players.forEach(player => {
+                    let score = this.state.currRoundParams.answerPoints / (index + 1)
+                    player.score += score;
+
+                    if (player.chosenAnswer.gentile == this.state.currRoundParams.gentileM || player.chosenAnswer.gentile == this.state.currRoundParams.gentileF) {
+                        player.score += this.state.currRoundParams.answerPoints / 2;
+                    }
+                    index++;
+                })
+                break;
+        }
+
+
         this.sortPlayers();
     }
 
     sortPlayers() {
         this.state.players = this.sortMapByValue([...this.state.players]);
-        this.broadcast("serverPacket", { type: "playersList", datas: this.state.players });
+        this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
     }
 
     sortMapByValue(map: any) {
@@ -297,5 +348,31 @@ export default class OwnRoom extends Room<RoomState> {
         });
 
         return sortedMap;
+    }
+
+    sortPlayersByAnswers(map: any) {
+        let tupleArray = [];
+        for (let key in map) tupleArray.push([key, map[key]]);
+
+        tupleArray.sort(function (a, b) {
+            return a[1][1].chosenAnswer.dist - b[1][1].chosenAnswer.dist
+        });
+
+        let sortedMap: MapSchema<Player> = new MapSchema<Player>();
+        tupleArray.forEach(function (el) {
+            sortedMap.set(el[1][0], el[1][1]);
+        });
+
+        return sortedMap;
+    }
+
+    mapToArray(map: any) {
+        let newArray: Array<any> = [];
+
+        map.forEach((item: any) => {
+            newArray.push(item);
+        })
+
+        return newArray;
     }
 }
