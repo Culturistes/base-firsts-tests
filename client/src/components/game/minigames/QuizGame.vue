@@ -1,24 +1,33 @@
 <template>
   <div class="minigame mg-quiz">
     <p>{{ $store.state.livegame.minigame.title }}</p>
-    <button
-      :key="i"
-      v-for="(answer, i) in answers"
-      @click="
-        () => {
-          this.selectedAnswer =
-            this.$store.state.livegame.minigame.type == 'quiz'
-              ? this.answers[i]
-              : i.toString();
-        }
-      "
+    <div class="ui-question">
+      <button
+        :key="i"
+        v-for="(answer, i) in answers"
+        @click="
+          () => {
+            this.selectedAnswer =
+              this.$store.state.livegame.minigame.type == 'quiz'
+                ? this.answers[i]
+                : i.toString();
+          }
+        "
+      >
+        {{ answer }}
+        <!-- $filters.hideDollar(answer) -->
+      </button>
+      <div v-if="selectedAnswer != null">
+        <p>{{ $filters.hideDollar(selectedAnswer) }}</p>
+        <button @click="sendAnswer">Valider</button>
+      </div>
+    </div>
+    <div
+      class="ui-result"
+      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      {{ answer }}
-      <!-- $filters.hideDollar(answer) -->
-    </button>
-    <div v-if="selectedAnswer != null">
-      <p>{{ $filters.hideDollar(selectedAnswer) }}</p>
-      <button @click="sendAnswer">Valider</button>
+      <p>Bonne réponse: {{ $store.state.livegame.minigame.goodAnswer }}</p>
+      <button v-on:click="$store.dispatch('readyForNext')">Next</button>
     </div>
   </div>
 </template>
@@ -27,12 +36,15 @@
 import { Options, Vue } from "vue-class-component";
 import { Store } from "vuex";
 import StoreState from "@/interfaces/StoreState";
+import { STEPS } from "../../../views/Game.vue";
 
 @Options({})
 export default class QuizGame extends Vue {
   // Type : 'quiz' for the Quiz || 'lme' for La Majorité L'emporte
 
   $store!: Store<StoreState>;
+
+  steps = STEPS;
 
   answers: any = [];
   selectedAnswer = null;
