@@ -1,7 +1,24 @@
 <template>
-  <div class="game">
+  <div
+    class="game background"
+    :class="{
+      'background-color1':
+        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE,
+      'background-color2':
+        $store.state.livegame.minigame &&
+        $store.state.livegame.minigame.type === 'coc',
+      'background-color3':
+        $store.state.livegame.minigame &&
+        $store.state.livegame.minigame.type === 'lme',
+      'background-color4':
+        $store.state.livegame.currentStep === steps.GAME_PARAMETERS,
+      'background-color5':
+        $store.state.livegame.minigame &&
+        $store.state.livegame.minigame.type === 'quiz',
+    }"
+  >
     <!-- Début de partie -->
-    <div class="game_infos">
+    <!-- <div class="game_infos">
       <p>Game page</p>
       <p>
         Step: {{ steps[$store.state.livegame.currentStep] }} | Round:
@@ -53,7 +70,7 @@
             }
           "
       /></label>
-    </div>
+    </div> -->
 
     <div class="steps">
       <!-- Choix pseudo + Rejoindre ou créer une partie -->
@@ -177,7 +194,8 @@ export default class Game extends Vue {
     }
 
     try {
-      let client = await new Client("ws://localhost:2567");
+      console.log(process.env.VUE_APP_SERVER_URL);
+      let client = await new Client(process.env.VUE_APP_SERVER_URL);
       this.$store.commit("updateClient", client);
       store.watch(
         () => this.$store.state.room,
@@ -298,9 +316,6 @@ export default class Game extends Vue {
 
 <style scoped lang="scss">
 .game {
-  width: 100%;
-  height: 100%;
-
   .playersList {
     text-align: left;
     position: absolute;
@@ -346,8 +361,6 @@ export default class Game extends Vue {
   }
 
   .step {
-    border-top: 1px solid black;
-    padding-top: 20px;
     &.active {
       color: green;
     }

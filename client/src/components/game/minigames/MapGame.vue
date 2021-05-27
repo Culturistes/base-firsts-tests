@@ -1,6 +1,6 @@
 <template>
   <div class="minigame mg-map">
-    <p>{{ $store.state.livegame.minigame.title }}</p>
+    <p>Où se trouve la ville de {{ $store.state.livegame.minigame.title }} ?</p>
     <div id="map"></div>
     <div
       class="ui-question"
@@ -11,16 +11,11 @@
           Bonus : Comment s'appellent les habitants de
           {{ $store.state.livegame.minigame.title }} ?
         </p>
-        <input
-          type="text"
-          @change="
-            (e) => {
-              gentile = e.target.value;
-            }
-          "
-        />
+        <TextInput color="black" v-model="gentile"
+          >Entre le nom des habitans</TextInput
+        >
       </label>
-      <button @click="validateAnswer">Valider</button>
+      <ArrowBtn @click="validateAnswer">Valider</ArrowBtn>
     </div>
     <div
       class="ui-result"
@@ -30,7 +25,7 @@
         Habitants: {{ $store.state.livegame.minigame.gentileM }} et
         {{ $store.state.livegame.minigame.gentileF }}
       </p>
-      <button v-on:click="$store.dispatch('readyForNext')">Next</button>
+      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Next</ArrowBtn>
     </div>
   </div>
 </template>

@@ -1,7 +1,11 @@
 <template>
-  <div class="minigameTitle step">
-    <p>Mini game title : {{ gameTitle }}</p>
-    <button v-on:click="$store.dispatch('readyForNext')">Start game</button>
+  <div class="minigameTitle step centered">
+    <MiniGameTitle>
+      {{ gameTitle }}
+    </MiniGameTitle>
+    <LineBtn v-on:click="$store.dispatch('readyForNext')"
+      >A vos marque, prêt, partez !</LineBtn
+    >
   </div>
 </template>
 

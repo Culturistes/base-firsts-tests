@@ -12,15 +12,20 @@
         {{ answer }}
       </li>
     </ul> -->
+    <div class="info-player">
+      <PlayersList />
+    </div>
 
-    <QuizGame
-      v-if="
-        $store.state.livegame.minigame.type == 'quiz' ||
-        $store.state.livegame.minigame.type == 'lme'
-      "
-    />
+    <div class="round">
+      <QuizGame
+        v-if="
+          $store.state.livegame.minigame.type == 'quiz' ||
+          $store.state.livegame.minigame.type == 'lme'
+        "
+      />
 
-    <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
+      <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
+    </div>
   </div>
 </template>
 
@@ -69,6 +74,14 @@ export default class MiniGameRound extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .minigameRound {
+  display: flex;
+  .info-player {
+    width: 30%;
+    margin-right: 20px;
+  }
+  .round {
+    width: 70%;
+  }
   .answer {
     &.active {
       color: green;

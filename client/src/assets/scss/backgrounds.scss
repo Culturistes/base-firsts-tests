@@ -1,0 +1,29 @@
+.background {
+    overflow: auto;
+
+    width: 100%;
+    min-height: 100vh;
+
+    will-change: background-color;
+    transition: background-color .3s;
+
+    &-color1 {
+        background-color: $color1;
+    }
+
+    &-color2 {
+        background-color: $color2;
+    }
+
+    &-color3 {
+        background-color: $color3;
+    }
+
+    &-color4 {
+        background-color: $color4;
+    }
+
+    &-color5 {
+        background-color: $color5;
+    }
+}
