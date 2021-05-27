@@ -1,7 +1,7 @@
 <template>
   <div class="minigameRoundResult step">
-    <p>Mini game round result</p>
-    <button v-on:click="$store.dispatch('readyForNext')">Next</button>
+    <StepTitle>Mini game round result</StepTitle>
+    <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Next</ArrowBtn>
   </div>
 </template>
 

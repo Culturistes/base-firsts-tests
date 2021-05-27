@@ -1,25 +1,55 @@
 <template>
   <div class="minigame mg-quiz">
-    <p>{{ $store.state.livegame.minigame.title }}</p>
+    <QuizBlock>{{ $store.state.livegame.minigame.title }}</QuizBlock>
     <div class="ui-question">
-      <button
+      <QuizBlock
         :key="i"
         v-for="(answer, i) in answers"
         @click="
           () => {
-            this.selectedAnswer =
-              this.$store.state.livegame.minigame.type == 'quiz'
-                ? this.answers[i]
-                : i.toString();
+            this.log([
+              this.$store.state.livegame.minigame.goodAnswer,
+              answer,
+              this.selectedAnswer,
+            ]);
+            if (
+              this.$store.state.livegame.currentStep !==
+              steps.MINI_GAME_ROUND_RESULT
+            ) {
+              this.selectedAnswer =
+                this.$store.state.livegame.minigame.type == 'quiz'
+                  ? this.answers[i]
+                  : i.toString();
+            }
           }
+        "
+        :button="true"
+        :selected="
+          (selectedAnswer === answer || selectedAnswer === i.toString()) &&
+          $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
+        "
+        :right="
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
+          answer === $store.state.livegame.minigame.goodAnswer
+        "
+        :wrong="
+          (selectedAnswer === answer || selectedAnswer === i.toString()) &&
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
+          selectedAnswer !== $store.state.livegame.minigame.goodAnswer
         "
       >
         {{ answer }}
         <!-- $filters.hideDollar(answer) -->
-      </button>
-      <div v-if="selectedAnswer != null">
-        <p>{{ $filters.hideDollar(selectedAnswer) }}</p>
-        <button @click="sendAnswer">Valider</button>
+      </QuizBlock>
+
+      <div
+        class="ui-valid"
+        v-if="
+          selectedAnswer != null &&
+          $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
+        "
+      >
+        <ArrowBtn @click="sendAnswer">Valider</ArrowBtn>
       </div>
     </div>
     <div
@@ -27,7 +57,7 @@
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
       <p>Bonne réponse: {{ $store.state.livegame.minigame.goodAnswer }}</p>
-      <button v-on:click="$store.dispatch('readyForNext')">Next</button>
+      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Next</ArrowBtn>
     </div>
   </div>
 </template>
@@ -48,6 +78,12 @@ export default class QuizGame extends Vue {
 
   answers: any = [];
   selectedAnswer = null;
+
+  log(array: Array<any>) {
+    array.forEach((el) => {
+      console.log(el);
+    });
+  }
 
   shuffle(array: Array<string>) {
     var currentIndex = array.length,
@@ -90,3 +126,15 @@ export default class QuizGame extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.ui-result,
+.ui-valid {
+  margin: auto;
+}
+.ui-question {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+</style>

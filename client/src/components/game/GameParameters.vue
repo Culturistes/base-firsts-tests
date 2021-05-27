@@ -1,21 +1,38 @@
 <template>
   <div class="gameParameters step">
-    <p>GameParameters</p>
-    <div
-      class="parameters"
-      v-if="!!$store.state.player && $store.state.player.isMDR"
-    >
-      <label>
-        Nb Mini-jeu
-        <input value="3" type="number" ref="inputNbMiniGame" onChange />
-      </label>
-      <label>
-        Nb round par mini jeu (test)
-        <input value="1" type="number" ref="inputNbRound" />
-      </label>
-    </div>
+    <div class="gameParameters-content">
+      <div class="parameters">
+        <StepTitle color="black">ROOM DE {{ $store.state.room.id }}</StepTitle>
+        <label class="inline-input">
+          <span>Nb Mini-jeu</span>
+          <TextInput
+            color="black"
+            value="3"
+            type="number"
+            v-model="inputNbMiniGame"
+            :disabled="$store.state.player && !$store.state.player.isMDR"
+            >Entrez un nombre</TextInput
+          >
+        </label>
+        <label class="inline-input">
+          <span>Nb round par mini jeu (test)</span>
+          <TextInput
+            color="black"
+            value="1"
+            type="number"
+            v-model="inputNbRound"
+            :disabled="$store.state.player && !$store.state.player.isMDR"
+            >Entrez un nombre</TextInput
+          >
+        </label>
+        <ArrowBtn v-on:click="playerReady">Prêt ?</ArrowBtn>
+      </div>
 
-    <button v-on:click="playerReady">Are you ready ?</button>
+      <div class="players">
+        <p class="waiting">En attente des joueurs...</p>
+        <PlayersList />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,13 +57,15 @@ export default class GameParameters extends Vue {
   };
 
   playerIsReady = false;
+  inputNbMiniGame = "3";
+  inputNbRound = "1";
 
   playerReady(): void {
     this.playerIsReady = !this.playerIsReady;
     if (this.$store.state.player.isMDR) {
       let params = {
-        minigameNumber: parseInt(this.$refs.inputNbMiniGame.value),
-        roundNumber: parseInt(this.$refs.inputNbRound.value),
+        minigameNumber: parseInt(this.inputNbMiniGame),
+        roundNumber: parseInt(this.inputNbRound),
       };
       this.$store.state.room?.send("clientPacket", {
         type: "playerReadyToStart",
@@ -66,4 +85,34 @@ export default class GameParameters extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style lang="scss">
+.gameParameters-content {
+  display: flex;
+
+  .parameters {
+    width: 60%;
+  }
+
+  .players {
+    width: 40%;
+
+    .waiting {
+      margin-top: 0;
+      text-align: left;
+    }
+  }
+
+  .inline-input {
+    display: flex;
+
+    span {
+      width: 70%;
+    }
+  }
+
+  .playersList {
+    list-style: none;
+    padding: 0;
+  }
+}
+</style>

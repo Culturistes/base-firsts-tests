@@ -1,0 +1,46 @@
+* {
+     box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+}
+
+html {
+    // Set 1rem to 10px 
+	font-size: 62.5%;
+}
+
+body {
+    // base size to 24px
+    font-family: $titleFont;
+    font-weight: bold;
+    font-size: $fontMsize;
+}
+
+#app {
+    text-align: center;
+  }
+
+.steps {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: 100%;
+    height: 100vh;
+    
+    padding: 80px;
+    .step {
+        width: 100%;
+        height: 100%;
+
+        &.centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    }
+}

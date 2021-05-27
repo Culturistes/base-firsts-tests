@@ -1,29 +1,41 @@
 <template>
   <div class="joinOrCreate step">
+    <StepTitle>Séléctionne ton monchu</StepTitle>
+    <Stamp people="rando"></Stamp>
     <div class="inputContainer">
-      <label htmlFor="username">
+      <TextInput v-model="username"> Entre ton pseudo </TextInput>
+      <TextInput
+        v-model="roomID"
+        :type="$store.state.settings.streamerMode ? 'password' : 'text'"
+      >
+        Entre le code
+      </TextInput>
+      <!-- <label htmlFor="username">
         <span>Pseudo</span>
         <input
           id="username"
-          class="playername"
+          class="playername input input-text"
           ref="inputPlayername"
           placeholder="Username"
           type="text"
           :value="username"
         />
-      </label>
-      <label htmlFor="inputRoomId">
+      </label> -->
+      <!-- <label htmlFor="inputRoomId">
         <span>Room ID</span>
         <input
           id="inputRoomId"
+          class="input input-text"
           ref="inputRoomID"
           :type="$store.state.settings.streamerMode ? 'password' : 'text'"
         />
-      </label>
+      </label> -->
     </div>
 
-    <button class="join-btn" v-on:click="joinRoom">Join</button>
-    <button class="create-btn" v-on:click="createRoom">Create</button>
+    <div class="bottom">
+      <ArrowBtn v-on:click="joinRoom"> Join </ArrowBtn>
+      <ArrowBtn v-on:click="createRoom"> Create </ArrowBtn>
+    </div>
     <!-- <div>
       <p v-for="notif in notifications" :key="notif">{{ notif }}</p>
     </div>
@@ -46,6 +58,7 @@ export default class JoinOrCreate extends Vue {
   };
   $store!: Store<StoreState>;
   username = "";
+  roomID = "";
 
   created(): void {
     let item = localStorage.getItem("username");
@@ -56,8 +69,9 @@ export default class JoinOrCreate extends Vue {
 
   async createRoom(): Promise<void> {
     try {
+      console.log(this.username);
       let room = await this.$store.state.client?.create("chat", {
-        username: this.$refs.inputPlayername.value,
+        username: this.username,
         creator: true,
       });
       this.$store.commit("updateRoom", room);
@@ -81,7 +95,7 @@ export default class JoinOrCreate extends Vue {
 
         this.connect();
       } else {
-        if (this.$refs.inputRoomID.value != item.roomId) {
+        if (this.roomID != item.roomId) {
           this.connect();
         } else {
           this.reconnect(item);
@@ -94,10 +108,9 @@ export default class JoinOrCreate extends Vue {
 
   async connect(): Promise<void> {
     try {
-      let room = await this.$store.state.client?.joinById(
-        this.$refs.inputRoomID.value,
-        { username: this.$refs.inputPlayername.value }
-      );
+      let room = await this.$store.state.client?.joinById(this.roomID, {
+        username: this.username,
+      });
       this.$store.commit("updateRoom", room);
       this.$store.dispatch("goNextStep");
     } catch (e) {
@@ -109,7 +122,7 @@ export default class JoinOrCreate extends Vue {
   async reconnect(item: any): Promise<void> {
     try {
       const room = await this.$store.state.client?.reconnect(
-        this.$refs.inputRoomID.value,
+        this.roomID,
         item.data.id
       );
       this.$store.commit("updateRoom", room);
@@ -123,8 +136,6 @@ export default class JoinOrCreate extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .joinOrCreate {
-  margin: 10px;
-
   .inputContainer {
     display: flex;
     justify-content: center;
