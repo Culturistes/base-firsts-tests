@@ -30,6 +30,7 @@ export default interface StoreState {
             gentileM: string,
             gentileF: string,
             chosenAnswer: string,
+            goodAnswer: any,
             description: string,
         },
     }

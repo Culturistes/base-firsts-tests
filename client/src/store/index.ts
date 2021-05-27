@@ -25,6 +25,7 @@ export default createStore({
         gentileF: "",
         chosenAnswer: "",
         description: "",
+        goodAnswer: {}
       },
     },
     settings: {
@@ -52,6 +53,12 @@ export default createStore({
       data: { index: string; value: any }
     ): void {
       state.livegame[data.index] = data.value;
+    },
+    updateMinigame(
+      state: StoreState,
+      data: { index: string; value: any }
+    ): void {
+      state.livegame.minigame[data.index] = data.value;
     },
     updateSettings(
       state: StoreState,

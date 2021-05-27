@@ -297,6 +297,12 @@ export default class Game extends Vue {
         case "loading":
           this.isLoading = true;
           break;
+        case "goodAnswer":
+          this.$store.commit("updateMinigame", {
+            index: "goodAnswer",
+            value: datas,
+          });
+          break;
       }
     });
   }
