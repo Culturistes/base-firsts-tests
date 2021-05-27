@@ -278,6 +278,8 @@ export default class OwnRoom extends Room<RoomState> {
     calculateScore() {
         console.log("calculating score...");
 
+        let goodAnswer = {};
+
         switch (this.state.currRoundParams.type) {
             case 'quiz':
                 this.state.players.forEach((player) => {
@@ -285,6 +287,9 @@ export default class OwnRoom extends Room<RoomState> {
                         player.score += this.state.currRoundParams.answerPoints;
                     }
                 })
+                goodAnswer = {
+                    content: [this.state.currRoundParams.goodAnswer]
+                };
                 break;
             case 'lme':
                 let choices: Array<Array<Player>> = [];
@@ -298,6 +303,9 @@ export default class OwnRoom extends Room<RoomState> {
                     this.state.players.forEach((player) => {
                         player.score += this.state.currRoundParams.answerPoints / 2;
                     })
+                    goodAnswer = {
+                        content: [this.state.currRoundParams.answers]
+                    };
                 } else {
                     let mostPicked: Array<Player> = [];
                     choices.forEach(choice => {
@@ -308,6 +316,9 @@ export default class OwnRoom extends Room<RoomState> {
                     mostPicked.forEach(player => {
                         player.score += this.state.currRoundParams.answerPoints;
                     })
+                    goodAnswer = {
+                        content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer]]
+                    };
                 }
                 break;
             case 'coc':
@@ -322,10 +333,15 @@ export default class OwnRoom extends Room<RoomState> {
                     }
                     index++;
                 })
+                goodAnswer = {
+                    gentileM: this.state.currRoundParams.gentileM,
+                    gentileF: this.state.currRoundParams.gentileF,
+                    latLng: [this.state.currRoundParams.latitude, this.state.currRoundParams.longitude]
+                };
                 break;
         }
 
-
+        this.broadcast("serverPacket", { type: "goodAnswer", datas: goodAnswer });
         this.sortPlayers();
     }
 
