@@ -25,7 +25,7 @@ export default createStore({
         gentileF: "",
         chosenAnswer: "",
         description: "",
-        goodAnswer: {}
+        goodAnswer: {},
       },
     },
     settings: {

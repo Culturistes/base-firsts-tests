@@ -248,6 +248,7 @@ class OwnRoom extends colyseus_1.Room {
     }
     calculateScore() {
         console.log("calculating score...");
+        let goodAnswer = {};
         switch (this.state.currRoundParams.type) {
             case 'quiz':
                 this.state.players.forEach((player) => {
@@ -255,6 +256,9 @@ class OwnRoom extends colyseus_1.Room {
                         player.score += this.state.currRoundParams.answerPoints;
                     }
                 });
+                goodAnswer = {
+                    content: [this.state.currRoundParams.goodAnswer]
+                };
                 break;
             case 'lme':
                 let choices = [];
@@ -268,6 +272,9 @@ class OwnRoom extends colyseus_1.Room {
                     this.state.players.forEach((player) => {
                         player.score += this.state.currRoundParams.answerPoints / 2;
                     });
+                    goodAnswer = {
+                        content: [this.state.currRoundParams.answers]
+                    };
                 }
                 else {
                     let mostPicked = [];
@@ -279,6 +286,9 @@ class OwnRoom extends colyseus_1.Room {
                     mostPicked.forEach(player => {
                         player.score += this.state.currRoundParams.answerPoints;
                     });
+                    goodAnswer = {
+                        content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer]]
+                    };
                 }
                 break;
             case 'coc':
@@ -292,8 +302,14 @@ class OwnRoom extends colyseus_1.Room {
                     }
                     index++;
                 });
+                goodAnswer = {
+                    gentileM: this.state.currRoundParams.gentileM,
+                    gentileF: this.state.currRoundParams.gentileF,
+                    latLng: [this.state.currRoundParams.latitude, this.state.currRoundParams.longitude]
+                };
                 break;
         }
+        this.broadcast("serverPacket", { type: "goodAnswer", datas: goodAnswer });
         this.sortPlayers();
     }
     sortPlayers() {

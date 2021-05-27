@@ -198,7 +198,7 @@ export default class OwnRoom extends Room<RoomState> {
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
             // quiz , lme, coc
-            const gameTags = ['coc', 'quiz', 'lme'];
+            const gameTags = ['quiz', 'coc', 'lme'];
 
             //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();
@@ -239,7 +239,8 @@ export default class OwnRoom extends Room<RoomState> {
 
                                 data.answers.forEach((answer: string) => {
                                     if (answer.slice(0, 1) == "$") {
-                                        round.goodAnswer = answer.slice(0, 1) == "$"
+                                        console.log(answer)
+                                        round.goodAnswer = answer
                                     }
                                 })
                                 break;
