@@ -30,12 +30,12 @@
         "
         :right="
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          answer === $store.state.livegame.minigame.goodAnswer
+          $store.state.livegame.minigame.goodAnswer.content.includes(answer)
         "
         :wrong="
           (selectedAnswer === answer || selectedAnswer === i.toString()) &&
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          selectedAnswer !== $store.state.livegame.minigame.goodAnswer
+          !$store.state.livegame.minigame.goodAnswer.content.includes(answer)
         "
       >
         {{ answer }}
@@ -56,7 +56,6 @@
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      <p>Bonne réponse: {{ $store.state.livegame.minigame.goodAnswer }}</p>
       <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Next</ArrowBtn>
     </div>
   </div>
