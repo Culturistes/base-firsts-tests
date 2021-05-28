@@ -6,7 +6,6 @@ import request from 'request';
 export enum STEPS {
     GAME_PARAMETERS,
     MINI_GAME_TITLE,
-    MINI_GAME_ROUND_TITLE,
     MINI_GAME_ROUND,
     MINI_GAME_ROUND_RESULT,
     MINI_GAME_RESULT,
@@ -198,7 +197,7 @@ export default class OwnRoom extends Room<RoomState> {
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
             // quiz , lme, coc
-            const gameTags = ['quiz', 'coc', 'lme'];
+            const gameTags = ['quiz', 'lme', 'coc'];
 
             //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();
@@ -320,6 +319,7 @@ export default class OwnRoom extends Room<RoomState> {
                     goodAnswer = {
                         content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer]]
                     };
+                    console.log(goodAnswer)
                 }
                 break;
             case 'coc':

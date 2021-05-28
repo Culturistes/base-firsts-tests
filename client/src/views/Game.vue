@@ -91,9 +91,9 @@
       />
 
       <!-- Ecran titre de round -->
-      <MiniGameRoundTitle
+      <!-- <MiniGameRoundTitle
         v-if="steps.MINI_GAME_ROUND_TITLE == $store.state.livegame.currentStep"
-      />
+      /> -->
 
       <!-- Mini Game Round -->
       <MiniGameRound
@@ -144,7 +144,6 @@ export enum STEPS {
   JOIN_OR_CREATE,
   GAME_PARAMETERS,
   MINI_GAME_TITLE,
-  MINI_GAME_ROUND_TITLE,
   MINI_GAME_ROUND,
   MINI_GAME_ROUND_RESULT,
   MINI_GAME_RESULT,
