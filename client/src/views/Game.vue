@@ -139,6 +139,7 @@ import MiniGameRound from "@/components/game/MiniGameRound.vue";
 import MiniGameRoundResult from "@/components/game/MiniGameRoundResult.vue";
 import MiniGameResult from "@/components/game/MiniGameResult.vue";
 import GameResult from "@/components/game/GameResult.vue";
+import axios from "axios";
 
 export enum STEPS {
   JOIN_OR_CREATE,
@@ -193,8 +194,11 @@ export default class Game extends Vue {
     }
 
     try {
-      console.log(process.env.VUE_APP_SERVER_URL);
-      let client = await new Client(process.env.VUE_APP_SERVER_URL);
+      console.log(`Connecting to: ws://${process.env.VUE_APP_SERVER_URL}`);
+
+      await axios.get(`http://${process.env.VUE_APP_SERVER_URL}/matchmake`);
+
+      let client = await new Client(`ws://${process.env.VUE_APP_SERVER_URL}`);
       this.$store.commit("updateClient", client);
       store.watch(
         () => this.$store.state.room,
@@ -238,6 +242,7 @@ export default class Game extends Vue {
           // TODO: work on the 2min reconnect without localStorage
           localStorage.setItem(`player_params`, JSON.stringify(newDatas));
           localStorage.setItem(`username`, datas.username);
+          console.log(datas);
           break;
         case "playersList":
           this.$store.commit("updatePlayers", datas);
@@ -251,15 +256,10 @@ export default class Game extends Vue {
                 datas.type == "coc" ? datas.content.name : datas.content.title,
               answers: datas.content.answers,
               description: datas.content.description,
-              latLong:
-                datas.content.latitude && datas.content.longitude
-                  ? [datas.content.latitude, datas.content.longitude]
-                  : [],
-              gentileM: datas.content.gentileM ? datas.content.gentileM : "",
-              gentileF: datas.content.gentileF ? datas.content.gentileF : "",
-              goodAnswers: datas.content.goodAnswer,
+              goodAnswer: datas.content.goodAnswer,
             },
           });
+          console.log(this.$store.state.livegame.minigame);
           break;
         case "chosenParams":
           this.$store.commit("updateLiveGame", {
@@ -297,7 +297,6 @@ export default class Game extends Vue {
           this.isLoading = true;
           break;
         case "goodAnswer":
-          console.log("goodAnswer", datas);
           this.$store.commit("updateMinigame", {
             index: "goodAnswer",
             value: datas,

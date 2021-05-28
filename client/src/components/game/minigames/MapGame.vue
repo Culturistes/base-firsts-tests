@@ -25,10 +25,10 @@
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
       <p>
-        Habitants: {{ $store.state.livegame.minigame.gentileM }} et
-        {{ $store.state.livegame.minigame.gentileF }}
+        Habitants: {{ $store.state.livegame.minigame.goodAnswer.gentileM }} et
+        {{ $store.state.livegame.minigame.goodAnswer.gentileF }}
       </p>
-      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Suivant</ArrowBtn>
+      <ArrowBtn v-on:click="goNext">Suivant</ArrowBtn>
     </div>
   </div>
 </template>
@@ -44,6 +44,7 @@ import { STEPS } from "@/views/Game.vue";
 
 export default class MapGame extends Vue {
   myMap!: any;
+  markers: Array<any> = [];
   marker!: any;
   gentile = "";
   myIcon = L.icon({
@@ -57,7 +58,10 @@ export default class MapGame extends Vue {
 
   $store!: Store<StoreState>;
 
+  hasBeenReset = false;
+
   initializeMap(): void {
+    console.log("map initialized");
     this.myMap = L.map("map").setView([46.23, 2.2], 6);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -65,12 +69,8 @@ export default class MapGame extends Vue {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.myMap);
 
-    console.log(
-      this.$store.state.livegame.currentStep,
-      this.steps.MINI_GAME_ROUND_RESULT
-    );
-
     this.marker = L.marker([0, 0], { icon: this.myIcon }).addTo(this.myMap);
+    this.markers.push(this.marker);
 
     this.myMap.on("click", (ev: any) => {
       let lat = ev.latlng.lat;
@@ -81,21 +81,20 @@ export default class MapGame extends Vue {
   }
 
   validateAnswer(): void {
+    console.log(this.$store.state.livegame.minigame);
     // distance in meter
     let distance = this.myMap.distance(
       this.marker.getLatLng(),
-      this.$store.state.livegame.minigame.latLong
+      this.$store.state.livegame.minigame.goodAnswer.latLng
     );
 
     // distance in km
     distance /= 1000;
 
-    console.log("Distance", distance);
-
     let datas = {
       dist: distance,
       gentile: this.gentile,
-      latLong: this.marker.getLatLng(),
+      latLng: this.marker.getLatLng(),
     };
 
     this.$store.commit("updateLiveGame", {
@@ -112,28 +111,52 @@ export default class MapGame extends Vue {
   }
 
   mounted(): void {
+    console.log("mounted");
     this.initializeMap();
   }
 
   updated(): void {
-    console.log("updated");
-
     if (
       this.$store.state.livegame.currentStep ==
       this.steps.MINI_GAME_ROUND_RESULT
     ) {
-      L.marker(this.$store.state.livegame.minigame.latLong, {
+      L.marker(this.$store.state.livegame.minigame.goodAnswer.latLng, {
         icon: this.myIcon,
       }).addTo(this.myMap);
 
-      // TODO: make this work
-      /* this.$store.state.players.forEach((player: any) => {
-        L.marker(player.chosenAnswer.latLong, {
+      this.$store.state.players.forEach((player: any) => {
+        let newMarker = L.marker(player.chosenAnswer.latLng, {
           icon: this.myIcon,
           title: player.username,
         }).addTo(this.myMap);
-      }); */
+        this.markers.push(newMarker);
+      });
+    } else if (
+      this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND &&
+      !this.hasBeenReset
+    ) {
+      this.myMap.eachLayer((layer: any) => {
+        if (layer.options.title != undefined) {
+          console.log(layer.options.title, "removed");
+          layer.remove();
+        }
+      });
+
+      this.myMap.on("click", (ev: any) => {
+        let lat = ev.latlng.lat;
+        let lng = ev.latlng.lng;
+
+        this.marker.setLatLng([lat, lng]).addTo(this.myMap);
+      });
+
+      this.hasBeenReset = true;
     }
+  }
+
+  goNext(): void {
+    this.$store.dispatch("readyForNext");
+    this.gentile = "";
+    this.hasBeenReset = false;
   }
 }
 </script>

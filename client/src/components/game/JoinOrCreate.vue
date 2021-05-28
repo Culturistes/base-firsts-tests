@@ -77,7 +77,6 @@ export default class JoinOrCreate extends Vue {
 
   async createRoom(): Promise<void> {
     try {
-      console.log(this.username);
       let room = await this.$store.state.client?.create("chat", {
         username: this.username,
         creator: true,
@@ -123,7 +122,6 @@ export default class JoinOrCreate extends Vue {
       this.$store.dispatch("goNextStep");
     } catch (e) {
       console.error("Join error");
-      console.log();
     }
   }
 

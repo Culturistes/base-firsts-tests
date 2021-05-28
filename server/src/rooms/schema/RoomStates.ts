@@ -56,19 +56,12 @@ export class RoundState extends Schema {
   @type("string")
   name?: string;
 
-  @type("number")
-  latitude?: number;
-
-  @type("number")
-  longitude?: number;
-
-  @type("string")
-  gentileM?: string;
-
-  @type("string")
-  gentileF?: string;
-
-  goodAnswer: any;
+  goodAnswer: {
+    content: Array<string> | null,
+    gentileM?: string,
+    gentileF?: string,
+    latLng?: Array<string>
+  };
 }
 
 export class MiniGameState extends Schema {
@@ -92,10 +85,12 @@ export class RoomState extends Schema {
   @type({ map: Player })
   players = new MapSchema<Player>();
 
+  @type({ map: Player })
+  playersAnswer = new MapSchema<Player>()
+
   @type('number')
   playersReady: number = 0;
 
-  // Array => minigame: array => round
   @type([MiniGameState])
   minigames = new ArraySchema<MiniGameState>();
 

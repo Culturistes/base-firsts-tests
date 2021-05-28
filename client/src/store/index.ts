@@ -20,12 +20,14 @@ export default createStore({
         name: "",
         title: "",
         answers: [],
-        latLong: [],
-        gentileM: "",
-        gentileF: "",
         chosenAnswer: "",
         description: "",
-        goodAnswer: {},
+        goodAnswer: {
+          content: [],
+          gentileM: "",
+          gentileF: "",
+          latLng: [],
+        },
       },
     },
     settings: {
@@ -44,6 +46,7 @@ export default createStore({
     },
     updatePlayers(state: StoreState, value: Array<any>): void {
       state.players = value;
+      console.log("players set:", value);
     },
     setPlayerIsReady(state: StoreState, value: boolean): void {
       state.player.isReady = value;

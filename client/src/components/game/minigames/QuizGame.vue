@@ -55,7 +55,7 @@
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Suivant</ArrowBtn>
+      <ArrowBtn v-on:click="goNext">Suivant</ArrowBtn>
     </div>
   </div>
 </template>
@@ -77,9 +77,11 @@ export default class QuizGame extends Vue {
   answers: any = [];
   selectedAnswer = null;
 
+  answersUpdated = false;
+
   log(array: Array<any>) {
     array.forEach((el) => {
-      console.log(el);
+      //console.log(el);
     });
   }
 
@@ -121,6 +123,32 @@ export default class QuizGame extends Vue {
     } else {
       this.answers = this.$store.state.livegame.minigame.answers;
     }
+  }
+
+  updated(): void {
+    if (
+      !this.answersUpdated &&
+      this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND
+    ) {
+      console.log(
+        "update answers",
+        this.$store.state.livegame.minigame.answers
+      );
+      if (this.$store.state.livegame.minigame.type == "quiz") {
+        this.answers = this.shuffle(
+          this.$store.state.livegame.minigame.answers
+        );
+      } else {
+        this.answers = this.$store.state.livegame.minigame.answers;
+      }
+      this.answersUpdated = true;
+    }
+  }
+
+  goNext(): void {
+    this.$store.dispatch("readyForNext");
+    this.selectedAnswer = null;
+    this.answersUpdated = false;
   }
 }
 </script>

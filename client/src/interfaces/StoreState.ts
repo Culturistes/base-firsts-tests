@@ -26,11 +26,13 @@ export default interface StoreState {
             name: string,
             title: string,
             answers: Array<string>,
-            latLong: Array<string>,
-            gentileM: string,
-            gentileF: string,
             chosenAnswer: string,
-            goodAnswer: any,
+            goodAnswer: {
+                content: Array<string>,
+                latLng?: Array<string>,
+                gentileM?: string,
+                gentileF?: string
+            },
             description: string,
         },
     }

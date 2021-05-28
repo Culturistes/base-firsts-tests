@@ -46,10 +46,6 @@ export default class MiniGameRound extends Vue {
   selectedElmt!: HTMLElement;
   selectedIndex = null;
 
-  created() {
-    console.log(this.$store.state.livegame.minigame);
-  }
-
   chooseAnswer(e: any, index: number): void {
     e.target.classList.add("active");
 
