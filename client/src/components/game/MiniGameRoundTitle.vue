@@ -8,9 +8,7 @@
       >Mini game round title
       {{ $store.state.livegame.minigame.title }}</StepTitle
     >
-    <ArrowBtn v-on:click="$store.dispatch('readyForNext')"
-      >Start round</ArrowBtn
-    >
+    <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Commencer</ArrowBtn>
   </div>
 </template>
 

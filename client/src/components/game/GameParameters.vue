@@ -3,8 +3,11 @@
     <div class="gameParameters-content">
       <div class="parameters">
         <StepTitle color="black">ROOM DE {{ $store.state.room.id }}</StepTitle>
-        <label class="inline-input">
-          <span>Nb Mini-jeu</span>
+        <label
+          class="inline-input"
+          v-if="$store.state.player && $store.state.player.isMDR"
+        >
+          <span>Nombre de mini-jeu</span>
           <TextInput
             color="black"
             value="3"
@@ -14,8 +17,11 @@
             >Entrez un nombre</TextInput
           >
         </label>
-        <label class="inline-input">
-          <span>Nb round par mini jeu (test)</span>
+        <label
+          class="inline-input"
+          v-if="$store.state.player && $store.state.player.isMDR"
+        >
+          <span>Nombre de questions par mini-jeu</span>
           <TextInput
             color="black"
             value="1"

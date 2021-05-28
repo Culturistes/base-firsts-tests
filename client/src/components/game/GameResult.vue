@@ -1,6 +1,7 @@
 <template>
   <div class="gameResult step">
     <p>Game Result</p>
+    <PlayersList />
   </div>
 </template>
 

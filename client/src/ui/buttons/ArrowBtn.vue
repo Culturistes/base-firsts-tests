@@ -1,8 +1,26 @@
 <template>
-  <button class="btn-arrow btn-arrow-m">
+  <button
+    class="btn-arrow btn-arrow-m"
+    :class="{ disabled: disabled }"
+    :disabled="disabled"
+  >
     <span><slot></slot></span>
   </button>
 </template>
+
+<script lang="ts">
+import { Options, Vue } from "vue-class-component";
+
+@Options({
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+})
+export default class ArrowBtn extends Vue {}
+</script>
 
 <style lang="scss" scoped>
 .btn-arrow {
@@ -38,6 +56,12 @@
     height: 70px;
 
     background-image: url("/img/buttons/button-l.png");
+  }
+
+  &.disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
   }
 }
 </style>

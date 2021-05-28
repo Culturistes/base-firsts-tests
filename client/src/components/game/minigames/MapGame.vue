@@ -1,8 +1,11 @@
 <template>
   <div class="minigame mg-map">
-    <p>Où se trouve la ville de {{ $store.state.livegame.minigame.title }} ?</p>
+    <QuizBlock
+      >Où se trouve la ville de
+      {{ $store.state.livegame.minigame.title }} ?</QuizBlock
+    >
     <div id="map"></div>
-    <div
+    <QuizBlock
       class="ui-question"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND"
     >
@@ -16,7 +19,7 @@
         >
       </label>
       <ArrowBtn @click="validateAnswer">Valider</ArrowBtn>
-    </div>
+    </QuizBlock>
     <div
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
@@ -25,7 +28,7 @@
         Habitants: {{ $store.state.livegame.minigame.gentileM }} et
         {{ $store.state.livegame.minigame.gentileF }}
       </p>
-      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Next</ArrowBtn>
+      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Suivant</ArrowBtn>
     </div>
   </div>
 </template>
@@ -139,7 +142,10 @@ export default class MapGame extends Vue {
 <style scoped lang="scss">
 #map {
   width: 100%;
-  height: 70vh;
+  height: calc(100vh - 80px - 80px - 157px);
+
+  margin: auto;
+  margin-bottom: 40px;
 
   cursor: crosshair;
 }
@@ -147,6 +153,28 @@ export default class MapGame extends Vue {
 body.leaflet-dragging {
   #map {
     cursor: grabbing;
+  }
+}
+
+.ui-question {
+  position: absolute;
+  width: 30%;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 20px;
+
+  label {
+    width: 100%;
+
+    .input {
+      width: 100%;
+    }
+  }
+
+  .btn-arrow {
+    margin: auto;
+    margin-top: 50px;
   }
 }
 </style>

@@ -9,6 +9,7 @@
       :type="type"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
+      :required="required"
     />
   </div>
 </template>
@@ -28,6 +29,10 @@ import { Options, Vue } from "vue-class-component";
     },
     modelValue: {
       type: String,
+    },
+    required: {
+      type: Boolean,
+      default: false,
     },
   },
 })

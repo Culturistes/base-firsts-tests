@@ -7,6 +7,7 @@
       <TextInput
         v-model="roomID"
         :type="$store.state.settings.streamerMode ? 'password' : 'text'"
+        :required="true"
       >
         Entre le code
       </TextInput>
@@ -33,8 +34,15 @@
     </div>
 
     <div class="bottom">
-      <ArrowBtn v-on:click="joinRoom"> Join </ArrowBtn>
-      <ArrowBtn v-on:click="createRoom"> Create </ArrowBtn>
+      <ArrowBtn v-on:click="createRoom" :disabled="username.length <= 0">
+        Créer
+      </ArrowBtn>
+      <ArrowBtn
+        v-on:click="joinRoom"
+        :disabled="username.length <= 0 || roomID.length <= 0"
+      >
+        Rejoindre
+      </ArrowBtn>
     </div>
     <!-- <div>
       <p v-for="notif in notifications" :key="notif">{{ notif }}</p>
@@ -150,6 +158,10 @@ export default class JoinOrCreate extends Vue {
         margin-right: 10px;
       }
     }
+  }
+
+  .bottom {
+    margin-top: 50px;
   }
 }
 </style>

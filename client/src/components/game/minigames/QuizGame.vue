@@ -38,8 +38,7 @@
           !$store.state.livegame.minigame.goodAnswer.content.includes(answer)
         "
       >
-        {{ answer }}
-        <!-- $filters.hideDollar(answer) -->
+        {{ $filters.hideDollar(answer) }}
       </QuizBlock>
 
       <div
@@ -56,7 +55,7 @@
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Next</ArrowBtn>
+      <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Suivant</ArrowBtn>
     </div>
   </div>
 </template>

@@ -4,7 +4,7 @@
       {{ gameTitle }}
     </MiniGameTitle>
     <LineBtn v-on:click="$store.dispatch('readyForNext')"
-      >A vos marque, prêt, partez !</LineBtn
+      >À vos marques, prêt, partez !</LineBtn
     >
   </div>
 </template>
@@ -25,10 +25,12 @@ export default class MiniGameTitle extends Vue {
   created(): void {
     switch (this.$store.state.livegame.minigame.type) {
       case "quiz":
-        this.gameTitle = "Le quiz";
+        this.gameTitle =
+          "C’est l’heure du fameux quizz questions pour un chauvin sur Radio Soleil ! Défiez les autres joueurs et remportez le prix de l’expert des régions.";
         break;
       case "lme":
-        this.gameTitle = "La majorité l'emporte";
+        this.gameTitle =
+          "Péage : ne vous trompez pas de voie, cela risque de vous retarder ! Choisissez soit la réponse de droite, soit celle de gauche.";
         break;
       case "coc":
         this.gameTitle = "Ché où ça";
