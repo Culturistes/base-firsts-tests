@@ -297,6 +297,7 @@ export default class Game extends Vue {
           this.isLoading = true;
           break;
         case "goodAnswer":
+          console.log("goodAnswer", datas);
           this.$store.commit("updateMinigame", {
             index: "goodAnswer",
             value: datas,

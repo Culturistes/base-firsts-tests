@@ -163,7 +163,7 @@ export default class OwnRoom extends Room<RoomState> {
                     console.log("Go next round")
 
                     this.state.parameters.currentRound++;
-                    this.state.currentStep = STEPS.MINI_GAME_ROUND_TITLE
+                    this.state.currentStep = STEPS.MINI_GAME_ROUND
 
                     this.getCurrentRound();
 
@@ -304,7 +304,7 @@ export default class OwnRoom extends Room<RoomState> {
                         player.score += this.state.currRoundParams.answerPoints / 2;
                     })
                     goodAnswer = {
-                        content: [this.state.currRoundParams.answers]
+                        content: this.state.currRoundParams.answers
                     };
                 } else {
                     let mostPicked: Array<Player> = [];
@@ -329,7 +329,7 @@ export default class OwnRoom extends Room<RoomState> {
                     let score = this.state.currRoundParams.answerPoints / (index + 1)
                     player.score += score;
 
-                    if (player.chosenAnswer.gentile == this.state.currRoundParams.gentileM || player.chosenAnswer.gentile == this.state.currRoundParams.gentileF) {
+                    if (player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.gentileM.toLowerCase() || player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.gentileF.toLowerCase()) {
                         player.score += this.state.currRoundParams.answerPoints / 2;
                     }
                     index++;
