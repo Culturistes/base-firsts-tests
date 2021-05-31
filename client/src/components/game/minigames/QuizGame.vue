@@ -118,6 +118,7 @@ export default class QuizGame extends Vue {
   }
 
   mounted(): void {
+    console.log("quiz mounted");
     if (this.$store.state.livegame.minigame.type == "quiz") {
       this.answers = this.shuffle(this.$store.state.livegame.minigame.answers);
     } else {
@@ -134,6 +135,7 @@ export default class QuizGame extends Vue {
         "update answers",
         this.$store.state.livegame.minigame.answers
       );
+      this.selectedAnswer = null;
       if (this.$store.state.livegame.minigame.type == "quiz") {
         this.answers = this.shuffle(
           this.$store.state.livegame.minigame.answers
@@ -147,7 +149,6 @@ export default class QuizGame extends Vue {
 
   goNext(): void {
     this.$store.dispatch("readyForNext");
-    this.selectedAnswer = null;
     this.answersUpdated = false;
   }
 }
