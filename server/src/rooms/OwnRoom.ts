@@ -135,7 +135,7 @@ export default class OwnRoom extends Room<RoomState> {
         }
 
         this.state.players.get(client.sessionId).isReady = packet.datas.isReady;
-        // this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+        this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
             console.log("client", client.sessionId, "packet:", packet)
@@ -283,7 +283,6 @@ export default class OwnRoom extends Room<RoomState> {
     getCurrentRound() {
         let round = this.state.minigames[this.state.parameters.currentMiniGame - 1].rounds[this.state.parameters.currentRound - 1];
         this.state.currRoundParams = round;
-        console.log(round)
         this.broadcast("serverPacket", { type: "minigame", datas: { type: round.type, content: { ...round } } });
     }
 
@@ -384,6 +383,7 @@ export default class OwnRoom extends Room<RoomState> {
         let newArray: Array<any> = [];
 
         map.forEach((item: any) => {
+            console.log(item.isReady);
             newArray.push({ ...item });
         })
 

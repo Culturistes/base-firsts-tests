@@ -80,14 +80,14 @@ export default createStore({
     },
     readyForNext(ctx, payload?): void {
       const player = { ...ctx.state.player };
-      player.isReady = !player.isReady;
-      ctx.commit("setPlayerIsReady", !player.isReady);
+      const ready = !player.isReady;
+      ctx.commit("setPlayerIsReady", ready);
 
       const chosenAnswer = payload != undefined ? payload.chosenAnswer : null;
       ctx.state.room?.send("clientPacket", {
         type: "playerReadyForNext",
         datas: {
-          isReady: player.isReady,
+          isReady: ready,
           chosenAnswer: chosenAnswer,
         },
       });
