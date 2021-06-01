@@ -37,7 +37,6 @@
 import { Vue } from "vue-class-component";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import Icon from "@/assets/logo.png";
 import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 import { STEPS } from "@/views/Game.vue";
@@ -47,11 +46,17 @@ export default class MapGame extends Vue {
   markers: Array<any> = [];
   marker!: any;
   gentile = "";
-  myIcon = L.icon({
-    iconUrl: Icon,
+  iconAnswer = L.icon({
+    iconUrl: "/img/map/icon_answer.svg",
     iconSize: [40, 40],
     iconAnchor: [20, 40],
-    popupAnchor: [-3, -76],
+    popupAnchor: [0, -76],
+  });
+  iconTrue = L.icon({
+    iconUrl: "/img/map/icon_true.svg",
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -76],
   });
 
   steps = STEPS;
@@ -69,7 +74,7 @@ export default class MapGame extends Vue {
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.myMap);
 
-    this.marker = L.marker([0, 0], { icon: this.myIcon }).addTo(this.myMap);
+    this.marker = L.marker([0, 0], { icon: this.iconAnswer }).addTo(this.myMap);
     this.markers.push(this.marker);
 
     this.myMap.on("click", (ev: any) => {
@@ -121,12 +126,12 @@ export default class MapGame extends Vue {
       this.steps.MINI_GAME_ROUND_RESULT
     ) {
       L.marker(this.$store.state.livegame.minigame.goodAnswer.latLng, {
-        icon: this.myIcon,
+        icon: this.iconTrue,
       }).addTo(this.myMap);
 
       this.$store.state.players.forEach((player: any) => {
         let newMarker = L.marker(player.chosenAnswer.latLng, {
-          icon: this.myIcon,
+          icon: this.iconAnswer,
           title: player.username,
         }).addTo(this.myMap);
         this.markers.push(newMarker);
