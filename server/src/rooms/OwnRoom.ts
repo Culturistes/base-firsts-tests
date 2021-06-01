@@ -17,10 +17,10 @@ export default class OwnRoom extends Room<RoomState> {
     apiURL = "https://api.culturiste.remiruc.fr/api";
     currQuestion = "";
     jokers = [
-        { type: 'bonus', name: "Coup d'pouce" },
-        { type: 'bonus', name: "Espionnage" },
-        { type: 'attaque', name: "Petit jaune" },
-        { type: 'attaque', name: "Ralentissement" }
+        { type: 'bonus', slug: "cdp", name: "Coup d'pouce" },
+        { type: 'bonus', slug: "esp", name: "Espionnage" },
+        { type: 'attaque', slug: "pj", name: "Petit jaune" },
+        { type: 'attaque', slug: "ral", name: "Ralentissement" }
     ]
 
     onCreate(options: any) {
@@ -37,6 +37,43 @@ export default class OwnRoom extends Room<RoomState> {
                 case "playerReadyForNext":
                     this.onPlayerReadyForNext(client, packet);
                     break;
+                case "useJoker":
+                    if (this.state.players.get(client.sessionId).jokers.get(packet.datas).available) {
+                        this.state.players.get(client.sessionId).jokers.get(packet.datas).available = false;
+
+                        client.send("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+
+                        switch (packet.datas) {
+                            case 'cdp':
+                                // Send to client ok ? datas ? ask with DA for jokers use
+                                client.send("serverPacket", { type: "jokerUsed", datas: { type: "cdp" } })
+                                break;
+                            case 'esp':
+                                // Send to client ok ? datas ? ask with DA for jokers use
+                                client.send("serverPacket", { type: "jokerUsed", datas: { type: "esp" } })
+                                break;
+                            case 'pjn':
+                                this.broadcast("serverPacket", {
+                                    type: "jokerUsed",
+                                    datas: {
+                                        attacker: client.sessionId,
+                                        type: "pjn"
+                                    }
+                                })
+                                break;
+                            case 'ral':
+                                this.broadcast("serverPacket", {
+                                    type: "jokerUsed",
+                                    datas: {
+                                        attacker: client.sessionId,
+                                        type: "ral"
+                                    }
+                                })
+                                break;
+                        }
+                    }
+
+                    break;
                 default:
                     break;
             }
@@ -46,18 +83,21 @@ export default class OwnRoom extends Room<RoomState> {
     onJoin(client: Client, options: any) {
         console.log(client.sessionId, "joined!");
 
-        let jokers = new ArraySchema<Joker>();
+        let jokers = new MapSchema<Joker>();
         this.jokers.forEach((jk) => {
-            let joker = new Joker;
-            joker.type = jk.type;
-            joker.name = jk.name;
-            jokers.push(joker);
+            let joker = new Joker({
+                type: jk.type,
+                slug: jk.slug,
+                name: jk.name
+            });
+            jokers.set(jk.slug, joker);
         })
 
         let newPlayer = new Player({
             id: client.sessionId,
             username: options ? options.username : "Utilisateur",
             isMDR: options.creator ? true : false,
+            connected: true,
             jokers: jokers
         })
         this.state.players.set(client.sessionId, newPlayer);
@@ -226,7 +266,7 @@ export default class OwnRoom extends Room<RoomState> {
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
             // quiz , lme, coc
-            const gameTags = ['lme', 'quiz', 'coc'];
+            const gameTags = ['quiz', 'lme', 'coc'];
 
             //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();

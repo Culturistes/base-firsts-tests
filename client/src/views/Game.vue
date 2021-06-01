@@ -307,6 +307,44 @@ export default class Game extends Vue {
             value: datas,
           });
           break;
+        case "jokerUsed":
+          switch (datas.type) {
+            case "cdp":
+              switch (this.$store.state.livegame.minigame.type) {
+                case "quiz":
+                  // Remove 2 bad answers
+                  var answers = this.$store.state.livegame.minigame.answers;
+                  var newAnswers = [
+                    answers.find((ans: string) => ans.slice(0, 1) == "$"),
+                    answers.find((ans: string) => ans.slice(0, 1) != "$"),
+                  ];
+                  this.$store.commit("updateMinigame", {
+                    index: "answers",
+                    value: newAnswers,
+                  });
+                  break;
+                case "lme":
+                  // Voir les jauges des choix
+                  break;
+                case "coc":
+                  // Créer une zone en lumière sur le carte
+                  break;
+              }
+              break;
+            case "esp":
+              break;
+            case "pjn":
+              if (this.$store.state.player.id != datas.attacker) {
+                // Don't affect the attacker :D
+              }
+              break;
+            case "ral":
+              if (this.$store.state.player.id != datas.attacker) {
+                // Do things
+              }
+              break;
+          }
+          break;
       }
     });
   }

@@ -24,6 +24,7 @@ export default interface StoreState {
             roundNumber: number,
         },
         miniGame: {
+            type: string,
             name: string,
             title: string,
             answers: Array<string>,

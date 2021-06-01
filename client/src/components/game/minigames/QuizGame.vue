@@ -63,6 +63,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Store } from "vuex";
+import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import { STEPS } from "../../../views/Game.vue";
 
@@ -123,9 +124,22 @@ export default class QuizGame extends Vue {
     console.log("quiz mounted");
     if (this.$store.state.livegame.minigame.type == "quiz") {
       this.answers = this.shuffle(this.$store.state.livegame.minigame.answers);
+      this.$store.commit("updateMinigame", {
+        index: "answers",
+        value: this.answers,
+      });
     } else {
       this.answers = this.$store.state.livegame.minigame.answers;
     }
+
+    store.watch(
+      () => this.$store.state.livegame.minigame.answers,
+      (answers, oldVal) => {
+        if (answers.length < 4) {
+          this.answers = answers;
+        }
+      }
+    );
   }
 
   updated(): void {

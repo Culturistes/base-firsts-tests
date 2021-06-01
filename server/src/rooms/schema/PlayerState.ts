@@ -2,13 +2,19 @@ import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
 
 export class Joker extends Schema {
     @type("string")
-    type: string // Bonus / Malus ?
+    type: string; // Bonus / Attaque ?
 
     @type("string")
-    name: string
+    slug: string;
+
+    @type("string")
+    name: string;
 
     @type("boolean")
-    available: boolean = true
+    available: boolean = true;
+
+    @type("boolean")
+    isUsed: boolean = false;
 }
 
 export class ChosenAnswer extends Schema {
@@ -42,13 +48,13 @@ export class Player extends Schema {
     isReady: boolean = false;
 
     @type("boolean")
-    connected: boolean = false;
+    connected: boolean = true;
 
     @type("number")
     score: number = 0;
 
-    @type([Joker])
-    jokers: ArraySchema<Joker>;
+    @type({ map: Joker })
+    jokers: MapSchema<Joker>;
 
     @type(ChosenAnswer)
     chosenAnswer: ChosenAnswer = new ChosenAnswer;

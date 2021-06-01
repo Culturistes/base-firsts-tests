@@ -18,6 +18,7 @@ export default createStore({
         roundNumber: 1,
       },
       miniGame: {
+        type: "",
         name: "",
         title: "",
         answers: [],
@@ -91,6 +92,13 @@ export default createStore({
           isReady: ready,
           chosenAnswer: chosenAnswer,
         },
+      });
+    },
+    useJoker(ctx, payload): void {
+      console.log("useJoker", payload);
+      ctx.state.room?.send("clientPacket", {
+        type: "useJoker",
+        datas: payload,
       });
     },
   },

@@ -4,7 +4,7 @@
     <div class="sep"></div>
     <p>Client: {{ $store.state.client }}</p>
     <div class="sep"></div>
-    <p>Room: {{ $store.state.room }}</p>
+    <p>Room: {{ $store.state.room?.sessionId }}</p>
     <div class="sep"></div>
     <p>Players:</p>
     <div class="playersList">
@@ -22,7 +22,13 @@
         <div class="sep"></div>
         <p>Jokers</p>
         <p v-for="joker in player.jokers" :key="joker.name">
-          {{ joker.name }} | {{ joker.available }}
+          {{ joker.name }} | {{ joker.available }} |
+          <button
+            @click="$store.dispatch('useJoker', joker.slug)"
+            v-if="joker.available"
+          >
+            use
+          </button>
         </p>
         <div class="sep"></div>
         <p>ChosenAnswer</p>
@@ -73,7 +79,7 @@ export default class Debug extends Vue {
 
   mounted(): void {
     document.addEventListener("keypress", (e) => {
-      if (e.code == "Numpad5") {
+      if (e.code == "Numpad5" || e.key == "5") {
         this.showDebug = !this.showDebug;
       }
     });
