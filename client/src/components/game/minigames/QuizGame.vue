@@ -110,11 +110,13 @@ export default class QuizGame extends Vue {
       index: "minigame",
       value: {
         ...this.$store.state.livegame.minigame,
-        chosenAnswer: this.selectedAnswer,
+        chosenAnswer: { selectedSAnswer: this.selectedAnswer },
       },
     });
 
-    this.$store.dispatch("readyForNext", { chosenAnswer: this.selectedAnswer });
+    this.$store.dispatch("readyForNext", {
+      chosenAnswer: { selectedSAnswer: this.selectedAnswer },
+    });
   }
 
   mounted(): void {

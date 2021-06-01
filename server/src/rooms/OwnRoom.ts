@@ -1,7 +1,8 @@
 import { MapSchema, ArraySchema } from "@colyseus/schema";
-import { RoomState, Player, MiniGameState, RoundState } from './schema/RoomStates';
+import { RoomState, MiniGameState, RoundState } from './schema/RoomStates';
 import { Room, Client } from "colyseus";
 import request from 'request';
+import { Joker, Player } from "./schema/PlayerState";
 
 export enum STEPS {
     GAME_PARAMETERS,
@@ -15,10 +16,16 @@ export enum STEPS {
 export default class OwnRoom extends Room<RoomState> {
     apiURL = "https://api.culturiste.remiruc.fr/api";
     currQuestion = "";
+    jokers = [
+        { type: 'bonus', name: "Coup d'pouce" },
+        { type: 'bonus', name: "Espionnage" },
+        { type: 'attaque', name: "Petit jaune" },
+        { type: 'attaque', name: "Ralentissement" }
+    ]
 
     onCreate(options: any) {
         console.log("room created:", this.roomId);
-        this.setState(new RoomState);
+        this.setState(new RoomState());
 
         this.onMessage("clientPacket", (client, packet) => {
             console.log(`Received packet of type (${packet.type})`);
@@ -39,17 +46,30 @@ export default class OwnRoom extends Room<RoomState> {
     onJoin(client: Client, options: any) {
         console.log(client.sessionId, "joined!");
 
+        let jokers = new ArraySchema<Joker>();
+        this.jokers.forEach((jk) => {
+            let joker = new Joker;
+            joker.type = jk.type;
+            joker.name = jk.name;
+            jokers.push(joker);
+        })
+
         let newPlayer = new Player({
             id: client.sessionId,
             username: options ? options.username : "Utilisateur",
-            isMDR: options.creator,
-            chosenAnswer: null
+            isMDR: options.creator ? true : false,
+            jokers: jokers
         })
         this.state.players.set(client.sessionId, newPlayer);
+
+        if (options.creator) {
+            this.state.gameName = options.username
+        }
 
         client.send("serverPacket", { type: "playerInfos", datas: { ...newPlayer } });
 
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+        this.broadcast("serverPacket", { type: "gameName", datas: this.state.gameName })
     }
 
     async onLeave(client: Client, consented: boolean) {
@@ -292,7 +312,7 @@ export default class OwnRoom extends Room<RoomState> {
         switch (this.state.currRoundParams.type) {
             case 'quiz':
                 this.state.players.forEach((player) => {
-                    if (player.chosenAnswer.slice(0, 1) == "$") {
+                    if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
                         player.score += this.state.currRoundParams.answerPoints;
                     }
                 })
@@ -300,10 +320,10 @@ export default class OwnRoom extends Room<RoomState> {
             case 'lme':
                 let choices: Array<Array<Player>> = [];
                 this.state.players.forEach((player) => {
-                    if (choices[player.chosenAnswer] == undefined) {
-                        choices[player.chosenAnswer] = [];
+                    if (choices[player.chosenAnswer.selectedNAnswer] == undefined) {
+                        choices[player.chosenAnswer.selectedNAnswer] = [];
                     }
-                    choices[player.chosenAnswer].push(player);
+                    choices[player.chosenAnswer.selectedNAnswer].push(player);
                 })
                 if (choices[0] && choices[1] && choices[0].length == choices[1].length) {
                     this.state.players.forEach((player) => {
@@ -323,7 +343,7 @@ export default class OwnRoom extends Room<RoomState> {
                         player.score += this.state.currRoundParams.answerPoints;
                     })
                     goodAnswer = {
-                        content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer]]
+                        content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer]]
                     };
                 }
                 this.broadcast("serverPacket", { type: "goodAnswer", datas: goodAnswer });
@@ -383,7 +403,6 @@ export default class OwnRoom extends Room<RoomState> {
         let newArray: Array<any> = [];
 
         map.forEach((item: any) => {
-            console.log(item.isReady);
             newArray.push({ ...item });
         })
 

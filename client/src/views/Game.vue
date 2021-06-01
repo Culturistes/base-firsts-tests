@@ -232,6 +232,12 @@ export default class Game extends Vue {
       console.log(`Received packet from server (${type})`);
 
       switch (type) {
+        case "gameName":
+          this.$store.commit("updateLiveGame", {
+            index: "gameName",
+            value: datas,
+          });
+          break;
         case "playerInfos":
           this.$store.commit("updatePlayer", datas);
           newDatas = {
@@ -259,7 +265,6 @@ export default class Game extends Vue {
               goodAnswer: datas.content.goodAnswer,
             },
           });
-          console.log(this.$store.state.livegame.minigame);
           break;
         case "chosenParams":
           this.$store.commit("updateLiveGame", {

@@ -2,7 +2,10 @@
   <div class="gameParameters step">
     <div class="gameParameters-content">
       <div class="parameters">
-        <StepTitle color="black">ROOM DE {{ $store.state.room?.id }}</StepTitle>
+        <StepTitle color="black"
+          >ROOM DE {{ $store.state.livegame.gameName }} | Code :
+          {{ $store.state.room?.id }}</StepTitle
+        >
         <label
           class="inline-input"
           v-if="$store.state.player && $store.state.player.isMDR"

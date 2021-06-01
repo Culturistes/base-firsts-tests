@@ -1,27 +1,6 @@
 import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
+import { Player } from "./PlayerState";
 
-
-export class Player extends Schema {
-  @type("string")
-  id: string;
-
-  @type("string")
-  username: string;
-
-  @type("boolean")
-  isMDR: boolean;
-
-  @type("boolean")
-  isReady: boolean = false;
-
-  @type("boolean")
-  connected: boolean = false;
-
-  @type("number")
-  score: number = 0;
-
-  chosenAnswer: any;
-}
 
 class Parameters extends Schema {
   @type("number")
@@ -76,6 +55,9 @@ export class RoomState extends Schema {
   @type('boolean')
   gameRunning: boolean = false;
 
+  @type('string')
+  gameName: string = "";
+
   @type(Parameters)
   parameters = new Parameters;
 
@@ -84,9 +66,6 @@ export class RoomState extends Schema {
 
   @type({ map: Player })
   players = new MapSchema<Player>();
-
-  @type({ map: Player })
-  playersAnswer = new MapSchema<Player>()
 
   @type('number')
   playersReady: number = 0;

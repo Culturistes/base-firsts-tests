@@ -58,10 +58,15 @@ export default class MiniGameRound extends Vue {
 
       this.$store.commit("updateLiveGame", {
         index: "minigame",
-        value: { ...this.$store.state.livegame.minigame, chosenAnswer: index },
+        value: {
+          ...this.$store.state.livegame.minigame,
+          chosenAnswer: { selectedNAnswer: index },
+        },
       });
 
-      this.$store.dispatch("readyForNext", { chosenAnswer: index });
+      this.$store.dispatch("readyForNext", {
+        chosenAnswer: { selectedNAnswer: index },
+      });
     }
   }
 }

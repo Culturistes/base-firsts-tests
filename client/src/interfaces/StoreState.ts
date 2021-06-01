@@ -15,6 +15,7 @@ export default interface StoreState {
     }>,
     livegame: {
         [key: string]: any,
+        gameName: string,
         currentStep: number,
         currentMiniGame: number,
         currentRound: number,
@@ -26,7 +27,7 @@ export default interface StoreState {
             name: string,
             title: string,
             answers: Array<string>,
-            chosenAnswer: string,
+            chosenAnswer: {},
             goodAnswer: {
                 content: Array<string>,
                 latLng?: Array<string>,

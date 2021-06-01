@@ -9,6 +9,7 @@ export default createStore({
     player: null,
     players: [],
     livegame: {
+      gameName: "",
       currentStep: 0,
       currentMiniGame: 1,
       currentRound: 1,
@@ -20,7 +21,7 @@ export default createStore({
         name: "",
         title: "",
         answers: [],
-        chosenAnswer: "",
+        chosenAnswer: {},
         description: "",
         goodAnswer: {
           content: [],
