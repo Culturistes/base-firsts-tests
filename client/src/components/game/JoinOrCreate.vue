@@ -1,7 +1,8 @@
 <template>
   <div class="joinOrCreate step">
     <StepTitle>Séléctionne ton monchu</StepTitle>
-    <Stamp people="rando"></Stamp>
+    <!-- <Stamp people="rando"></Stamp> -->
+    <SelectPlayerList />
     <div class="inputContainer">
       <TextInput v-model="username"> Entre ton pseudo </TextInput>
       <TextInput
@@ -55,10 +56,14 @@
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-class-component";
+import { Vue, Options } from "vue-class-component";
 import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
+import SelectPlayerList from "@/ui/lists/SelectPlayerList.vue";
 
+@Options({
+  components: { SelectPlayerList },
+})
 export default class JoinOrCreate extends Vue {
   $refs!: {
     inputPlayername: HTMLInputElement;

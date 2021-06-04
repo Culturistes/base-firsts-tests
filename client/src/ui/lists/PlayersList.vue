@@ -23,7 +23,7 @@ import StoreState from "@/interfaces/StoreState";
 /* @Options({
   props: ["streamerMode"],
 }) */
-export default class GameParameters extends Vue {
+export default class playersList extends Vue {
   $store!: Store<StoreState>;
 }
 </script>
