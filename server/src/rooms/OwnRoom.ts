@@ -2,7 +2,7 @@ import { MapSchema, ArraySchema } from "@colyseus/schema";
 import { RoomState, MiniGameState, RoundState } from './schema/RoomStates';
 import { Room, Client } from "colyseus";
 import request from 'request';
-import { Joker, Player } from "./schema/PlayerState";
+import { ChosenAnswer, Joker, Player } from "./schema/PlayerState";
 
 export enum STEPS {
     GAME_PARAMETERS,
@@ -200,7 +200,15 @@ export default class OwnRoom extends Room<RoomState> {
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
             console.log("client", client.sessionId, "packet:", packet)
             if (packet.datas.chosenAnswer != null) {
-                this.state.players.get(client.sessionId).chosenAnswer = packet.datas.chosenAnswer;
+
+                let newChosenAnswer = new ChosenAnswer()
+                newChosenAnswer.selectedNAnswer = packet.datas.chosenAnswer.selectedNAnswer ? packet.datas.chosenAnswer.selectedNAnswer : this.state.players.get(client.sessionId).chosenAnswer.selectedNAnswer;
+                newChosenAnswer.selectedSAnswer = packet.datas.chosenAnswer.selectedSAnswer ? packet.datas.chosenAnswer.selectedSAnswer : this.state.players.get(client.sessionId).chosenAnswer.selectedSAnswer;
+                newChosenAnswer.dist = packet.datas.chosenAnswer.dist ? packet.datas.chosenAnswer.dist : this.state.players.get(client.sessionId).chosenAnswer.dist;
+                newChosenAnswer.gentile = packet.datas.chosenAnswer.gentile ? packet.datas.chosenAnswer.gentile : this.state.players.get(client.sessionId).chosenAnswer.gentile;
+                newChosenAnswer.latLng = packet.datas.chosenAnswer.latLng ? packet.datas.chosenAnswer.latLng : this.state.players.get(client.sessionId).chosenAnswer.latLng;
+
+                this.state.players.get(client.sessionId).chosenAnswer = newChosenAnswer;
             }
         }
 
@@ -266,7 +274,7 @@ export default class OwnRoom extends Room<RoomState> {
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
             // quiz , lme, coc
-            const gameTags = ['quiz', 'lme', 'coc'];
+            const gameTags = ['coc', 'quiz', 'lme'];
 
             //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();
@@ -367,7 +375,7 @@ export default class OwnRoom extends Room<RoomState> {
                 })
                 if (choices[0] && choices[1] && choices[0].length == choices[1].length) {
                     this.state.players.forEach((player) => {
-                        player.score += this.state.currRoundParams.answerPoints / 2;
+                        player.score += Math.round(this.state.currRoundParams.answerPoints / 2);
                     })
                     goodAnswer = {
                         content: this.state.currRoundParams.answers
@@ -393,11 +401,11 @@ export default class OwnRoom extends Room<RoomState> {
                 let players = this.sortPlayersByAnswers([...this.state.players]);
                 let index = 0;
                 players.forEach(player => {
-                    let score = this.state.currRoundParams.answerPoints / (index + 1)
+                    let score = Math.round(this.state.currRoundParams.answerPoints / (index + 1))
                     player.score += score;
 
                     if (player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileM.toLowerCase() || player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileF.toLowerCase()) {
-                        player.score += this.state.currRoundParams.answerPoints / 2;
+                        player.score += Math.round(this.state.currRoundParams.answerPoints / 2);
                     }
                     index++;
                 })

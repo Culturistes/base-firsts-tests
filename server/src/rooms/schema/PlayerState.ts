@@ -31,7 +31,7 @@ export class ChosenAnswer extends Schema {
     gentile?: string = "";
 
     @type(['number'])
-    latLng?: ArraySchema<number>;
+    latLng?: ArraySchema<number> = new ArraySchema<number>();
 }
 
 export class Player extends Schema {

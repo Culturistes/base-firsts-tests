@@ -31,6 +31,12 @@ export default createStore({
           latLng: [],
         },
       },
+      jokersParams: {
+        showOthersChoice: false,
+        othersCursor: [],
+        showMapRange: false,
+        screenIsBlurred: false,
+      },
     },
     settings: {
       streamerMode: false,
@@ -64,6 +70,12 @@ export default createStore({
       data: { index: string; value: any }
     ): void {
       state.livegame.minigame[data.index] = data.value;
+    },
+    updateJokersParams(
+      state: StoreState,
+      data: { index: string; value: any }
+    ): void {
+      state.livegame.jokersParams[data.index] = data.value;
     },
     updateSettings(
       state: StoreState,

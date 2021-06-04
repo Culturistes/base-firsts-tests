@@ -93,6 +93,7 @@ export default class Debug extends Vue {
   width: 90%;
   background-color: white;
   position: absolute;
+  z-index: 9999;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

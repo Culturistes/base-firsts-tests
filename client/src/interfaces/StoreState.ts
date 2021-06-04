@@ -37,6 +37,13 @@ export default interface StoreState {
             },
             description: string,
         },
+        jokersParams: {
+            [key: string]: any,
+            showOthersChoice: boolean,
+            othersCursor: Array<any>,
+            showMapRange: boolean,
+            screenIsBlurred: boolean,
+        }
     }
     settings: {
         [key: string]: any,

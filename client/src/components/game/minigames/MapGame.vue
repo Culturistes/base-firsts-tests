@@ -38,14 +38,16 @@ import { Vue } from "vue-class-component";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Store } from "vuex/types";
+import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import { STEPS } from "@/views/Game.vue";
 
 export default class MapGame extends Vue {
   myMap!: any;
-  markers: Array<any> = [];
   marker!: any;
   gentile = "";
+  mapRange!: any;
+  mapRangeRadius = 150;
   iconAnswer = L.icon({
     iconUrl: "/img/map/icon_answer.svg",
     iconSize: [40, 40],
@@ -66,7 +68,6 @@ export default class MapGame extends Vue {
   hasBeenReset = false;
 
   initializeMap(): void {
-    console.log("map initialized");
     this.myMap = L.map("map").setView([46.23, 2.2], 6);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -75,14 +76,17 @@ export default class MapGame extends Vue {
     }).addTo(this.myMap);
 
     this.marker = L.marker([0, 0], { icon: this.iconAnswer }).addTo(this.myMap);
-    this.markers.push(this.marker);
 
-    this.myMap.on("click", (ev: any) => {
-      let lat = ev.latlng.lat;
-      let lng = ev.latlng.lng;
-
-      this.marker.setLatLng([lat, lng]);
+    let jokerRadius = this.mapRangeRadius * 1000;
+    let jokerLat = 46.23;
+    let jokerLng = 2.2;
+    this.mapRange = L.circle([jokerLat, jokerLng], {
+      radius: jokerRadius,
+      stroke: false,
+      opacity: 0.8,
     });
+
+    this.myMap.on("click", this.positionMarker);
   }
 
   validateAnswer(): void {
@@ -99,8 +103,10 @@ export default class MapGame extends Vue {
     let datas = {
       dist: distance,
       gentile: this.gentile,
-      latLng: this.marker.getLatLng(),
+      latLng: [this.marker.getLatLng().lat, this.marker.getLatLng().lng],
     };
+
+    console.log(this.marker.getLatLng());
 
     this.$store.commit("updateLiveGame", {
       index: "minigame",
@@ -116,11 +122,41 @@ export default class MapGame extends Vue {
   }
 
   mounted(): void {
-    console.log("mounted");
+    store.watch(
+      () => this.$store.state.livegame.jokersParams.showMapRange,
+      (showMapRange, oldVal) => {
+        console.log("MapGame Watch:");
+        if (showMapRange) {
+          let newLat = this.$store.state.livegame.minigame.goodAnswer.latLng[0];
+          let newLng = this.$store.state.livegame.minigame.goodAnswer.latLng[1];
+          console.log(newLat, newLng);
+
+          // Approximativement
+          // Latitude: 1 deg = 110.574 km.
+          // Longitude: 1 deg = 111.320*cos(latitude) km.
+
+          // Make a gap with circle border to avoid approximation failure
+          let showRadiusIn = this.mapRangeRadius - 20;
+
+          let randomX = Math.random() * (showRadiusIn * 2) - showRadiusIn;
+          let randomY = Math.random() * (showRadiusIn * 2) - showRadiusIn;
+
+          newLng += (randomY / 111.32) * Math.cos(newLat);
+          newLat += randomX / 110.574;
+
+          this.mapRange.setLatLng([newLat, newLng]);
+          this.mapRange.addTo(this.myMap);
+        } else if (oldVal == true) {
+          this.mapRange.remove();
+        }
+      }
+    );
+
     this.initializeMap();
   }
 
   updated(): void {
+    console.log("updated...");
     if (
       this.$store.state.livegame.currentStep ==
       this.steps.MINI_GAME_ROUND_RESULT
@@ -130,12 +166,15 @@ export default class MapGame extends Vue {
       }).addTo(this.myMap);
 
       this.$store.state.players.forEach((player: any) => {
-        let newMarker = L.marker(player.chosenAnswer.latLng, {
+        console.log(player);
+        let marker = L.marker(player.chosenAnswer.latLng, {
           icon: this.iconAnswer,
           title: player.username,
         }).addTo(this.myMap);
-        this.markers.push(newMarker);
+        marker.bindTooltip(player.username).openTooltip();
       });
+
+      this.myMap.off("click");
     } else if (
       this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND &&
       !this.hasBeenReset
@@ -147,15 +186,17 @@ export default class MapGame extends Vue {
         }
       });
 
-      this.myMap.on("click", (ev: any) => {
-        let lat = ev.latlng.lat;
-        let lng = ev.latlng.lng;
-
-        this.marker.setLatLng([lat, lng]).addTo(this.myMap);
-      });
+      this.mapRange.remove();
 
       this.hasBeenReset = true;
     }
+  }
+
+  positionMarker(ev: any): void {
+    let lat = ev.latlng.lat;
+    let lng = ev.latlng.lng;
+
+    this.marker.setLatLng([lat, lng]);
   }
 
   goNext(): void {

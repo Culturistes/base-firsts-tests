@@ -325,9 +325,20 @@ export default class Game extends Vue {
                   break;
                 case "lme":
                   // Voir les jauges des choix
+                  this.$store.commit("updateJokersParams", {
+                    index: "showOthersChoice",
+                    value: true,
+                  });
                   break;
                 case "coc":
                   // Créer une zone en lumière sur le carte
+                  this.$store.commit("updateJokersParams", {
+                    index: "showMapRange",
+                    value: true,
+                  });
+                  break;
+                case "lbf":
+                  // Do smth
                   break;
               }
               break;
@@ -336,11 +347,15 @@ export default class Game extends Vue {
             case "pjn":
               if (this.$store.state.player.id != datas.attacker) {
                 // Don't affect the attacker :D
+                this.$store.commit("updateJokersParams", {
+                  index: "screenIsBlurred",
+                  value: true,
+                });
               }
               break;
             case "ral":
               if (this.$store.state.player.id != datas.attacker) {
-                // Do things
+                // Player loose time
               }
               break;
           }
