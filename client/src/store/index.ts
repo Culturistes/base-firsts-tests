@@ -8,6 +8,7 @@ export default createStore({
     room: null,
     player: null,
     players: [],
+    sounds: {},
     livegame: {
       gameName: "",
       currentStep: 0,
@@ -54,6 +55,9 @@ export default createStore({
     },
     updatePlayers(state: StoreState, value: Array<any>): void {
       state.players = value;
+    },
+    addSounds(state: StoreState, data: { name: string; value: any }): void {
+      state.sounds[data.value.name] = data.value.obj;
     },
     setPlayerIsReady(state: StoreState, value: boolean): void {
       state.player.isReady = value;

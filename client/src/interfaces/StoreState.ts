@@ -1,4 +1,5 @@
 import { Client, Room } from "colyseus.js";
+import { Howl } from 'howler';
 
 export default interface StoreState {
     client: Client | null;
@@ -13,6 +14,9 @@ export default interface StoreState {
         score: number,
         chosenAnswer: any,
     }>,
+    sounds: {
+        [key: string]: any
+    },
     livegame: {
         [key: string]: any,
         gameName: string,

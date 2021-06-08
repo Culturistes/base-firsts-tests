@@ -87,7 +87,6 @@ export default class MiniGameRound extends Vue {
   }
   .round {
     width: 70%;
-    position: relative;
 
     .blurred {
       position: absolute;
