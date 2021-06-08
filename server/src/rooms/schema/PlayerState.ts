@@ -59,6 +59,9 @@ export class Player extends Schema {
     @type("number")
     scoreWon: number = 0;
 
+    @type("boolean")
+    hasWonScore: boolean = false;
+
     @type({ map: Joker })
     jokers: MapSchema<Joker>;
 

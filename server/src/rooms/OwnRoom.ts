@@ -230,6 +230,7 @@ export default class OwnRoom extends Room<RoomState> {
 
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
                 this.calculateScore();
+                this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
             }
 
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND_RESULT) {
@@ -245,8 +246,8 @@ export default class OwnRoom extends Room<RoomState> {
                         player.chosenAnswer = null
                     })
 
-                    this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
                     this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, round: this.state.parameters.currentRound } });
+                    this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
                     return false;
                 }
             }
@@ -264,16 +265,16 @@ export default class OwnRoom extends Room<RoomState> {
                         player.chosenAnswer = null
                     })
 
-                    this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
                     this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
+                    this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
                     return false;
                 }
             }
 
 
             // Go next step for client and server
-            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
             this.broadcast("serverPacket", { type: "canGoNext", datas: true });
+            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
             this.state.currentStep++;
         }
     }
@@ -369,6 +370,8 @@ export default class OwnRoom extends Room<RoomState> {
                 this.state.players.forEach((player) => {
                     if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
                         this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
+                    } else {
+                        this.addScoreToPlayer(player, 0)
                     }
                 })
                 break;
@@ -389,6 +392,9 @@ export default class OwnRoom extends Room<RoomState> {
                     };
                 } else {
                     let mostPicked: Array<Player> = [];
+                    this.state.players.forEach((player) => {
+                        this.addScoreToPlayer(player, 0)
+                    })
                     choices.forEach(choice => {
                         if (mostPicked.length < choice.length) {
                             mostPicked = choice;
@@ -426,6 +432,7 @@ export default class OwnRoom extends Room<RoomState> {
         player.lastScore = player.score;
         player.score += score;
         player.scoreWon = score;
+        player.hasWonScore = true;
     }
 
     sortMapByValue(map: any) {

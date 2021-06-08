@@ -248,7 +248,6 @@ export default class Game extends Vue {
           // TODO: work on the 2min reconnect without localStorage
           localStorage.setItem(`player_params`, JSON.stringify(newDatas));
           localStorage.setItem(`username`, datas.username);
-          console.log(datas);
           break;
         case "playersList":
           this.$store.commit("updatePlayers", datas);
