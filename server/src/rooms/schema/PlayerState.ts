@@ -53,6 +53,12 @@ export class Player extends Schema {
     @type("number")
     score: number = 0;
 
+    @type("number")
+    lastScore: number = 0;
+
+    @type("number")
+    scoreWon: number = 0;
+
     @type({ map: Joker })
     jokers: MapSchema<Joker>;
 

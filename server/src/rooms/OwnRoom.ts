@@ -368,7 +368,7 @@ export default class OwnRoom extends Room<RoomState> {
             case 'quiz':
                 this.state.players.forEach((player) => {
                     if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
-                        player.score += this.state.currRoundParams.answerPoints;
+                        this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
                     }
                 })
                 break;
@@ -382,7 +382,7 @@ export default class OwnRoom extends Room<RoomState> {
                 })
                 if (choices[0] && choices[1] && choices[0].length == choices[1].length) {
                     this.state.players.forEach((player) => {
-                        player.score += Math.round(this.state.currRoundParams.answerPoints / 2);
+                        this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
                     })
                     goodAnswer = {
                         content: this.state.currRoundParams.answers
@@ -395,7 +395,7 @@ export default class OwnRoom extends Room<RoomState> {
                         }
                     })
                     mostPicked.forEach(player => {
-                        player.score += this.state.currRoundParams.answerPoints;
+                        this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
                     })
                     goodAnswer = {
                         content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer]]
@@ -409,10 +409,10 @@ export default class OwnRoom extends Room<RoomState> {
                 let index = 0;
                 players.forEach(player => {
                     let score = Math.round(this.state.currRoundParams.answerPoints / (index + 1))
-                    player.score += score;
+                    this.addScoreToPlayer(player, score)
 
                     if (player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileM.toLowerCase() || player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileF.toLowerCase()) {
-                        player.score += Math.round(this.state.currRoundParams.answerPoints / 2);
+                        this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
                     }
                     index++;
                 })
@@ -420,6 +420,12 @@ export default class OwnRoom extends Room<RoomState> {
         }
 
         this.state.players = this.sortMapByValue([...this.state.players]);
+    }
+
+    addScoreToPlayer(player: Player, score: number) {
+        player.lastScore = player.score;
+        player.score += score;
+        player.scoreWon = score;
     }
 
     sortMapByValue(map: any) {
