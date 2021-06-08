@@ -54,7 +54,6 @@ export default createStore({
     },
     updatePlayers(state: StoreState, value: Array<any>): void {
       state.players = value;
-      console.log("players set:", value);
     },
     setPlayerIsReady(state: StoreState, value: boolean): void {
       state.player.isReady = value;

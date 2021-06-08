@@ -146,7 +146,7 @@ export default class MapGame extends Vue {
 
           this.mapRange.setLatLng([newLat, newLng]);
           this.mapRange.addTo(this.myMap);
-        } else if (oldVal == true) {
+        } else {
           this.mapRange.remove();
         }
       }
@@ -166,28 +166,28 @@ export default class MapGame extends Vue {
       }).addTo(this.myMap);
 
       this.$store.state.players.forEach((player: any) => {
-        console.log(player);
         let marker = L.marker(player.chosenAnswer.latLng, {
           icon: this.iconAnswer,
-          title: player.username,
+          alt: player.username,
         }).addTo(this.myMap);
         marker.bindTooltip(player.username).openTooltip();
       });
 
       this.myMap.off("click");
+      this.hasBeenReset = false;
     } else if (
       this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND &&
       !this.hasBeenReset
     ) {
       this.myMap.eachLayer((layer: any) => {
-        if (layer.options.title != undefined) {
-          console.log(layer.options.title, "removed");
+        if (layer.options.alt != undefined) {
           layer.remove();
         }
       });
 
       this.mapRange.remove();
 
+      this.myMap.on("click", this.positionMarker);
       this.hasBeenReset = true;
     }
   }
@@ -197,6 +197,7 @@ export default class MapGame extends Vue {
     let lng = ev.latlng.lng;
 
     this.marker.setLatLng([lat, lng]);
+    this.marker.addTo(this.myMap);
   }
 
   goNext(): void {

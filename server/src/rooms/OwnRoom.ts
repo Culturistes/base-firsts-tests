@@ -19,7 +19,7 @@ export default class OwnRoom extends Room<RoomState> {
     jokers = [
         { type: 'bonus', slug: "cdp", name: "Coup d'pouce" },
         { type: 'bonus', slug: "esp", name: "Espionnage" },
-        { type: 'attaque', slug: "pj", name: "Petit jaune" },
+        { type: 'attaque', slug: "pjn", name: "Petit jaune" },
         { type: 'attaque', slug: "ral", name: "Ralentissement" }
     ]
 
@@ -201,14 +201,16 @@ export default class OwnRoom extends Room<RoomState> {
             console.log("client", client.sessionId, "packet:", packet)
             if (packet.datas.chosenAnswer != null) {
 
-                let newChosenAnswer = new ChosenAnswer()
-                newChosenAnswer.selectedNAnswer = packet.datas.chosenAnswer.selectedNAnswer ? packet.datas.chosenAnswer.selectedNAnswer : this.state.players.get(client.sessionId).chosenAnswer.selectedNAnswer;
-                newChosenAnswer.selectedSAnswer = packet.datas.chosenAnswer.selectedSAnswer ? packet.datas.chosenAnswer.selectedSAnswer : this.state.players.get(client.sessionId).chosenAnswer.selectedSAnswer;
-                newChosenAnswer.dist = packet.datas.chosenAnswer.dist ? packet.datas.chosenAnswer.dist : this.state.players.get(client.sessionId).chosenAnswer.dist;
-                newChosenAnswer.gentile = packet.datas.chosenAnswer.gentile ? packet.datas.chosenAnswer.gentile : this.state.players.get(client.sessionId).chosenAnswer.gentile;
-                newChosenAnswer.latLng = packet.datas.chosenAnswer.latLng ? packet.datas.chosenAnswer.latLng : this.state.players.get(client.sessionId).chosenAnswer.latLng;
+                let newChosenAnswer = new ChosenAnswer();
+                newChosenAnswer.selectedNAnswer = packet.datas.chosenAnswer.selectedNAnswer ? parseInt(packet.datas.chosenAnswer.selectedNAnswer) : newChosenAnswer.selectedNAnswer;
+                newChosenAnswer.selectedSAnswer = packet.datas.chosenAnswer.selectedSAnswer ? packet.datas.chosenAnswer.selectedSAnswer : newChosenAnswer.selectedSAnswer;
+                newChosenAnswer.dist = packet.datas.chosenAnswer.dist ? packet.datas.chosenAnswer.dist : newChosenAnswer.dist;
+                newChosenAnswer.gentile = packet.datas.chosenAnswer.gentile ? packet.datas.chosenAnswer.gentile : newChosenAnswer.gentile;
+                newChosenAnswer.latLng = packet.datas.chosenAnswer.latLng ? packet.datas.chosenAnswer.latLng : newChosenAnswer.latLng;
 
                 this.state.players.get(client.sessionId).chosenAnswer = newChosenAnswer;
+
+                this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
             }
         }
 
@@ -274,7 +276,7 @@ export default class OwnRoom extends Room<RoomState> {
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
             // quiz , lme, coc
-            const gameTags = ['coc', 'quiz', 'lme'];
+            const gameTags = ['lme', 'coc', 'quiz'];
 
             //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();
@@ -341,7 +343,7 @@ export default class OwnRoom extends Room<RoomState> {
 
                     resolve(rounds)
                 } else {
-                    console.log("err", res.statusCode, err)
+                    console.log("err", err)
                     rej(err);
                 }
             })

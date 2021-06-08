@@ -25,6 +25,11 @@
       />
 
       <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
+
+      <div
+        class="blurred"
+        v-if="$store.state.livegame.jokersParams.screenIsBlurred"
+      ></div>
     </div>
   </div>
 </template>
@@ -32,6 +37,7 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Store } from "vuex/types";
+import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import QuizGame from "@/components/game/minigames/QuizGame.vue";
 import MapGame from "@/components/game/minigames/MapGame.vue";
@@ -40,7 +46,6 @@ import MapGame from "@/components/game/minigames/MapGame.vue";
   components: { QuizGame, MapGame },
 })
 export default class MiniGameRound extends Vue {
-  $refs!: any;
   $store!: Store<StoreState>;
 
   selectedElmt!: HTMLElement;
@@ -82,6 +87,17 @@ export default class MiniGameRound extends Vue {
   }
   .round {
     width: 70%;
+    position: relative;
+
+    .blurred {
+      position: absolute;
+      width: calc(100% + 20px);
+      height: calc(100% + 20px);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(6px);
+    }
   }
   .answer {
     &.active {

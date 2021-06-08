@@ -39,6 +39,14 @@
         "
       >
         {{ $filters.hideDollar(answer) }}
+        <span
+          v-if="
+            $store.state.livegame.minigame.type == 'lme' &&
+            $store.state.livegame.jokersParams.showOthersChoice
+          "
+        >
+          | {{ actualLMEAnswers[i] }}
+        </span>
       </QuizBlock>
 
       <div
@@ -77,8 +85,9 @@ export default class QuizGame extends Vue {
 
   answers: any = [];
   selectedAnswer = null;
-
   answersUpdated = false;
+
+  actualLMEAnswers = [0, 0];
 
   log(array: Array<any>) {
     array.forEach((el) => {
@@ -107,16 +116,27 @@ export default class QuizGame extends Vue {
   }
 
   sendAnswer() {
+    let datas = {};
+    if (this.$store.state.livegame.minigame.type == "quiz") {
+      datas = {
+        selectedSAnswer: this.selectedAnswer,
+      };
+    } else {
+      datas = {
+        selectedNAnswer: this.selectedAnswer,
+      };
+    }
+
     this.$store.commit("updateLiveGame", {
       index: "minigame",
       value: {
         ...this.$store.state.livegame.minigame,
-        chosenAnswer: { selectedSAnswer: this.selectedAnswer },
+        chosenAnswer: datas,
       },
     });
 
     this.$store.dispatch("readyForNext", {
-      chosenAnswer: { selectedSAnswer: this.selectedAnswer },
+      chosenAnswer: datas,
     });
   }
 
@@ -137,6 +157,29 @@ export default class QuizGame extends Vue {
       (answers, oldVal) => {
         if (answers.length < 4) {
           this.answers = answers;
+        }
+      }
+    );
+
+    store.watch(
+      () => this.$store.state.livegame.jokersParams.showOthersChoice,
+      (value, oldVal) => {
+        if (value) {
+          console.log("calculateLME 1");
+          this.calculateLMEAnswers();
+        }
+      }
+    );
+
+    store.watch(
+      () => this.$store.state.players,
+      (players, oldVal) => {
+        if (
+          this.$store.state.livegame.minigame.type == "lme" &&
+          this.$store.state.livegame.jokersParams.showOthersChoice
+        ) {
+          console.log("calculateLME 2");
+          this.calculateLMEAnswers();
         }
       }
     );
@@ -166,6 +209,20 @@ export default class QuizGame extends Vue {
   goNext(): void {
     this.$store.dispatch("readyForNext");
     this.answersUpdated = false;
+    this.$store.commit("updateJokersParams", {
+      index: "showOthersChoice",
+      value: false,
+    });
+  }
+
+  calculateLMEAnswers(): void {
+    let datas: Array<number> = [0, 0];
+    this.$store.state.players.forEach((player) => {
+      if (player.chosenAnswer.selectedNAnswer != undefined) {
+        datas[player.chosenAnswer.selectedNAnswer] += 1;
+      }
+    });
+    this.actualLMEAnswers = datas;
   }
 }
 </script>

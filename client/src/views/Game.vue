@@ -347,6 +347,7 @@ export default class Game extends Vue {
             case "pjn":
               if (this.$store.state.player.id != datas.attacker) {
                 // Don't affect the attacker :D
+                console.log("your screen must be blurred");
                 this.$store.commit("updateJokersParams", {
                   index: "screenIsBlurred",
                   value: true,
