@@ -38,7 +38,7 @@ export default class OwnRoom extends Room<RoomState> {
                     this.onPlayerReadyForNext(client, packet);
                     break;
                 case "useJoker":
-                    if (this.state.players.get(client.sessionId).jokers.get(packet.datas).available) {
+                    if (this.state.players.get(client.sessionId).jokers.get(packet.datas).available && this.state.currentStep == STEPS.MINI_GAME_ROUND) {
                         this.state.players.get(client.sessionId).jokers.get(packet.datas).available = false;
 
                         client.send("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
