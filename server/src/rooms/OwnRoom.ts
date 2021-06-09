@@ -25,6 +25,8 @@ export default class OwnRoom extends Room<RoomState> {
         { type: 'attaque', slug: "pjn", name: "Petit jaune" },
         { type: 'attaque', slug: "ral", name: "Ralentissement" }
     ]
+    currentTimer = 0;
+    timerEnded = false;
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -222,61 +224,65 @@ export default class OwnRoom extends Room<RoomState> {
         if (this.state.playersReady == this.state.players.size) {
             console.log("=== everyone's ready!")
 
-            this.state.players.forEach(player => {
-                player.isReady = false;
-            })
-
-            this.state.playersReady = 0;
-
-            if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
-                this.calculateScore();
-                this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
-            }
-
-            if (this.state.currentStep == STEPS.MINI_GAME_ROUND_RESULT) {
-                if (this.state.parameters.currentRound < this.state.parameters.roundNumber) {
-                    console.log("=== Go next round")
-
-                    this.state.parameters.currentRound++;
-                    this.state.currentStep = STEPS.MINI_GAME_ROUND
-
-                    this.getCurrentRound();
-
-                    this.state.players.forEach(player => {
-                        player.chosenAnswer = null
-                    })
-
-                    this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, round: this.state.parameters.currentRound } });
-                    this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
-                    return false;
-                }
-            }
-            if (this.state.currentStep == STEPS.MINI_GAME_RESULT) {
-                if (this.state.parameters.currentMiniGame < this.state.parameters.minigameNumber) {
-                    console.log("Go next mini game")
-
-                    this.state.parameters.currentMiniGame++;
-                    this.state.parameters.currentRound = 1;
-                    this.state.currentStep = STEPS.MINI_GAME_TITLE
-
-                    this.getCurrentRound();
-
-                    this.state.players.forEach(player => {
-                        player.chosenAnswer = null
-                    })
-
-                    this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
-                    this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
-                    return false;
-                }
-            }
-
-
-            // Go next step for client and server
-            this.broadcast("serverPacket", { type: "canGoNext", datas: true });
-            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
-            this.state.currentStep++;
+            this.mustEndTheRound();
         }
+    }
+
+    mustEndTheRound() {
+        this.state.players.forEach(player => {
+            player.isReady = false;
+        })
+
+        this.state.playersReady = 0;
+
+        if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
+            this.calculateScore();
+            this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+        }
+
+        if (this.state.currentStep == STEPS.MINI_GAME_ROUND_RESULT) {
+            if (this.state.parameters.currentRound < this.state.parameters.roundNumber) {
+                console.log("=== Go next round")
+
+                this.state.parameters.currentRound++;
+                this.state.currentStep = STEPS.MINI_GAME_ROUND
+
+                this.getCurrentRound();
+
+                this.state.players.forEach(player => {
+                    player.chosenAnswer = null
+                })
+
+                this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, round: this.state.parameters.currentRound } });
+                this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+                return false;
+            }
+        }
+        if (this.state.currentStep == STEPS.MINI_GAME_RESULT) {
+            if (this.state.parameters.currentMiniGame < this.state.parameters.minigameNumber) {
+                console.log("Go next mini game")
+
+                this.state.parameters.currentMiniGame++;
+                this.state.parameters.currentRound = 1;
+                this.state.currentStep = STEPS.MINI_GAME_TITLE
+
+                this.getCurrentRound();
+
+                this.state.players.forEach(player => {
+                    player.chosenAnswer = null
+                })
+
+                this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
+                this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+                return false;
+            }
+        }
+
+
+        // Go next step for client and server
+        this.broadcast("serverPacket", { type: "canGoNext", datas: true });
+        this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+        this.state.currentStep++;
     }
 
     generateQuestions() {
