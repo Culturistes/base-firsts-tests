@@ -72,6 +72,16 @@
       /></label>
     </div> -->
 
+    <div class="stickers-container">
+      <img
+        class="sticker"
+        v-for="(sticker, index) in stickers"
+        :key="index"
+        :src="sticker.url"
+        :style="{ left: sticker.left, top: sticker.top }"
+      />
+    </div>
+
     <div class="steps">
       <!-- Choix pseudo + Rejoindre ou créer une partie -->
       <JoinOrCreate
@@ -117,6 +127,10 @@
       <GameResult
         v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
       />
+
+      <div>
+        <button @click="displaySticker">PUSH!</button>
+      </div>
     </div>
 
     <div class="loader" v-if="isLoading">
@@ -174,6 +188,9 @@ export default class Game extends Vue {
   streamerMode = false;
   steps = STEPS;
   isLoading = false;
+  stickersMaxNumber = 10;
+  stickers: any = {};
+  stickerIndex = 0;
 
   $store!: Store<StoreState>;
 
@@ -312,6 +329,9 @@ export default class Game extends Vue {
             value: datas,
           });
           break;
+        case "STICKER":
+          this.createSticker(datas);
+          break;
         case "jokerUsed":
           switch (datas.type) {
             case "cdp":
@@ -347,8 +367,6 @@ export default class Game extends Vue {
                   break;
               }
               break;
-            case "esp":
-              break;
             case "pjn":
               if (this.$store.state.player.id != datas.attacker) {
                 // Don't affect the attacker :D
@@ -357,11 +375,6 @@ export default class Game extends Vue {
                   index: "screenIsBlurred",
                   value: true,
                 });
-              }
-              break;
-            case "ral":
-              if (this.$store.state.player.id != datas.attacker) {
-                // Player loose time
               }
               break;
           }
@@ -379,6 +392,68 @@ export default class Game extends Vue {
       document.execCommand("copy");
       document.body.removeChild(el);
     }
+  }
+
+  displaySticker(): void {
+    // Max sticker = 15
+    // Max temps = 5s
+
+    let index = Math.round(Math.random() * (this.stickersMaxNumber - 1)) + 1;
+
+    let gap = 140 + 20;
+
+    let x = Math.round(Math.random() * (window.innerWidth - gap - 20)) + 20;
+    let y = Math.round(Math.random() * (window.innerHeight - gap - 20)) + 20;
+
+    let datas = {
+      index: index,
+      x: x,
+      y: y,
+    };
+
+    this.$store.state.room?.send("clientPacket", {
+      type: "STICKER",
+      datas: datas,
+    });
+  }
+
+  createSticker({
+    index,
+    x,
+    y,
+  }: {
+    index: number;
+    x: number;
+    y: number;
+  }): void {
+    if (Object.keys(this.stickers).length >= 15) {
+      delete this.stickers[Object.keys(this.stickers)[0]];
+    }
+
+    let id = this.stickerIndex;
+    console.log("creating sticker:", id);
+    let timeout = setTimeout(() => {
+      //let idx = this.stickers.findIndex((sticker) => sticker.id == id);
+      //this.stickers.splice(idx, 1);
+      delete this.stickers[id.toString()];
+    }, 15000);
+
+    let sticker = {
+      url: `/img/stickers/${index}.png`,
+      left: `${x}px`,
+      top: `${y}px`,
+      timeout: timeout,
+    };
+
+    this.stickers[id] = sticker;
+    this.stickerIndex++;
+  }
+
+  unmounted(): void {
+    Object.keys(this.stickers).forEach((key) => {
+      clearTimeout(this.stickers[key].timeout);
+      delete this.stickers[key];
+    });
   }
 }
 </script>
@@ -429,7 +504,42 @@ export default class Game extends Vue {
     }
   }
 
+  .stickers-container {
+    position: absolute;
+    z-index: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .sticker {
+      position: absolute;
+      top: 0;
+      left: 0;
+      animation: disappear 15s forwards running;
+    }
+
+    @keyframes disappear {
+      0% {
+        opacity: 1;
+      }
+      94% {
+        opacity: 1;
+      }
+      99% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+  }
+
   .step {
+    position: relative;
+    z-index: 10;
     &.active {
       color: green;
     }
@@ -442,6 +552,7 @@ export default class Game extends Vue {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 999;
 
     display: flex;
     justify-content: center;

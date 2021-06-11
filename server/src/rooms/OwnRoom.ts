@@ -29,12 +29,9 @@ export default class OwnRoom extends Room<RoomState> {
     timerEnded = false;
     minigamesOrder = ['coc', 'quiz', 'lme'];
 
-    // Max sticker = 15;
-    // Max temps = 5s
-
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
-        console.log("room created:", this.roomId);  
+        console.log("room created:", this.roomId);
         this.setState(new RoomState());
 
         this.onMessage("clientPacket", (client, packet) => {
@@ -82,9 +79,12 @@ export default class OwnRoom extends Room<RoomState> {
                                 break;
                         }
                     }
-
                     break;
-                default:
+                case "STICKER":
+                    this.broadcast("serverPacket", {
+                        type: "STICKER",
+                        datas: packet.datas
+                    })
                     break;
             }
         })
@@ -322,7 +322,7 @@ export default class OwnRoom extends Room<RoomState> {
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
 
-            //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
+            //this.minigamesOrder.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();
 
             for (let i = 0; i < this.state.parameters.minigameNumber; i++) {
@@ -346,13 +346,10 @@ export default class OwnRoom extends Room<RoomState> {
             request(url, (err, res, body) => {
                 if (!err && res.statusCode == 200) {
                     let datas = JSON.parse(body);
-
                     let rounds = new ArraySchema();
-
                     datas.forEach((data: any) => {
                         let round = new RoundState()
                         round.type = type;
-
                         switch (type) {
                             case 'quiz':
                                 round.title = data.title;
@@ -384,7 +381,6 @@ export default class OwnRoom extends Room<RoomState> {
                         }
                         rounds.push(round);
                     })
-
                     resolve(rounds)
                 } else {
                     console.log("err", err)
