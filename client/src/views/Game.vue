@@ -306,6 +306,12 @@ export default class Game extends Vue {
             value: datas,
           });
           break;
+        case "toggleTimer":
+          this.$store.commit("updateLiveGame", {
+            index: "timerIsRunning",
+            value: datas,
+          });
+          break;
         case "jokerUsed":
           switch (datas.type) {
             case "cdp":

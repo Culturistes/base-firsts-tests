@@ -16,7 +16,9 @@
       <PlayersList />
     </div>
 
-    <div class="round">
+    <div class="round" :class="{ inactive: canAnswer }">
+      <p>Timer {{ timer }}</p>
+
       <QuizGame
         v-if="
           $store.state.livegame.minigame.type == 'quiz' ||
@@ -37,7 +39,6 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Store } from "vuex/types";
-import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import QuizGame from "@/components/game/minigames/QuizGame.vue";
 import MapGame from "@/components/game/minigames/MapGame.vue";
@@ -50,6 +51,28 @@ export default class MiniGameRound extends Vue {
 
   selectedElmt!: HTMLElement;
   selectedIndex = null;
+  interval: any;
+  timer = 10;
+  canAnswer = false;
+
+  mounted(): void {
+    this.$store.state.room?.state.listen(
+      "currentTimer",
+      (val: number, oldVal: number) => {
+        this.timer = Math.round(val);
+      }
+    );
+    this.$store.state.room?.state.listen(
+      "playersCanAnswer",
+      (val: boolean, oldVal: boolean) => {
+        this.canAnswer = val;
+      }
+    );
+  }
+
+  unmounted(): void {
+    clearInterval(this.interval);
+  }
 
   chooseAnswer(e: any, index: number): void {
     e.target.classList.add("active");
@@ -96,6 +119,10 @@ export default class MiniGameRound extends Vue {
       left: 50%;
       transform: translate(-50%, -50%);
       backdrop-filter: blur(6px);
+    }
+
+    &.isnactive {
+      pointer-events: none;
     }
   }
   .answer {

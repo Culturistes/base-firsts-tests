@@ -24,13 +24,17 @@ export default class OwnRoom extends Room<RoomState> {
         { type: 'bonus', slug: "esp", name: "Espionnage" },
         { type: 'attaque', slug: "pjn", name: "Petit jaune" },
         { type: 'attaque', slug: "ral", name: "Ralentissement" }
-    ]
-    currentTimer = 0;
+    ];
+    maxTimer = 10;
     timerEnded = false;
+    minigamesOrder = ['coc', 'quiz', 'lme'];
+
+    // Max sticker = 15;
+    // Max temps = 5s
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
-        console.log("room created:", this.roomId);
+        console.log("room created:", this.roomId);  
         this.setState(new RoomState());
 
         this.onMessage("clientPacket", (client, packet) => {
@@ -204,7 +208,7 @@ export default class OwnRoom extends Room<RoomState> {
         this.state.players.get(client.sessionId).isReady = packet.datas.isReady;
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
-        if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
+        if (this.state.currentStep == STEPS.MINI_GAME_ROUND && this.state.playersCanAnswer) {
             console.log("client", client.sessionId, "packet:", packet)
             if (packet.datas.chosenAnswer != null) {
 
@@ -223,6 +227,9 @@ export default class OwnRoom extends Room<RoomState> {
 
         if (this.state.playersReady == this.state.players.size) {
             console.log("=== everyone's ready!")
+
+            this.clock.clear();
+            this.state.currentTimer = this.maxTimer;
 
             this.mustEndTheRound();
         }
@@ -255,6 +262,8 @@ export default class OwnRoom extends Room<RoomState> {
 
                 this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, round: this.state.parameters.currentRound } });
                 this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+
+                this.startTimer();
                 return false;
             }
         }
@@ -282,23 +291,46 @@ export default class OwnRoom extends Room<RoomState> {
         // Go next step for client and server
         this.broadcast("serverPacket", { type: "canGoNext", datas: true });
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+
         this.state.currentStep++;
+        this.startTimer();
+    }
+
+    startTimer() {
+        console.log("Trying to start timer");
+        console.log("state", this.state.currentStep)
+        if (this.state.currentStep == STEPS.MINI_GAME_TITLE ||
+            this.state.currentStep == STEPS.MINI_GAME_ROUND) {
+            // Start clock for 10s
+            this.clock.start();
+            if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
+                this.state.playersCanAnswer = true;
+            }
+            this.clock.setInterval(() => {
+                if (this.state.currentTimer <= 0) {
+                    this.state.playersCanAnswer = false;
+                    this.clock.clear();
+                    this.state.currentTimer = this.maxTimer;
+                    this.mustEndTheRound();
+                } else {
+                    this.state.currentTimer -= 0.1;
+                }
+            }, 100)
+        }
     }
 
     generateQuestions() {
         return new Promise(async (resolve, rej) => {
-            // quiz , lme, coc
-            const gameTags = ['lme', 'coc', 'quiz'];
 
             //gameTags.sort(() => Math.random() - 0.5); // => shuffle games for tests
             let minigames = new ArraySchema<MiniGameState>();
 
             for (let i = 0; i < this.state.parameters.minigameNumber; i++) {
-                let url = `${this.apiURL}/${gameTags[i]}/get?n=${this.state.parameters.roundNumber}`;
+                let url = `${this.apiURL}/${this.minigamesOrder[i]}/get?n=${this.state.parameters.roundNumber}`;
 
                 let minigame = new MiniGameState();
-                minigame.name = gameTags[i];
-                let rounds = await this.getQuestions(gameTags[i], url);
+                minigame.name = this.minigamesOrder[i];
+                let rounds = await this.getQuestions(this.minigamesOrder[i], url);
                 // @ts-ignore: Unreachable code error
                 minigame.rounds = rounds;
                 minigames.push(minigame);
@@ -371,36 +403,43 @@ export default class OwnRoom extends Room<RoomState> {
     calculateScore() {
         let goodAnswer = {};
 
+        this.state.players.forEach((player) => {
+            this.addScoreToPlayer(player, 0)
+        })
+
+        console.log('calculate score');
+
         switch (this.state.currRoundParams.type) {
             case 'quiz':
                 this.state.players.forEach((player) => {
-                    if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
-                        this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
-                    } else {
-                        this.addScoreToPlayer(player, 0)
+                    if (player.chosenAnswer != null) {
+                        if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
+                            this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
+                        }
                     }
                 })
                 break;
             case 'lme':
                 let choices: Array<Array<Player>> = [];
                 this.state.players.forEach((player) => {
-                    if (choices[player.chosenAnswer.selectedNAnswer] == undefined) {
-                        choices[player.chosenAnswer.selectedNAnswer] = [];
+                    if (player.chosenAnswer != null) {
+                        if (choices[player.chosenAnswer.selectedNAnswer] == undefined) {
+                            choices[player.chosenAnswer.selectedNAnswer] = [];
+                        }
+                        choices[player.chosenAnswer.selectedNAnswer].push(player);
                     }
-                    choices[player.chosenAnswer.selectedNAnswer].push(player);
                 })
                 if (choices[0] && choices[1] && choices[0].length == choices[1].length) {
                     this.state.players.forEach((player) => {
-                        this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
+                        if (player.chosenAnswer != null) {
+                            this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
+                        }
                     })
                     goodAnswer = {
                         content: this.state.currRoundParams.answers
                     };
-                } else {
+                } else if (choices.length > 0) {
                     let mostPicked: Array<Player> = [];
-                    this.state.players.forEach((player) => {
-                        this.addScoreToPlayer(player, 0)
-                    })
                     choices.forEach(choice => {
                         if (mostPicked.length < choice.length) {
                             mostPicked = choice;
@@ -412,6 +451,10 @@ export default class OwnRoom extends Room<RoomState> {
                     goodAnswer = {
                         content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer]]
                     };
+                } else {
+                    goodAnswer = {
+                        content: []
+                    };
                 }
                 this.broadcast("serverPacket", { type: "goodAnswer", datas: goodAnswer });
 
@@ -420,17 +463,18 @@ export default class OwnRoom extends Room<RoomState> {
                 let players = this.sortPlayersByAnswers([...this.state.players]);
                 let index = 0;
                 players.forEach(player => {
-                    let score = Math.round(this.state.currRoundParams.answerPoints / (index + 1))
-                    this.addScoreToPlayer(player, score)
+                    if (player.chosenAnswer != null && player.chosenAnswer.dist != null) {
+                        let score = Math.round(this.state.currRoundParams.answerPoints / (index + 1))
+                        this.addScoreToPlayer(player, score)
 
-                    if (player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileM.toLowerCase() || player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileF.toLowerCase()) {
-                        this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
+                        if (player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileM.toLowerCase() || player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileF.toLowerCase()) {
+                            this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
+                        }
+                        index++;
                     }
-                    index++;
                 })
                 break;
         }
-
         this.state.players = this.sortMapByValue([...this.state.players]);
     }
 
@@ -462,7 +506,15 @@ export default class OwnRoom extends Room<RoomState> {
         for (let key in map) tupleArray.push([key, map[key]]);
 
         tupleArray.sort(function (a, b) {
-            return a[1][1].chosenAnswer.dist - b[1][1].chosenAnswer.dist
+            if (a[1][1].chosenAnswer == null && b[1][1].chosenAnswer == null) {
+                return 0
+            } else if (a[1][1].chosenAnswer == null && b[1][1].chosenAnswer != null) {
+                return 2000 - b[1][1].chosenAnswer.dist
+            } else if (a[1][1].chosenAnswer != null && b[1][1].chosenAnswer == null) {
+                return a[1][1].chosenAnswer.dist - 2000
+            } else {
+                return a[1][1].chosenAnswer.dist - b[1][1].chosenAnswer.dist
+            }
         });
 
         let sortedMap: MapSchema<Player> = new MapSchema<Player>();

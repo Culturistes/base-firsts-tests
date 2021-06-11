@@ -166,11 +166,16 @@ export default class MapGame extends Vue {
       }).addTo(this.myMap);
 
       this.$store.state.players.forEach((player: any) => {
-        let marker = L.marker(player.chosenAnswer.latLng, {
-          icon: this.iconAnswer,
-          alt: player.username,
-        }).addTo(this.myMap);
-        marker.bindTooltip(player.username).openTooltip();
+        if (
+          player.chosenAnswer != null &&
+          player.chosenAnswer.latLng.length > 0
+        ) {
+          let marker = L.marker(player.chosenAnswer.latLng, {
+            icon: this.iconAnswer,
+            alt: player.username,
+          }).addTo(this.myMap);
+          marker.bindTooltip(player.username).openTooltip();
+        }
       });
 
       this.myMap.off("click");

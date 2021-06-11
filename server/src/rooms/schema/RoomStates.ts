@@ -64,6 +64,12 @@ export class RoomState extends Schema {
   @type("number")
   currentStep: number = 0;
 
+  @type("number")
+  currentTimer: number = 10;
+
+  @type("boolean")
+  playersCanAnswer: boolean = false;
+
   @type({ map: Player })
   players = new MapSchema<Player>();
 
