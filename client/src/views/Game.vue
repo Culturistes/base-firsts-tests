@@ -261,6 +261,7 @@ export default class Game extends Vue {
             roomId: room.id,
             expiration: new Date().getTime() + 120 * 1000,
           };
+          console.log(datas);
           // TODO: work on the 2min reconnect without localStorage
           localStorage.setItem(`player_params`, JSON.stringify(newDatas));
           localStorage.setItem(`username`, datas.username);

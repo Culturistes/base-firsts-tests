@@ -41,6 +41,9 @@ export class Player extends Schema {
     @type("string")
     username: string;
 
+    @type("string")
+    avatarURL: string;
+
     @type("boolean")
     isMDR: boolean;
 

@@ -27,7 +27,7 @@ export default class OwnRoom extends Room<RoomState> {
     ];
     maxTimer = 10;
     timerEnded = false;
-    minigamesOrder = ['coc', 'quiz', 'lme'];
+    minigamesOrder = ['lme', 'coc', 'quiz'];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -107,6 +107,7 @@ export default class OwnRoom extends Room<RoomState> {
             id: client.sessionId,
             username: options ? options.username : "Utilisateur",
             isMDR: options.creator ? true : false,
+            avatarURL: options.avatarURL ? options.avatarURL : "",
             connected: true,
             jokers: jokers
         })

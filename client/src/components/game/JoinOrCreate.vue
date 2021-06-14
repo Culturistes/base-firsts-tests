@@ -65,6 +65,7 @@ export default class JoinOrCreate extends Vue {
       let room = await this.$store.state.client?.create("chat", {
         username: this.username,
         creator: true,
+        avatarURL: "", // TODO: Rémi add avatarURL/nom from player
       });
       this.$store.commit("updateRoom", room);
       this.$store.dispatch("goNextStep");
@@ -102,6 +103,7 @@ export default class JoinOrCreate extends Vue {
     try {
       let room = await this.$store.state.client?.joinById(this.roomID, {
         username: this.username,
+        avatarURL: "", // TODO: Rémi add avatarURL/nom from player
       });
       this.$store.commit("updateRoom", room);
       this.$store.dispatch("goNextStep");
