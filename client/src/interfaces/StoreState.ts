@@ -1,4 +1,5 @@
 import { Client, Room } from "colyseus.js";
+import { Howl } from 'howler';
 
 export default interface StoreState {
     client: Client | null;
@@ -13,12 +14,16 @@ export default interface StoreState {
         score: number,
         chosenAnswer: any,
     }>,
+    sounds: {
+        [key: string]: any
+    },
     livegame: {
         [key: string]: any,
         gameName: string,
         currentStep: number,
         currentMiniGame: number,
         currentRound: number,
+        timerIsRunning: boolean,
         paramsChosen: {
             minigameNumber: number,
             roundNumber: number,
@@ -37,6 +42,13 @@ export default interface StoreState {
             },
             description: string,
         },
+        jokersParams: {
+            [key: string]: any,
+            showOthersChoice: boolean,
+            othersCursor: Array<any>,
+            showMapRange: boolean,
+            screenIsBlurred: boolean,
+        }
     }
     settings: {
         [key: string]: any,

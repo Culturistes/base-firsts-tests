@@ -16,7 +16,9 @@
       <PlayersList />
     </div>
 
-    <div class="round">
+    <div class="round" :class="{ inactive: canAnswer }">
+      <p>Timer {{ timer }}</p>
+
       <QuizGame
         v-if="
           $store.state.livegame.minigame.type == 'quiz' ||
@@ -25,6 +27,11 @@
       />
 
       <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
+
+      <div
+        class="blurred"
+        v-if="$store.state.livegame.jokersParams.screenIsBlurred"
+      ></div>
     </div>
 
     <div class="jokers">
@@ -47,11 +54,32 @@ import MapGame from "@/components/game/minigames/MapGame.vue";
   components: { QuizGame, MapGame },
 })
 export default class MiniGameRound extends Vue {
-  $refs!: any;
   $store!: Store<StoreState>;
 
   selectedElmt!: HTMLElement;
   selectedIndex = null;
+  interval: any;
+  timer = 10;
+  canAnswer = false;
+
+  mounted(): void {
+    this.$store.state.room?.state.listen(
+      "currentTimer",
+      (val: number, oldVal: number) => {
+        this.timer = Math.round(val);
+      }
+    );
+    this.$store.state.room?.state.listen(
+      "playersCanAnswer",
+      (val: boolean, oldVal: boolean) => {
+        this.canAnswer = val;
+      }
+    );
+  }
+
+  unmounted(): void {
+    clearInterval(this.interval);
+  }
 
   chooseAnswer(e: any, index: number): void {
     e.target.classList.add("active");
@@ -89,6 +117,20 @@ export default class MiniGameRound extends Vue {
   }
   .round {
     width: 70%;
+
+    .blurred {
+      position: absolute;
+      width: calc(100% + 20px);
+      height: calc(100% + 20px);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      backdrop-filter: blur(6px);
+    }
+
+    &.isnactive {
+      pointer-events: none;
+    }
   }
 
   .jokers {

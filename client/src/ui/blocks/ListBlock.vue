@@ -6,11 +6,23 @@
       <p class="name">{{ name }}</p>
       <p class="score">{{ score }} km</p>
     </div>
+          <span
+        class="scoreWon"
+        :class="{
+          active:
+            $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT,
+          inactive:
+            $store.state.livegame.currentStep != steps.MINI_GAME_ROUND_RESULT,
+        }"
+        >+{{ player.scoreWon }}</span
+      >
   </li>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Store } from "vuex/types";
+import StoreState from "@/interfaces/StoreState";
 
 @Options({
   props: {
@@ -32,7 +44,9 @@ import { Options, Vue } from "vue-class-component";
     },
   },
 })
-export default class QuizBlock extends Vue {}
+export default class QuizBlock extends Vue {
+    $store!: Store<StoreState>;
+}
 </script>
 
 <style lang="scss">

@@ -31,7 +31,7 @@ export class ChosenAnswer extends Schema {
     gentile?: string = "";
 
     @type(['number'])
-    latLng?: ArraySchema<number>;
+    latLng?: ArraySchema<number> = new ArraySchema<number>();
 }
 
 export class Player extends Schema {
@@ -52,6 +52,15 @@ export class Player extends Schema {
 
     @type("number")
     score: number = 0;
+
+    @type("number")
+    lastScore: number = 0;
+
+    @type("number")
+    scoreWon: number = 0;
+
+    @type("boolean")
+    hasWonScore: boolean = false;
 
     @type({ map: Joker })
     jokers: MapSchema<Joker>;

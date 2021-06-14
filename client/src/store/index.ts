@@ -8,11 +8,13 @@ export default createStore({
     room: null,
     player: null,
     players: [],
+    sounds: {},
     livegame: {
       gameName: "",
       currentStep: 0,
       currentMiniGame: 1,
       currentRound: 1,
+      timerIsRunning: false,
       paramsChosen: {
         minigameNumber: 1,
         roundNumber: 1,
@@ -31,6 +33,12 @@ export default createStore({
           latLng: [],
         },
       },
+      jokersParams: {
+        showOthersChoice: false,
+        othersCursor: [],
+        showMapRange: false,
+        screenIsBlurred: false,
+      },
     },
     settings: {
       streamerMode: false,
@@ -48,7 +56,9 @@ export default createStore({
     },
     updatePlayers(state: StoreState, value: Array<any>): void {
       state.players = value;
-      console.log("players set:", value);
+    },
+    addSounds(state: StoreState, data: { name: string; value: any }): void {
+      state.sounds[data.value.name] = data.value.obj;
     },
     setPlayerIsReady(state: StoreState, value: boolean): void {
       state.player.isReady = value;
@@ -64,6 +74,12 @@ export default createStore({
       data: { index: string; value: any }
     ): void {
       state.livegame.minigame[data.index] = data.value;
+    },
+    updateJokersParams(
+      state: StoreState,
+      data: { index: string; value: any }
+    ): void {
+      state.livegame.jokersParams[data.index] = data.value;
     },
     updateSettings(
       state: StoreState,
