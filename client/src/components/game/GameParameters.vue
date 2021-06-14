@@ -1,11 +1,16 @@
 <template>
   <div class="gameParameters step">
     <div class="gameParameters-content">
-      <div class="parameters">
+      <div class="players">
         <StepTitle color="black"
           >ROOM DE {{ $store.state.livegame.gameName }} | Code :
           {{ $store.state.room?.id }}</StepTitle
         >
+        <ul class="players-list">
+          <li v-for="player in $store.state.players" v-bind:key="player.id">
+            <StampS>{{ player.username }}</StampS>
+          </li>
+        </ul>
         <label
           class="inline-input"
           v-if="$store.state.player && $store.state.player.isMDR"
@@ -34,12 +39,24 @@
             >Entrez un nombre</TextInput
           >
         </label>
-        <ArrowBtn v-on:click="playerReady">Prêt ?</ArrowBtn>
       </div>
 
-      <div class="players">
-        <p class="waiting">En attente des joueurs...</p>
-        <PlayersList />
+      <div class="parameters">
+        <div class="parameters-container">
+          <PanneauBtn :active="true" title="Mode Autoroute"
+            >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
+            pressés.</PanneauBtn
+          >
+          <PanneauBtn title="Mode Autoroute"
+            >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
+            pressés.</PanneauBtn
+          >
+          <PanneauBtn title="Mode Autoroute"
+            >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
+            pressés.</PanneauBtn
+          >
+          <StarBtn v-on:click="playerReady">En voiture<br />Simone !</StarBtn>
+        </div>
       </div>
     </div>
   </div>
@@ -98,16 +115,39 @@ export default class GameParameters extends Vue {
 .gameParameters-content {
   display: flex;
 
-  .parameters {
-    width: 60%;
+  .parameters,
+  .players {
+    height: calc(100vh - (#{$steps-padding} * 2));
+    background-color: white;
+
+    border-radius: 15px;
+    padding: 32px;
   }
 
   .players {
-    width: 40%;
+    width: 50%;
+    margin-right: calc(#{$steps-padding} / 2);
+  }
+
+  .parameters {
+    width: 50%;
+    margin-left: calc(#{$steps-padding} / 2);
 
     .waiting {
       margin-top: 0;
       text-align: left;
+    }
+
+    .parameters-container {
+      width: 30vw;
+      height: 37vw;
+      background-image: url("/img/divers/planche.png");
+      background-size: 100% 100%;
+
+      .panneau-btn {
+        width: 75%;
+        margin-left: 26%;
+      }
     }
   }
 
@@ -119,9 +159,16 @@ export default class GameParameters extends Vue {
     }
   }
 
-  .playersList {
+  .players-list {
+    display: flex;
+    flex-wrap: wrap;
     list-style: none;
     padding: 0;
+
+    li {
+      margin-right: $steps-padding;
+      margin-bottom: 20px;
+    }
   }
 }
 </style>

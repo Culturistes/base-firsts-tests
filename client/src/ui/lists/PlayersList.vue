@@ -1,17 +1,17 @@
 <template>
   <ul class="playersList">
-    <QuizBlock
+    <ListBlock
       :li="true"
       :right="player.isReady"
       class="playerName"
       v-bind:class="{ active: player.isReady }"
       v-for="(player, i) in $store.state.players"
       v-bind:key="player.id"
+      :rank="i + 1"
+      :name="player.username"
+      :score="player.score"
     >
-      <span>{{ i + 1 }} - </span>
-      <span>{{ player.username }} : </span>
-      <span>{{ player.score }}</span>
-    </QuizBlock>
+    </ListBlock>
   </ul>
 </template>
 

@@ -1,9 +1,9 @@
 <template>
-  <button v-if="direction == 'left'">
+  <button class="minimalist-arrow-btn" v-if="direction == 'left'">
     <img src="/img/buttons/left-arrow.svg" />
     <slot></slot>
   </button>
-  <button v-else-if="direction == 'right'">
+  <button class="minimalist-arrow-btn" v-else-if="direction == 'right'">
     <slot></slot>
     <img src="/img/buttons/right-arrow.svg" />
   </button>
@@ -22,3 +22,16 @@ import { Options, Vue } from "vue-class-component";
 })
 export default class MinimalistArrowBtn extends Vue {}
 </script>
+
+<style lang="scss" scoped>
+.minimalist-arrow-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: $btnFont;
+  font-weight: bold;
+  background: none;
+  border: none;
+}
+</style>

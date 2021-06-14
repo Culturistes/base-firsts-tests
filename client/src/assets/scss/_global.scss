@@ -32,6 +32,8 @@ body {
     height: 100vh;
     
     padding: $steps-padding;
+
+    overflow-x: hidden;
     .step {
         position: relative;
         width: 100%;
@@ -44,4 +46,11 @@ body {
             flex-direction: column;
         }
     }
+}
+
+.btn {
+    background: none;
+    border: none;
+
+    cursor: pointer;
 }

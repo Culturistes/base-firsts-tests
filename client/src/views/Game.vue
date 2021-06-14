@@ -3,18 +3,17 @@
     class="game background"
     :class="{
       'background-color1':
-        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE,
-      'background-color2':
-        $store.state.livegame.minigame &&
-        $store.state.livegame.minigame.type === 'coc',
-      'background-color3':
-        $store.state.livegame.minigame &&
-        $store.state.livegame.minigame.type === 'lme',
+        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE ||
+        ($store.state.livegame.minigame &&
+          $store.state.livegame.minigame.type === 'lme'),
       'background-color4':
         $store.state.livegame.currentStep === steps.GAME_PARAMETERS,
       'background-color5':
         $store.state.livegame.minigame &&
         $store.state.livegame.minigame.type === 'quiz',
+      'background-color6':
+        $store.state.livegame.minigame &&
+        $store.state.livegame.minigame.type === 'coc',
     }"
   >
     <!-- Début de partie -->

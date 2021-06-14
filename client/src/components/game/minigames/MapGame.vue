@@ -28,7 +28,7 @@
         Habitants: {{ $store.state.livegame.minigame.goodAnswer.gentileM }} et
         {{ $store.state.livegame.minigame.goodAnswer.gentileF }}
       </p>
-      <ArrowBtn v-on:click="goNext">Suivant</ArrowBtn>
+      <StarBtn v-on:click="goNext">Suivant</StarBtn>
     </div>
   </div>
 </template>

@@ -1,7 +1,6 @@
 <template>
   <h2 class="h2" :class="{ black: color === 'black' }">
     <slot></slot>
-    <div class="subline"></div>
   </h2>
 </template>
 
@@ -24,9 +23,10 @@ export default class StepTitle extends Vue {}
   display: table;
   position: relative;
 
+  margin: auto;
   margin-top: 0;
 
-  text-align: left;
+  text-align: center;
   font-family: $titleFont;
   font-weight: bold;
   font-size: $fontLsize;

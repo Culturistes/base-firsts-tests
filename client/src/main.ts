@@ -8,13 +8,19 @@ import store from "./store";
 
 import PlayersList from "./ui/lists/PlayersList.vue";
 import QuizBlock from "./ui/blocks/QuizBlock.vue";
+import ListBlock from "./ui/blocks/ListBlock.vue";
 import ArrowBtn from "./ui/buttons/ArrowBtn.vue";
+import PanneauBtn from "./ui/buttons/PanneauBtn.vue";
+import StarBtn from "./ui/buttons/StarBtn.vue";
 import LineBtn from "./ui/buttons/LineBtn.vue";
 import MinimalistArrowBtn from "./ui/buttons/MinimalistArrowBtn.vue";
 import TextInput from "./ui/input/TextInput.vue";
 import StepTitle from "./ui/titles/StepTitle.vue";
 import MiniGameTitle from "./ui/titles/MiniGameTitle.vue";
 import Stamp from "./ui/stamps/Stamp.vue";
+import StampS from "./ui/stamps/StampS.vue";
+import VSStamp from "./ui/stamps/VSStamp.vue";
+import Picture from "./ui/pictures/Picture.vue";
 
 const app = createApp(App);
 
@@ -22,13 +28,19 @@ app.use(store).use(router).mount("#app");
 
 app.component("PlayersList", PlayersList);
 app.component("QuizBlock", QuizBlock);
+app.component("ListBlock", ListBlock);
 app.component("ArrowBtn", ArrowBtn);
+app.component("PanneauBtn", PanneauBtn);
+app.component("StarBtn", StarBtn);
 app.component("LineBtn", LineBtn);
 app.component("MinimalistArrowBtn", MinimalistArrowBtn);
 app.component("TextInput", TextInput);
 app.component("StepTitle", StepTitle);
 app.component("MiniGameTitle", MiniGameTitle);
 app.component("Stamp", Stamp);
+app.component("StampS", StampS);
+app.component("VSStamp", VSStamp);
+app.component("Picture", Picture);
 
 app.config.globalProperties.$filters = {
   hideDollar(value: string) {

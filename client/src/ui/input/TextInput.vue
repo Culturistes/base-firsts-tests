@@ -2,8 +2,7 @@
   <div class="input" :class="{ black: color == 'black' }">
     <label class="input-label" :class="{ hide: modelValue.length > 0 }"
       ><span class="text"><slot></slot></span>
-      <div class="subline"></div
-    ></label>
+    </label>
     <input
       class="input-text"
       :type="type"
@@ -45,11 +44,17 @@ export default class TextInput extends Vue {}
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 20px 40px;
+
+  background-color: rgba($color: #fff, $alpha: 0.2);
+
+  border-radius: 50px;
 
   &-text,
   &-label {
-    font-family: $titleFont;
+    font-family: $btnFont;
     font-weight: bold;
+    font-size: $fontSsize;
     color: $light-text;
   }
 
@@ -66,19 +71,6 @@ export default class TextInput extends Vue {}
 
     .text {
       transition: 0.3s;
-    }
-
-    .subline {
-      position: absolute;
-      bottom: -0.6rem;
-      left: 50%;
-      transform: translateX(-50%);
-
-      width: 13.487rem;
-      height: 0.733rem;
-
-      background: url("/img/inputs/inputLine.svg");
-      background-size: 100% 100%;
     }
 
     &.hide {

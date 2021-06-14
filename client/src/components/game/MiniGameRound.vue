@@ -26,6 +26,13 @@
 
       <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
     </div>
+
+    <div class="jokers">
+      <p class="mes-jokers">Mes jokers</p>
+      <button class="btn"><img src="/img/jokers/drink.png" /></button>
+      <button class="btn"><img src="/img/jokers/pouce.png" /></button>
+      <button class="btn"><img src="/img/jokers/buzzer.png" /></button>
+    </div>
   </div>
 </template>
 
@@ -77,11 +84,27 @@ export default class MiniGameRound extends Vue {
 .minigameRound {
   display: flex;
   .info-player {
-    width: 30%;
+    width: 20%;
     margin-right: 20px;
   }
   .round {
     width: 70%;
+  }
+
+  .jokers {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 10%;
+
+    font-family: $btnFont;
+
+    .mes-jokers {
+      margin-top: 0;
+      font-size: $fontSsize;
+    }
   }
   .answer {
     &.active {

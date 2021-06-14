@@ -5,6 +5,12 @@
     <SelectPlayerList />
     <div class="inputContainer">
       <TextInput v-model="username"> Entre ton pseudo </TextInput>
+      <StarBtn v-on:click="createRoom" :disabled="username.length <= 0">
+        C'est<br />parti !
+      </StarBtn>
+    </div>
+
+    <div class="inputContainer">
       <TextInput
         v-model="roomID"
         :type="$store.state.settings.streamerMode ? 'password' : 'text'"
@@ -12,38 +18,12 @@
       >
         Entre le code
       </TextInput>
-      <!-- <label htmlFor="username">
-        <span>Pseudo</span>
-        <input
-          id="username"
-          class="playername input input-text"
-          ref="inputPlayername"
-          placeholder="Username"
-          type="text"
-          :value="username"
-        />
-      </label> -->
-      <!-- <label htmlFor="inputRoomId">
-        <span>Room ID</span>
-        <input
-          id="inputRoomId"
-          class="input input-text"
-          ref="inputRoomID"
-          :type="$store.state.settings.streamerMode ? 'password' : 'text'"
-        />
-      </label> -->
-    </div>
-
-    <div class="bottom">
-      <ArrowBtn v-on:click="createRoom" :disabled="username.length <= 0">
-        Créer
-      </ArrowBtn>
-      <ArrowBtn
+      <StarBtn
         v-on:click="joinRoom"
         :disabled="username.length <= 0 || roomID.length <= 0"
       >
         Rejoindre
-      </ArrowBtn>
+      </StarBtn>
     </div>
     <!-- <div>
       <p v-for="notif in notifications" :key="notif">{{ notif }}</p>
@@ -153,18 +133,9 @@ export default class JoinOrCreate extends Vue {
     align-items: center;
     margin-bottom: 10px;
 
-    label {
-      display: flex;
-      flex-flow: nowrap column;
-
-      &:first-child {
-        margin-right: 10px;
-      }
+    > :first-child {
+      margin-right: 18px;
     }
-  }
-
-  .bottom {
-    margin-top: 50px;
   }
 }
 </style>

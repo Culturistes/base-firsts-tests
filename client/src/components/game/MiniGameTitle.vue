@@ -1,11 +1,7 @@
 <template>
   <div class="minigameTitle step centered">
-    <MiniGameTitle>
-      {{ gameTitle }}
-    </MiniGameTitle>
-    <LineBtn v-on:click="$store.dispatch('readyForNext')"
-      >À vos marques, prêt, partez !</LineBtn
-    >
+    <img :src="'/img/titles/' + $store.state.livegame.minigame.type + '.png'" />
+    <StarBtn v-on:click="$store.dispatch('readyForNext')">Prêt ?</StarBtn>
   </div>
 </template>
 
@@ -25,12 +21,10 @@ export default class MiniGameTitle extends Vue {
   created(): void {
     switch (this.$store.state.livegame.minigame.type) {
       case "quiz":
-        this.gameTitle =
-          "C’est l’heure du fameux quizz questions pour un chauvin sur Radio Soleil ! Défiez les autres joueurs et remportez le prix de l’expert des régions.";
+        this.gameTitle = "Question pour un chauvin";
         break;
       case "lme":
-        this.gameTitle =
-          "Péage : ne vous trompez pas de voie, cela risque de vous retarder ! Choisissez soit la réponse de droite, soit celle de gauche.";
+        this.gameTitle = "La majorité l'emporte";
         break;
       case "coc":
         this.gameTitle = "Ché où ça";

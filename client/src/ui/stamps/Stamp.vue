@@ -10,24 +10,25 @@
         :class="{
           'background-color1': people === 'bigoudene',
           'background-color2': people === 'tropique',
-          'background-color3': people === 'rando',
+          'background-color3': people === 'surfeuse',
         }"
       ></div>
     </div>
-    <div class="stamp-img">
-      <img v-if="people == 'rando'" src="/img/players/rando.png" alt="" />
-      <img
-        v-if="people == 'bigoudene'"
-        src="/img/players/bigoudene.png"
-        alt=""
-      />
-      <img v-if="people == 'tropique'" src="/img/players/tropique.png" alt="" />
-    </div>
+    <div
+      :style="{
+        'background-image': 'url(\'/img/animations/' + people + '.png\')',
+        'background-position': `-${216 * actualImgPos.x}px -${
+          380 * actualImgPos.y
+        }px`,
+      }"
+      class="stamp-img"
+    ></div>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { Watch } from "vue-property-decorator";
 
 @Options({
   props: {
@@ -44,6 +45,81 @@ import { Options, Vue } from "vue-class-component";
   },
 })
 export default class Stamp extends Vue {
+  actualImg = 0;
+  actualImgPos: any = {
+    x: 0,
+    y: 0,
+  };
+  lastImg: any = {
+    surfeuse: 30,
+    garcon: 316,
+    fermier: 364,
+    skieuse: 97,
+    camping: 390,
+    touriste: 132,
+  };
+
+  time = 0;
+  lastTime = 0;
+
+  get people(): string {
+    return this.people;
+  }
+
+  @Watch("selected")
+  onSselectedChanged(val: number, oldVal: number) {
+    if (val == this.pos) {
+      this.lastTime = Date.now();
+      this.animate();
+    }
+  }
+
+  animate() {
+    let now = Date.now();
+    let delta = now - this.lastTime;
+    this.lastTime = now;
+
+    this.time += delta;
+
+    // Animate at 30fps
+    if (this.time >= 33.3) {
+      this.time = 0;
+
+      let temp = this.actualImg;
+      let tempX = this.actualImgPos.x;
+      let tempY = this.actualImgPos.y;
+      temp++;
+      //console.log(temp, tempX, tempY);
+      if (temp > this.lastImg[this.people]) {
+        this.actualImg = 0;
+        this.actualImgPos = {
+          x: 0,
+          y: 0,
+        };
+      } else {
+        tempX++;
+        if (tempX > 99) {
+          tempX = 0;
+          tempY++;
+        }
+        this.actualImg = temp;
+        this.actualImgPos = {
+          x: tempX,
+          y: tempY,
+        };
+      }
+    }
+
+    // Stop animation when not selected
+    if (this.selected === this.pos) {
+      requestAnimationFrame(this.animate);
+    }
+  }
+
+  mounted() {
+    this.lastTime = Date.now();
+    this.animate();
+  }
   selected!: number;
   pos!: number;
   get translate() {
@@ -74,6 +150,7 @@ export default class Stamp extends Vue {
 
     background-image: url("/img/stamps/stamp-border.svg");
     background-size: 100% 100%;
+    background-repeat: no-repeat;
 
     transition: transform 0.3s;
 
