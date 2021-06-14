@@ -6,16 +6,16 @@
       <p class="name">{{ name }}</p>
       <p class="score">{{ score }} km</p>
     </div>
-          <span
-        class="scoreWon"
-        :class="{
-          active:
-            $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT,
-          inactive:
-            $store.state.livegame.currentStep != steps.MINI_GAME_ROUND_RESULT,
-        }"
-        >+{{ player.scoreWon }}</span
-      >
+    <span
+      class="scoreWon"
+      :class="{
+        active:
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT,
+        inactive:
+          $store.state.livegame.currentStep != steps.MINI_GAME_ROUND_RESULT,
+      }"
+      >+{{ scoreWon }}</span
+    >
   </li>
 </template>
 
@@ -23,6 +23,7 @@
 import { Options, Vue } from "vue-class-component";
 import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
+import { STEPS } from "@/views/Game.vue";
 
 @Options({
   props: {
@@ -38,6 +39,10 @@ import StoreState from "@/interfaces/StoreState";
       type: String,
       default: "0",
     },
+    scoreWon: {
+      type: String,
+      default: "0",
+    },
     perso: {
       type: String,
       default: "rando",
@@ -45,7 +50,8 @@ import StoreState from "@/interfaces/StoreState";
   },
 })
 export default class QuizBlock extends Vue {
-    $store!: Store<StoreState>;
+  $store!: Store<StoreState>;
+  steps = STEPS;
 }
 </script>
 
