@@ -38,7 +38,9 @@
       <p class="mes-jokers">Mes jokers</p>
       <button class="btn"><img src="/img/jokers/drink.png" /></button>
       <button class="btn"><img src="/img/jokers/pouce.png" /></button>
-      <button class="btn"><img src="/img/jokers/buzzer.png" /></button>
+      <button class="btn" @click="displaySticker">
+        <img src="/img/jokers/buzzer.png" />
+      </button>
     </div>
   </div>
 </template>
@@ -103,6 +105,28 @@ export default class MiniGameRound extends Vue {
         chosenAnswer: { selectedNAnswer: index },
       });
     }
+  }
+
+  displaySticker(): void {
+    let stickersMaxNumber = 10;
+
+    let index = Math.round(Math.random() * (stickersMaxNumber - 1)) + 1;
+
+    let gap = 140 + 20;
+
+    let x = Math.round(Math.random() * (window.innerWidth - gap - 20)) + 20;
+    let y = Math.round(Math.random() * (window.innerHeight - gap - 20)) + 20;
+
+    let datas = {
+      index: index,
+      x: x,
+      y: y,
+    };
+
+    this.$store.state.room?.send("clientPacket", {
+      type: "STICKER",
+      datas: datas,
+    });
   }
 }
 </script>

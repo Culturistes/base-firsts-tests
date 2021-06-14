@@ -151,6 +151,7 @@ import { Store } from "vuex";
 import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import { STEPS } from "../../../views/Game.vue";
+import { watchEffect } from "@vue/runtime-core";
 
 @Options({})
 export default class QuizGame extends Vue {
@@ -242,7 +243,6 @@ export default class QuizGame extends Vue {
       () => this.$store.state.livegame.jokersParams.showOthersChoice,
       (value, oldVal) => {
         if (value) {
-          console.log("calculateLME 1");
           this.calculateLMEAnswers();
         }
       }
@@ -255,7 +255,6 @@ export default class QuizGame extends Vue {
           this.$store.state.livegame.minigame.type == "lme" &&
           this.$store.state.livegame.jokersParams.showOthersChoice
         ) {
-          console.log("calculateLME 2");
           this.calculateLMEAnswers();
         }
       }
@@ -300,6 +299,7 @@ export default class QuizGame extends Vue {
       }
     });
     this.actualLMEAnswers = datas;
+    console.log(this.actualLMEAnswers);
   }
 }
 </script>

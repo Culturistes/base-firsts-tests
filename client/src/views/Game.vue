@@ -126,10 +126,6 @@
       <GameResult
         v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
       />
-
-      <div>
-        <button @click="displaySticker">PUSH!</button>
-      </div>
     </div>
 
     <div class="loader" v-if="isLoading">
@@ -187,7 +183,7 @@ export default class Game extends Vue {
   streamerMode = false;
   steps = STEPS;
   isLoading = false;
-  stickersMaxNumber = 10;
+
   stickers: any = {};
   stickerIndex = 0;
 
@@ -394,29 +390,6 @@ export default class Game extends Vue {
     }
   }
 
-  displaySticker(): void {
-    // Max sticker = 15
-    // Max temps = 5s
-
-    let index = Math.round(Math.random() * (this.stickersMaxNumber - 1)) + 1;
-
-    let gap = 140 + 20;
-
-    let x = Math.round(Math.random() * (window.innerWidth - gap - 20)) + 20;
-    let y = Math.round(Math.random() * (window.innerHeight - gap - 20)) + 20;
-
-    let datas = {
-      index: index,
-      x: x,
-      y: y,
-    };
-
-    this.$store.state.room?.send("clientPacket", {
-      type: "STICKER",
-      datas: datas,
-    });
-  }
-
   createSticker({
     index,
     x,
@@ -436,7 +409,7 @@ export default class Game extends Vue {
       //let idx = this.stickers.findIndex((sticker) => sticker.id == id);
       //this.stickers.splice(idx, 1);
       delete this.stickers[id.toString()];
-    }, 15000);
+    }, 5000);
 
     let sticker = {
       url: `/img/stickers/${index}.png`,
@@ -518,7 +491,7 @@ export default class Game extends Vue {
       position: absolute;
       top: 0;
       left: 0;
-      animation: disappear 15s forwards running;
+      animation: disappear 5s forwards running;
     }
 
     @keyframes disappear {
