@@ -6,7 +6,7 @@
         $store.state.livegame.currentStep === steps.JOIN_OR_CREATE ||
         ($store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'lme'),
-      'background-color4':
+      'background-color7':
         $store.state.livegame.currentStep === steps.GAME_PARAMETERS,
       'background-color5':
         $store.state.livegame.minigame &&

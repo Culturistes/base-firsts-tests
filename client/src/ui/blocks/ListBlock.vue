@@ -6,16 +6,15 @@
       <p class="name">{{ name }}</p>
       <p class="score">{{ score }} km</p>
     </div>
-    <span
+    <div
       class="scoreWon"
-      :class="{
-        active:
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT,
-        inactive:
-          $store.state.livegame.currentStep != steps.MINI_GAME_ROUND_RESULT,
-      }"
-      >+{{ scoreWon }}</span
+      v-if="
+        $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
+        scoreWon > 0
+      "
     >
+      + {{ scoreWon }} km
+    </div>
   </li>
 </template>
 
@@ -57,6 +56,7 @@ export default class QuizBlock extends Vue {
 
 <style lang="scss">
 .list-block {
+  position: relative;
   display: flex;
   align-items: center;
   background: rgba($color: #faf5ed, $alpha: 0.3);
@@ -90,6 +90,14 @@ export default class QuizBlock extends Vue {
         font-weight: normal;
       }
     }
+  }
+  .scoreWon {
+    position: absolute;
+    right: 0%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 12px;
+    transform: translateX(110%);
   }
 }
 </style>

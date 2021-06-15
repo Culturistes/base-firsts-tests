@@ -63,6 +63,7 @@
     </div>
   </div>
   <div class="minigame mg-lme" v-else>
+    <RoundList :result="$store.state.player.answersRecord" />
     <div class="ui-question">
       <Picture
         :selected="
@@ -71,12 +72,14 @@
         "
         :right="
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          $store.state.livegame.minigame.goodAnswer.content.includes(0)
+          false
+          /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
         "
-        :wrong="
-          selectedAnswer === 0 &&
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          !$store.state.livegame.minigame.goodAnswer.content.includes(0)
+        :showAnswer="
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT
+        "
+        :respondedNumber="
+          3 /*MAEL : récuperer le nombre de personne qui a répondu à cette réponse*/
         "
         @click="
           () => {
@@ -85,6 +88,7 @@
               steps.MINI_GAME_ROUND_RESULT
             ) {
               this.selectedAnswer = 0;
+              sendAnswer();
             }
           }
         "
@@ -106,12 +110,14 @@
         "
         :right="
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          $store.state.livegame.minigame.goodAnswer.content.includes(1)
+          true
+          /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
         "
-        :wrong="
-          selectedAnswer === 1 &&
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          !$store.state.livegame.minigame.goodAnswer.content.includes(1)
+        :showAnswer="
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT
+        "
+        :respondedNumber="
+          3 /*MAEL : récuperer le nombre de personne qui a répondu à cette réponse*/
         "
         @click="
           () => {
@@ -120,6 +126,7 @@
               steps.MINI_GAME_ROUND_RESULT
             ) {
               this.selectedAnswer = 1;
+              sendAnswer();
             }
           }
         "
@@ -135,7 +142,7 @@
         </span></Picture
       >
     </div>
-    <div
+    <!-- <div
       class="ui-valid"
       v-if="
         selectedAnswer != null &&
@@ -143,7 +150,7 @@
       "
     >
       <StarBtn @click="sendAnswer">Valider</StarBtn>
-    </div>
+    </div> -->
 
     <div
       class="ui-result"

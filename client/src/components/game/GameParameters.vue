@@ -87,11 +87,11 @@ export default class GameParameters extends Vue {
     },
     {
       minigame: 3,
-      round: 1,
+      round: 2,
     },
     {
       minigame: 3,
-      round: 1,
+      round: 5,
     },
   ];
 

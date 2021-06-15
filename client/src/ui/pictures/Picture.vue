@@ -6,9 +6,24 @@
       'picture-rose': color === 'rose',
     }"
   >
-    <img v-if="!selected" :src="'/img/pictures/' + color + '.png'" />
-    <img v-else :src="'/img/pictures/' + color + '-selected.png'" />
-    <p><slot></slot></p>
+    <img
+      v-if="!selected && !showAnswer"
+      :src="'/img/pictures/' + color + '.png'"
+    />
+    <img
+      v-else-if="selected && !showAnswer"
+      :src="'/img/pictures/' + color + '-selected.png'"
+    />
+    <img
+      v-else-if="!right && showAnswer"
+      :src="'/img/pictures/' + color + '.png'"
+    />
+    <img
+      v-else-if="right && showAnswer"
+      :src="'/img/pictures/' + color + '-selected.png'"
+    />
+    <p v-if="showAnswer" class="responded-number">{{ respondedNumber }}</p>
+    <p class="answer"><slot></slot></p>
   </button>
 </template>
 
@@ -29,9 +44,13 @@ import { Options, Vue } from "vue-class-component";
       type: Boolean,
       default: false,
     },
-    wrong: {
+    showAnswer: {
       type: Boolean,
       default: false,
+    },
+    respondedNumber: {
+      type: Number,
+      default: 5,
     },
   },
 })
@@ -49,6 +68,10 @@ export default class Picture extends Vue {}
 
   cursor: pointer;
 
+  .responded-number {
+    position: absolute;
+  }
+
   p {
     position: absolute;
 
@@ -58,12 +81,29 @@ export default class Picture extends Vue {}
   }
 
   &-blue {
+    .responded-number {
+      bottom: 6.3%;
+      right: 17.4%;
+    }
+    .answer {
+      width: 56%;
+      left: 30%;
+    }
     p {
       transform: rotate(-11deg);
     }
   }
 
   &-rose {
+    .responded-number {
+      bottom: 3.3%;
+      right: 36.2%;
+    }
+    .answer {
+      width: 56%;
+      top: 32%;
+      right: 15%;
+    }
     p {
       transform: rotate(18deg);
     }
