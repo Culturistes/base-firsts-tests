@@ -16,7 +16,7 @@
       <PlayersList />
     </div>
 
-    <div class="round" :class="{ inactive: !canAnswer }">
+    <div class="round" :class="{ inactive: /*!canAnswer*/ false }">
       <p>Timer {{ timer }}</p>
 
       <QuizGame
@@ -141,11 +141,11 @@ export default class MiniGameRound extends Vue {
 .minigameRound {
   display: flex;
   .info-player {
-    width: 20%;
-    margin-right: 20px;
+    width: 200px;
+    margin-right: 100px;
   }
   .round {
-    width: 70%;
+    width: calc(100% - 400px);
 
     .blurred {
       position: absolute;
@@ -168,7 +168,7 @@ export default class MiniGameRound extends Vue {
     justify-content: flex-start;
     align-items: center;
 
-    width: 10%;
+    width: 100px;
 
     font-family: $btnFont;
 

@@ -10,6 +10,7 @@
 
   width: 95px;
   height: 95px;
+  flex: 0 0 95px;
 
   border-radius: 50%;
   border: 4px solid white;
