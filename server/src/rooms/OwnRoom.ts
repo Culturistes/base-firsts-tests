@@ -2,7 +2,7 @@ import { MapSchema, ArraySchema } from "@colyseus/schema";
 import { RoomState, MiniGameState, RoundState } from './schema/RoomStates';
 import { Room, Client } from "colyseus";
 import request from 'request';
-import { ChosenAnswer, Joker, Player } from "./schema/PlayerState";
+import { AnswerRecord, ChosenAnswer, Joker, Player } from "./schema/PlayerState";
 
 export enum STEPS {
     GAME_PARAMETERS,
@@ -25,7 +25,7 @@ export default class OwnRoom extends Room<RoomState> {
         { type: 'attaque', slug: "pjn", name: "Petit jaune" },
         { type: 'attaque', slug: "ral", name: "Ralentissement" }
     ];
-    maxTimer = 10;
+    minigameTimer = 20;
     timerEnded = false;
     minigamesOrder = ['lme', 'coc', 'quiz'];
 
@@ -214,7 +214,7 @@ export default class OwnRoom extends Room<RoomState> {
             if (packet.datas.chosenAnswer != null) {
 
                 let newChosenAnswer = new ChosenAnswer();
-                newChosenAnswer.selectedNAnswer = packet.datas.chosenAnswer.selectedNAnswer ? parseInt(packet.datas.chosenAnswer.selectedNAnswer) : newChosenAnswer.selectedNAnswer;
+                newChosenAnswer.selectedNAnswer = packet.datas.chosenAnswer.selectedNAnswer != null ? parseInt(packet.datas.chosenAnswer.selectedNAnswer) : newChosenAnswer.selectedNAnswer;
                 newChosenAnswer.selectedSAnswer = packet.datas.chosenAnswer.selectedSAnswer ? packet.datas.chosenAnswer.selectedSAnswer : newChosenAnswer.selectedSAnswer;
                 newChosenAnswer.dist = packet.datas.chosenAnswer.dist ? packet.datas.chosenAnswer.dist : newChosenAnswer.dist;
                 newChosenAnswer.gentile = packet.datas.chosenAnswer.gentile ? packet.datas.chosenAnswer.gentile : newChosenAnswer.gentile;
@@ -230,7 +230,7 @@ export default class OwnRoom extends Room<RoomState> {
             console.log("=== everyone's ready!")
 
             this.clock.clear();
-            this.state.currentTimer = this.maxTimer;
+            this.state.currentTimer = this.minigameTimer;
 
             this.mustEndTheRound();
         }
@@ -280,6 +280,7 @@ export default class OwnRoom extends Room<RoomState> {
 
                 this.state.players.forEach(player => {
                     player.chosenAnswer = null
+                    player.answersRecord = new Array<AnswerRecord>();
                 })
 
                 this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
@@ -300,9 +301,7 @@ export default class OwnRoom extends Room<RoomState> {
     startTimer() {
         console.log("Trying to start timer");
         console.log("state", this.state.currentStep)
-        if (this.state.currentStep == STEPS.MINI_GAME_TITLE ||
-            this.state.currentStep == STEPS.MINI_GAME_ROUND) {
-            // Start clock for 10s
+        if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
             this.clock.start();
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
                 this.state.playersCanAnswer = true;
@@ -311,7 +310,7 @@ export default class OwnRoom extends Room<RoomState> {
                 if (this.state.currentTimer <= 0) {
                     this.state.playersCanAnswer = false;
                     this.clock.clear();
-                    this.state.currentTimer = this.maxTimer;
+                    this.state.currentTimer = this.minigameTimer;
                     this.mustEndTheRound();
                 } else {
                     this.state.currentTimer -= 0.1;
@@ -379,6 +378,32 @@ export default class OwnRoom extends Room<RoomState> {
                                     latLng: [data.latitude, data.longitude]
                                 }
                                 break;
+                            case 'lbf':
+                                // To be generated
+                                round.name = "La tarte aux pommes, carottes et saucisses"
+
+                                round.goodAnswer = {
+                                    content: [],
+                                    recette: {
+                                        possibleIngredients: [
+                                            { name: "Carotte", img: "#ff0000" },
+                                            { name: "Pomme", img: "#00ff00" },
+                                            { name: "Sel", img: "#0000ff" },
+                                            { name: "Saucisse", img: "#ffff00" },
+                                            { name: "Sucre", img: "#000000" },
+                                            { name: "Poivre", img: "#000000" },
+                                            { name: "Fromage", img: "#000000" },
+                                            { name: "Huile", img: "#000000" },
+                                        ],
+                                        ingredients: [
+                                            { name: "Carotte", img: "#ff0000", caught: false },
+                                            { name: "Pomme", img: "#00ff00", caught: false },
+                                            { name: "Sel", img: "#0000ff", caught: false },
+                                            { name: "Saucisse", img: "#ffff00", caught: false },
+                                        ]
+                                    }
+                                }
+                                break;
                         }
                         rounds.push(round);
                     })
@@ -401,6 +426,9 @@ export default class OwnRoom extends Room<RoomState> {
         let goodAnswer = {};
 
         this.state.players.forEach((player) => {
+            let record = new AnswerRecord();
+            record.isGood = false;
+            player.answersRecord[this.state.parameters.currentRound] = record;
             this.addScoreToPlayer(player, 0)
         })
 
@@ -411,6 +439,9 @@ export default class OwnRoom extends Room<RoomState> {
                 this.state.players.forEach((player) => {
                     if (player.chosenAnswer != null) {
                         if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
+                            let record = new AnswerRecord();
+                            record.isGood = true;
+                            player.answersRecord[this.state.parameters.currentRound] = record;
                             this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
                         }
                     }
@@ -429,6 +460,9 @@ export default class OwnRoom extends Room<RoomState> {
                 if (choices[0] && choices[1] && choices[0].length == choices[1].length) {
                     this.state.players.forEach((player) => {
                         if (player.chosenAnswer != null) {
+                            let record = new AnswerRecord();
+                            record.isGood = true;
+                            player.answersRecord[this.state.parameters.currentRound] = record;
                             this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
                         }
                     })
@@ -443,6 +477,9 @@ export default class OwnRoom extends Room<RoomState> {
                         }
                     })
                     mostPicked.forEach(player => {
+                        let record = new AnswerRecord();
+                        record.isGood = true;
+                        player.answersRecord[this.state.parameters.currentRound] = record;
                         this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
                     })
                     goodAnswer = {
@@ -457,7 +494,7 @@ export default class OwnRoom extends Room<RoomState> {
 
                 break;
             case 'coc':
-                let players = this.sortPlayersByAnswers([...this.state.players]);
+                let players = this.sortPlayersByMapDist([...this.state.players]);
                 let index = 0;
                 players.forEach(player => {
                     if (player.chosenAnswer != null && player.chosenAnswer.dist != null) {
@@ -467,7 +504,21 @@ export default class OwnRoom extends Room<RoomState> {
                         if (player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileM.toLowerCase() || player.chosenAnswer.gentile.toLowerCase() == this.state.currRoundParams.goodAnswer.gentileF.toLowerCase()) {
                             this.addScoreToPlayer(player, Math.round(this.state.currRoundParams.answerPoints / 2))
                         }
+
+                        let record = new AnswerRecord();
+                        record.isGood = true;
+                        player.answersRecord[this.state.parameters.currentRound] = record;
                         index++;
+                    }
+                })
+                break;
+            case 'lbf':
+                this.state.players.forEach((player) => {
+                    if (player.chosenAnswer != null) {
+                        let record = new AnswerRecord();
+                        record.isGood = true;
+                        player.answersRecord[this.state.parameters.currentRound] = record;
+                        this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
                     }
                 })
                 break;
@@ -498,7 +549,7 @@ export default class OwnRoom extends Room<RoomState> {
         return sortedMap;
     }
 
-    sortPlayersByAnswers(map: any) {
+    sortPlayersByMapDist(map: any) {
         let tupleArray = [];
         for (let key in map) tupleArray.push([key, map[key]]);
 

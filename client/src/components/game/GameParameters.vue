@@ -97,7 +97,7 @@ export default class GameParameters extends Vue {
 
   playerIsReady = false;
   inputNbMiniGame = "3";
-  inputNbRound = "1";
+  inputNbRound = "3";
 
   changeSelectedMod(i: number): void {
     this.selectedMod = i;

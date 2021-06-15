@@ -257,13 +257,19 @@ export default class Game extends Vue {
             roomId: room.id,
             expiration: new Date().getTime() + 120 * 1000,
           };
+
+          this.$store.dispatch("goNextStep");
           console.log(datas);
+
+          // Instantiate all listener when server send back players infos ? test for optimization/perfs
+
           // TODO: work on the 2min reconnect without localStorage
           localStorage.setItem(`player_params`, JSON.stringify(newDatas));
           localStorage.setItem(`username`, datas.username);
           break;
         case "playersList":
           this.$store.commit("updatePlayers", datas);
+          console.log("players:", datas);
           break;
         case "minigame":
           this.$store.commit("updateLiveGame", {
@@ -360,6 +366,10 @@ export default class Game extends Vue {
                   break;
                 case "lbf":
                   // Do smth
+                  this.$store.commit("updateJokersParams", {
+                    index: "highlightItems",
+                    value: true,
+                  });
                   break;
               }
               break;
@@ -479,13 +489,14 @@ export default class Game extends Vue {
 
   .stickers-container {
     position: absolute;
-    z-index: 0;
+    z-index: 9999;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     overflow: hidden;
+    pointer-events: none;
 
     .sticker {
       position: absolute;

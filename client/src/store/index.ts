@@ -31,12 +31,17 @@ export default createStore({
           gentileM: "",
           gentileF: "",
           latLng: [],
+          recette: {
+            possibleIngredients: [],
+            ingredients: [],
+          },
         },
       },
       jokersParams: {
         showOthersChoice: false,
         othersCursor: [],
         showMapRange: false,
+        highlightItems: false,
         screenIsBlurred: false,
       },
     },

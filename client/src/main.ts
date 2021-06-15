@@ -7,6 +7,7 @@ import router from "./router";
 import store from "./store";
 
 import PlayersList from "./ui/lists/PlayersList.vue";
+import RoundList from "./ui/lists/RoundList.vue";
 import QuizBlock from "./ui/blocks/QuizBlock.vue";
 import ListBlock from "./ui/blocks/ListBlock.vue";
 import ArrowBtn from "./ui/buttons/ArrowBtn.vue";
@@ -27,6 +28,7 @@ const app = createApp(App);
 app.use(store).use(router).mount("#app");
 
 app.component("PlayersList", PlayersList);
+app.component("RoundList", RoundList);
 app.component("QuizBlock", QuizBlock);
 app.component("ListBlock", ListBlock);
 app.component("ArrowBtn", ArrowBtn);

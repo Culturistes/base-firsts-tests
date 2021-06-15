@@ -16,7 +16,7 @@
       <PlayersList />
     </div>
 
-    <div class="round" :class="{ inactive: canAnswer }">
+    <div class="round" :class="{ inactive: !canAnswer }">
       <p>Timer {{ timer }}</p>
 
       <QuizGame
@@ -27,6 +27,10 @@
       />
 
       <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
+
+      <BonneFranquetteGame
+        v-if="$store.state.livegame.minigame.type == 'lbf'"
+      />
 
       <div
         class="blurred"
@@ -51,9 +55,10 @@ import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 import QuizGame from "@/components/game/minigames/QuizGame.vue";
 import MapGame from "@/components/game/minigames/MapGame.vue";
+import BonneFranquetteGame from "@/components/game/minigames/BonneFranquetteGame.vue";
 
 @Options({
-  components: { QuizGame, MapGame },
+  components: { QuizGame, MapGame, BonneFranquetteGame },
 })
 export default class MiniGameRound extends Vue {
   $store!: Store<StoreState>;
@@ -152,7 +157,7 @@ export default class MiniGameRound extends Vue {
       backdrop-filter: blur(6px);
     }
 
-    &.isnactive {
+    &.inactive {
       pointer-events: none;
     }
   }

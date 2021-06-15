@@ -68,7 +68,6 @@ export default class JoinOrCreate extends Vue {
         avatarURL: this.avatar,
       });
       this.$store.commit("updateRoom", room);
-      this.$store.dispatch("goNextStep");
     } catch (e) {
       console.error("join error", e);
     }
@@ -106,7 +105,6 @@ export default class JoinOrCreate extends Vue {
         avatarURL: this.avatar,
       });
       this.$store.commit("updateRoom", room);
-      this.$store.dispatch("goNextStep");
     } catch (e) {
       console.error("Join error");
     }

@@ -38,7 +38,11 @@ export default interface StoreState {
                 content: Array<string>,
                 latLng?: Array<string>,
                 gentileM?: string,
-                gentileF?: string
+                gentileF?: string,
+                recette?: {
+                    possibleIngredients: Array<{ name: string, img: string }>,
+                    ingredients: Array<{ name: string, img: string, caught: boolean }>
+                }
             },
             description: string,
         },
@@ -47,6 +51,7 @@ export default interface StoreState {
             showOthersChoice: boolean,
             othersCursor: Array<any>,
             showMapRange: boolean,
+            highlightItems: boolean,
             screenIsBlurred: boolean,
         }
     }
