@@ -13,9 +13,13 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Ingredient from "@/classes/Ingredient";
+import { Store } from "vuex/types";
+import StoreState from "@/interfaces/StoreState";
 
 @Options({})
 export default class BonneFranquetteGame extends Vue {
+  $store!: Store<StoreState>;
+
   cnv: any;
   ctx: any;
   rect: any;
@@ -48,6 +52,8 @@ export default class BonneFranquetteGame extends Vue {
   };
 
   mounted() {
+    this.possibleIngredients =
+      this.$store.state.livegame.minigame.goodAnswer.possibleIngredients;
     this.cnv = document.querySelector("#bonne-franquette-canvas");
     this.ctx = this.cnv.getContext("2d");
 

@@ -99,6 +99,7 @@ export default createStore({
         index: "currentStep",
         value: ctx.state.livegame.currentStep + 1,
       });
+
       if (ctx.state.player) ctx.commit("setPlayerIsReady", false);
     },
     readyForNext(ctx, payload?): void {
