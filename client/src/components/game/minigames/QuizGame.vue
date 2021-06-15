@@ -3,6 +3,7 @@
     v-if="$store.state.livegame.minigame.type === 'quiz'"
     class="minigame mg-quiz"
   >
+    <RoundList :result="$store.state.player.answersRecord" />
     <QuizBlock>{{ $store.state.livegame.minigame.title }}</QuizBlock>
     <div class="ui-question">
       <QuizBlock
@@ -42,14 +43,6 @@
         "
       >
         {{ $filters.hideDollar(answer) }}
-        <span
-          v-if="
-            $store.state.livegame.minigame.type == 'lme' &&
-            $store.state.livegame.jokersParams.showOthersChoice
-          "
-        >
-          | {{ actualLMEAnswers[i] }}
-        </span>
       </QuizBlock>
 
       <div
@@ -95,7 +88,15 @@
             }
           }
         "
-        >{{ answers[0] }}</Picture
+        >{{ answers[0] }}
+        <span
+          v-if="
+            $store.state.livegame.minigame.type == 'lme' &&
+            $store.state.livegame.jokersParams.showOthersChoice
+          "
+        >
+          | {{ actualLMEAnswers[0] }}
+        </span></Picture
       >
       <VSStamp />
       <Picture
@@ -123,7 +124,15 @@
           }
         "
         color="rose"
-        >{{ answers[1] }}</Picture
+        >{{ answers[1] }}
+        <span
+          v-if="
+            $store.state.livegame.minigame.type == 'lme' &&
+            $store.state.livegame.jokersParams.showOthersChoice
+          "
+        >
+          | {{ actualLMEAnswers[1] }}
+        </span></Picture
       >
     </div>
     <div

@@ -1,25 +1,19 @@
 <template>
   <div class="minigame mg-map">
-    <QuizBlock
-      >Où se trouve la ville de
-      {{ $store.state.livegame.minigame.title }} ?</QuizBlock
-    >
+    <QuizBlock> {{ $store.state.livegame.minigame.title }} ?</QuizBlock>
     <div id="map"></div>
-    <QuizBlock
-      class="ui-question"
-      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND"
-    >
+    <div class="ui-question">
       <label>
         <p>
-          Bonus : Comment s'appellent les habitants de
-          {{ $store.state.livegame.minigame.title }} ?
+          <!-- v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND" -->
+          Bonus : Comment s'appellent ses habitants ?
         </p>
-        <TextInput color="black" v-model="gentile"
-          >Entre le nom des habitans</TextInput
-        >
+        <div class="input-btn">
+          <TextInput color="black" v-model="gentile">Saisi le nom</TextInput>
+          <StarBtn @click="validateAnswer">Valider</StarBtn>
+        </div>
       </label>
-      <ArrowBtn @click="validateAnswer">Valider</ArrowBtn>
-    </QuizBlock>
+    </div>
     <div
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
@@ -234,16 +228,36 @@ body.leaflet-dragging {
 .ui-question {
   position: absolute;
   width: 30%;
-  bottom: 0;
-  left: 0;
+  top: 50%;
+  right: 0;
   margin: 0;
   padding: 20px;
+
+  z-index: 3000;
+
+  font-family: $btnFont;
+  font-size: $fontSsize;
 
   label {
     width: 100%;
 
+    text-align: left;
+
     .input {
-      width: 100%;
+      width: calc(100% - 80px);
+    }
+
+    .star-btn {
+      width: 80px;
+      height: 80px;
+
+      font-size: 1.3rem;
+    }
+
+    .input-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 

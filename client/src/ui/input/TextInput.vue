@@ -59,6 +59,8 @@ export default class TextInput extends Vue {}
   }
 
   &-text {
+    width: 100%;
+
     border: none;
     background: none;
 

@@ -11,6 +11,7 @@
       :name="player.username"
       :score="player.score"
       :scoreWon="player.scoreWon"
+      :perso="player.avatarURL"
     >
     </ListBlock>
   </ul>

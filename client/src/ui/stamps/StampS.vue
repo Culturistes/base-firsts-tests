@@ -1,7 +1,9 @@
 <template>
   <div class="stamp-s">
+    <img v-if="isMDR" class="mdr" src="/img/stamps/mdr.svg" />
+    <img v-if="isReady" class="ready" src="/img/stamps/ready.svg" />
     <img :src="'/img/stamps/' + people + '-s.png'" />
-    <slot></slot>
+    <span class="name"><slot></slot></span>
   </div>
 </template>
 
@@ -14,6 +16,14 @@ import { Options, Vue } from "vue-class-component";
       type: String,
       default: "rando",
     },
+    isMDR: {
+      type: Boolean,
+      default: false,
+    },
+    isReady: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class StampS extends Vue {}
@@ -21,6 +31,8 @@ export default class StampS extends Vue {}
 
 <style lang="scss" scoped>
 .stamp-s {
+  max-width: 96px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,5 +40,22 @@ export default class StampS extends Vue {}
 
   font-size: $fontSsize;
   font-family: $btnFont;
+
+  .name {
+    margin-top: 5px;
+    font-size: 1.3rem;
+  }
+
+  .mdr {
+    position: absolute;
+    top: -13px;
+    left: -14px;
+  }
+
+  .ready {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+  }
 }
 </style>

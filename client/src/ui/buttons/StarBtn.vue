@@ -12,7 +12,8 @@
     :class="{ disabled: disabled }"
     :disabled="disabled"
   >
-    <span><slot></slot></span>
+    <span v-if="!valid"><slot></slot></span>
+    <span v-else><img src="/img/divers/valid.svg" /></span>
   </button>
 </template>
 
@@ -26,6 +27,10 @@ import { Options, Vue } from "vue-class-component";
       default: false,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    valid: {
       type: Boolean,
       default: false,
     },

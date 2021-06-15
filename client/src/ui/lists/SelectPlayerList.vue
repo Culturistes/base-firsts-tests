@@ -13,15 +13,13 @@
       >Suivant</MinimalistArrowBtn
     >
     <div class="select-player-list">
-      <Stamp :pos="0" :selected="selectedPos" people="surfeuse"></Stamp>
-      <Stamp :pos="1" :selected="selectedPos" people="surfeuse"></Stamp>
-      <Stamp :pos="2" :selected="selectedPos" people="surfeuse"></Stamp>
-      <Stamp :pos="3" :selected="selectedPos" people="garcon"></Stamp>
-      <Stamp :pos="4" :selected="selectedPos" people="surfeuse"></Stamp>
-      <Stamp :pos="5" :selected="selectedPos" people="fermier"></Stamp>
-      <Stamp :pos="6" :selected="selectedPos" people="skieuse"></Stamp>
-      <Stamp :pos="7" :selected="selectedPos" people="camping"></Stamp>
-      <Stamp :pos="8" :selected="selectedPos" people="touriste"></Stamp>
+      <Stamp
+        :key="i"
+        v-for="(p, i) in PEOPLE"
+        :pos="i"
+        :selected="selectedPos"
+        :people="p"
+      ></Stamp>
     </div>
   </div>
 </template>
@@ -31,11 +29,28 @@ import { Vue, Options } from "vue-class-component";
 import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 
-/* @Options({
-  props: ["streamerMode"],
-}) */
+const PEOPLE = [
+  "surfeuse",
+  "surfeuse",
+  "surfeuse",
+  "garcon",
+  "surfeuse",
+  "fermier",
+  "skieuse",
+  "camping",
+  "touriste",
+];
+
+@Options({
+  props: {
+    modelValue: {
+      type: String,
+    },
+  },
+})
 export default class SelectPlayerList extends Vue {
   $store!: Store<StoreState>;
+  PEOPLE = PEOPLE;
 
   selectedPos = 4;
   numberPerso = 9;
@@ -52,6 +67,8 @@ export default class SelectPlayerList extends Vue {
     } else if (this.selectedPos < 0) {
       this.selectedPos = this.numberPerso - 1;
     }
+
+    this.$emit("update:modelValue", PEOPLE[this.selectedPos]);
   }
 }
 </script>

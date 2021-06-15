@@ -2,60 +2,55 @@
   <div class="gameParameters step">
     <div class="gameParameters-content">
       <div class="players">
-        <StepTitle color="black"
-          >ROOM DE {{ $store.state.livegame.gameName }} | Code :
-          {{ $store.state.room?.id }}</StepTitle
+        <input id="room-code" type="text" :value="$store.state.room?.id" />
+        <ArrowBtn @click="copyLink()" class="invite" :validate="linkCopied"
+          >Inviter des vacanciers</ArrowBtn
         >
         <ul class="players-list">
           <li v-for="player in $store.state.players" v-bind:key="player.id">
-            <StampS>{{ player.username }}</StampS>
+            <StampS
+              :people="player.avatarURL"
+              :isMDR="player.isMDR"
+              :isReady="player.isReady"
+              >{{ player.username }}</StampS
+            >
+          </li>
+          <li :key="n" v-for="n in 10 - $store.state.players.length">
+            <StampS people="empty"></StampS>
           </li>
         </ul>
-        <label
-          class="inline-input"
-          v-if="$store.state.player && $store.state.player.isMDR"
-        >
-          <span>Nombre de mini-jeu</span>
-          <TextInput
-            color="black"
-            value="3"
-            type="number"
-            v-model="inputNbMiniGame"
-            :disabled="$store.state.player && !$store.state.player.isMDR"
-            >Entrez un nombre</TextInput
-          >
-        </label>
-        <label
-          class="inline-input"
-          v-if="$store.state.player && $store.state.player.isMDR"
-        >
-          <span>Nombre de questions par mini-jeu</span>
-          <TextInput
-            color="black"
-            value="1"
-            type="number"
-            v-model="inputNbRound"
-            :disabled="$store.state.player && !$store.state.player.isMDR"
-            >Entrez un nombre</TextInput
-          >
-        </label>
       </div>
 
       <div class="parameters">
         <div class="parameters-container">
-          <PanneauBtn :active="true" title="Mode Autoroute"
+          <PanneauBtn
+            @click="changeSelectedMod(0)"
+            :active="selectedMod == 0"
+            title="Mode Autoroute"
             >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
-            pressés.</PanneauBtn
+            pressés..</PanneauBtn
           >
-          <PanneauBtn title="Mode Autoroute"
-            >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
-            pressés.</PanneauBtn
+          <PanneauBtn
+            @click="changeSelectedMod(1)"
+            :active="selectedMod == 1"
+            title="Mode Départemental"
+            >Qui se presse n’arrive pas ! Ce mode de jeu permet d’explorer le
+            paysage.</PanneauBtn
           >
-          <PanneauBtn title="Mode Autoroute"
-            >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
-            pressés.</PanneauBtn
+          <PanneauBtn
+            @click="changeSelectedMod(2)"
+            :active="selectedMod == 2"
+            title="Mode Détour"
+            >Tous les chemins mènent à Rome ! Laissez vous guider avec ce mode
+            de jeu mystèrieux.</PanneauBtn
           >
-          <StarBtn v-on:click="playerReady">En voiture<br />Simone !</StarBtn>
+        </div>
+        <div class="btn-container">
+          <StarBtn
+            :valid="$store.state.player?.isReady"
+            v-on:click="playerReady"
+            >En voiture<br />Simone !</StarBtn
+          >
         </div>
       </div>
     </div>
@@ -82,17 +77,53 @@ export default class GameParameters extends Vue {
     roundNumber: number;
   };
 
+  linkCopied = false;
+
+  selectedMod = 0;
+  mods = [
+    {
+      minigame: 3,
+      round: 1,
+    },
+    {
+      minigame: 3,
+      round: 1,
+    },
+    {
+      minigame: 3,
+      round: 1,
+    },
+  ];
+
   playerIsReady = false;
   inputNbMiniGame = "3";
   inputNbRound = "3";
+
+  changeSelectedMod(i: number): void {
+    this.selectedMod = i;
+  }
+
+  copyLink() {
+    this.linkCopied = true;
+    const copyText: any = document.querySelector("#room-code");
+    copyText.select();
+
+    /* Copy the text inside the text field */
+    document.execCommand("copy");
+
+    setTimeout(() => {
+      this.linkCopied = false;
+    }, 2000);
+  }
 
   playerReady(): void {
     this.playerIsReady = !this.playerIsReady;
     if (this.$store.state.player.isMDR) {
       let params = {
-        minigameNumber: parseInt(this.inputNbMiniGame),
-        roundNumber: parseInt(this.inputNbRound),
+        minigameNumber: this.mods[this.selectedMod].minigame,
+        roundNumber: this.mods[this.selectedMod].round,
       };
+      console.log(params);
       this.$store.state.room?.send("clientPacket", {
         type: "playerReadyToStart",
         datas: {
@@ -129,7 +160,17 @@ export default class GameParameters extends Vue {
     margin-right: calc(#{$steps-padding} / 2);
   }
 
+  .invite {
+    display: block;
+  }
+
+  #room-code {
+    display: hidden;
+  }
+
   .parameters {
+    display: flex;
+    align-items: flex-end;
     width: 50%;
     margin-left: calc(#{$steps-padding} / 2);
 
