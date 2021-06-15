@@ -47,6 +47,7 @@ export default interface StoreState {
             showOthersChoice: boolean,
             othersCursor: Array<any>,
             showMapRange: boolean,
+            highlightItems: boolean,
             screenIsBlurred: boolean,
         }
     }

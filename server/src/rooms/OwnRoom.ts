@@ -428,12 +428,10 @@ export default class OwnRoom extends Room<RoomState> {
                         if (choices[player.chosenAnswer.selectedNAnswer] == undefined) {
                             choices[player.chosenAnswer.selectedNAnswer] = [];
                         }
-                        console.log("player", player.chosenAnswer, player.chosenAnswer.selectedNAnswer)
                         choices[player.chosenAnswer.selectedNAnswer].push(player);
                     }
                 })
                 if (choices[0] && choices[1] && choices[0].length == choices[1].length) {
-                    console.log("state 1")
                     this.state.players.forEach((player) => {
                         if (player.chosenAnswer != null) {
                             let record = new AnswerRecord();
@@ -446,7 +444,6 @@ export default class OwnRoom extends Room<RoomState> {
                         content: this.state.currRoundParams.answers
                     };
                 } else if (choices.length > 0) {
-                    console.log("state 2")
                     let mostPicked: Array<Player> = [];
                     choices.forEach(choice => {
                         if (mostPicked.length < choice.length) {
@@ -463,7 +460,6 @@ export default class OwnRoom extends Room<RoomState> {
                         content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer]]
                     };
                 } else {
-                    console.log("state 3")
                     goodAnswer = {
                         content: []
                     };
@@ -489,6 +485,9 @@ export default class OwnRoom extends Room<RoomState> {
                         index++;
                     }
                 })
+                break;
+            case 'lbf':
+
                 break;
         }
         this.state.players = this.sortMapByValue([...this.state.players]);

@@ -364,6 +364,10 @@ export default class Game extends Vue {
                   break;
                 case "lbf":
                   // Do smth
+                  this.$store.commit("updateJokersParams", {
+                    index: "highlightItems",
+                    value: true,
+                  });
                   break;
               }
               break;
@@ -483,13 +487,14 @@ export default class Game extends Vue {
 
   .stickers-container {
     position: absolute;
-    z-index: 0;
+    z-index: 9999;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     overflow: hidden;
+    pointer-events: none;
 
     .sticker {
       position: absolute;

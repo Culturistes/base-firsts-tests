@@ -37,6 +37,7 @@ export default createStore({
         showOthersChoice: false,
         othersCursor: [],
         showMapRange: false,
+        highlightItems: false,
         screenIsBlurred: false,
       },
     },

@@ -16,7 +16,7 @@
       <PlayersList />
     </div>
 
-    <div class="round" :class="{ inactive: canAnswer }">
+    <div class="round" :class="{ inactive: !canAnswer }">
       <p>Timer {{ timer }}</p>
 
       <QuizGame
@@ -152,7 +152,7 @@ export default class MiniGameRound extends Vue {
       backdrop-filter: blur(6px);
     }
 
-    &.isnactive {
+    &.inactive {
       pointer-events: none;
     }
   }
