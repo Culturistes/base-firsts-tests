@@ -42,18 +42,19 @@ export default class BonneFranquetteGame extends Vue {
     { name: "Huile", img: "#000000" },
   ];
 
-  recette: any = {
-    ingredients: [
-      { name: "Carotte", img: "#ff0000", caught: false },
-      { name: "Pomme", img: "#00ff00", caught: false },
-      { name: "Sel", img: "#0000ff", caught: false },
-      { name: "Saucisse", img: "#ffff00", caught: false },
-    ],
-  };
+  ingredients = [
+    { name: "Carotte", img: "#ff0000", caught: false },
+    { name: "Pomme", img: "#00ff00", caught: false },
+    { name: "Sel", img: "#0000ff", caught: false },
+    { name: "Saucisse", img: "#ffff00", caught: false },
+  ];
 
   mounted() {
     this.possibleIngredients =
-      this.$store.state.livegame.minigame.goodAnswer.possibleIngredients;
+      this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
+    this.ingredients =
+      this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
+
     this.cnv = document.querySelector("#bonne-franquette-canvas");
     this.ctx = this.cnv.getContext("2d");
 
@@ -89,12 +90,12 @@ export default class BonneFranquetteGame extends Vue {
         });
         this.elements.splice(index, 1);
 
-        const indexIngredient = this.recette.ingredients.findIndex((e: any) => {
+        const indexIngredient = this.ingredients.findIndex((e: any) => {
           return e.name === el.name;
         });
 
         if (indexIngredient >= 0) {
-          this.recette.ingredients[indexIngredient].catched = true;
+          this.ingredients[indexIngredient].caught = true;
         }
       }
     });

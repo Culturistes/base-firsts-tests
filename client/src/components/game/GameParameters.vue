@@ -2,8 +2,7 @@
   <div class="gameParameters step">
     <div class="gameParameters-content">
       <div class="players">
-        <input id="room-code" type="text" :value="$store.state.room?.id" />
-        <ArrowBtn @click="copyLink()" class="invite" :validate="linkCopied"
+        <ArrowBtn @click="copyToClipboard" class="invite" :validate="linkCopied"
           >Inviter des vacanciers</ArrowBtn
         >
         <ul class="players-list">
@@ -103,13 +102,16 @@ export default class GameParameters extends Vue {
     this.selectedMod = i;
   }
 
-  copyLink() {
+  copyToClipboard() {
     this.linkCopied = true;
-    const copyText: any = document.querySelector("#room-code");
-    copyText.select();
+    var dummy = document.createElement("textarea");
 
-    /* Copy the text inside the text field */
+    document.body.appendChild(dummy);
+
+    dummy.value = `${location.origin}/${this.$store.state.room?.id}&${this.$store.state.livegame.gameName}`;
+    dummy.select();
     document.execCommand("copy");
+    document.body.removeChild(dummy);
 
     setTimeout(() => {
       this.linkCopied = false;

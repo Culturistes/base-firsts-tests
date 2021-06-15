@@ -37,6 +37,7 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Store } from "vuex/types";
+import { useRoute } from "vue-router";
 import StoreState from "@/interfaces/StoreState";
 import SelectPlayerList from "@/ui/lists/SelectPlayerList.vue";
 
@@ -51,7 +52,15 @@ export default class JoinOrCreate extends Vue {
   $store!: Store<StoreState>;
   username = "";
   avatar = "surfeuse";
-  roomID = "";
+  roomID: any = "";
+
+  route = useRoute();
+
+  mounted(): void {
+    if (this.route.params.code != undefined) {
+      this.roomID = this.route.params.code;
+    }
+  }
 
   created(): void {
     let item = localStorage.getItem("username");
