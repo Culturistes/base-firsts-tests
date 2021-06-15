@@ -258,12 +258,16 @@ export default class Game extends Vue {
             expiration: new Date().getTime() + 120 * 1000,
           };
           console.log(datas);
+
+          // Instantiate all listener when server send back players infos ? test for optimization/perfs
+
           // TODO: work on the 2min reconnect without localStorage
           localStorage.setItem(`player_params`, JSON.stringify(newDatas));
           localStorage.setItem(`username`, datas.username);
           break;
         case "playersList":
           this.$store.commit("updatePlayers", datas);
+          console.log("players:", datas);
           break;
         case "minigame":
           this.$store.commit("updateLiveGame", {

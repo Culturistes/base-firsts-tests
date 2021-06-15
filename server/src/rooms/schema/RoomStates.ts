@@ -65,7 +65,7 @@ export class RoomState extends Schema {
   currentStep: number = 0;
 
   @type("number")
-  currentTimer: number = 10;
+  currentTimer: number = 20;
 
   @type("boolean")
   playersCanAnswer: boolean = false;

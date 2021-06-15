@@ -34,6 +34,11 @@ export class ChosenAnswer extends Schema {
     latLng?: ArraySchema<number> = new ArraySchema<number>();
 }
 
+export class AnswerRecord extends Schema {
+    @type('boolean')
+    isGood: boolean;
+}
+
 export class Player extends Schema {
     @type("string")
     id: string;
@@ -70,4 +75,7 @@ export class Player extends Schema {
 
     @type(ChosenAnswer)
     chosenAnswer: ChosenAnswer = new ChosenAnswer;
+
+    @type([AnswerRecord])
+    answersRecord: Array<AnswerRecord> = new Array<AnswerRecord>();
 }
