@@ -55,7 +55,9 @@
             >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
             pressés.</PanneauBtn
           >
-          <StarBtn v-on:click="playerReady">En voiture<br />Simone !</StarBtn>
+          <StarBtn v-on:click="playerReady"
+            >En voiture<br />Simone ! {{ $store.state.player.isReady }}</StarBtn
+          >
         </div>
       </div>
     </div>

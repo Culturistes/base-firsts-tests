@@ -257,6 +257,8 @@ export default class Game extends Vue {
             roomId: room.id,
             expiration: new Date().getTime() + 120 * 1000,
           };
+
+          this.$store.dispatch("goNextStep");
           console.log(datas);
 
           // Instantiate all listener when server send back players infos ? test for optimization/perfs

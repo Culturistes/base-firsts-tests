@@ -40,10 +40,10 @@ export default class BonneFranquetteGame extends Vue {
 
   recette: any = {
     ingredients: [
-      { name: "Carotte", img: "#ff0000", catched: false },
-      { name: "Pomme", img: "#00ff00", catched: false },
-      { name: "Sel", img: "#0000ff", catched: false },
-      { name: "Saucisse", img: "#ffff00", catched: false },
+      { name: "Carotte", img: "#ff0000", caught: false },
+      { name: "Pomme", img: "#00ff00", caught: false },
+      { name: "Sel", img: "#0000ff", caught: false },
+      { name: "Saucisse", img: "#ffff00", caught: false },
     ],
   };
 

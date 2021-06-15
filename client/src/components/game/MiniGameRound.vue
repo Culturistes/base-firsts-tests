@@ -28,6 +28,10 @@
 
       <MapGame v-if="$store.state.livegame.minigame.type == 'coc'" />
 
+      <BonneFranquetteGame
+        v-if="$store.state.livegame.minigame.type == 'lbf'"
+      />
+
       <div
         class="blurred"
         v-if="$store.state.livegame.jokersParams.screenIsBlurred"
@@ -51,9 +55,10 @@ import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 import QuizGame from "@/components/game/minigames/QuizGame.vue";
 import MapGame from "@/components/game/minigames/MapGame.vue";
+import BonneFranquetteGame from "@/components/game/minigames/BonneFranquetteGame.vue";
 
 @Options({
-  components: { QuizGame, MapGame },
+  components: { QuizGame, MapGame, BonneFranquetteGame },
 })
 export default class MiniGameRound extends Vue {
   $store!: Store<StoreState>;

@@ -378,6 +378,32 @@ export default class OwnRoom extends Room<RoomState> {
                                     latLng: [data.latitude, data.longitude]
                                 }
                                 break;
+                            case 'lbf':
+                                // To be generated
+                                round.name = "La tarte aux pommes, carottes et saucisses"
+
+                                round.goodAnswer = {
+                                    content: [],
+                                    recette: {
+                                        possibleIngredients: [
+                                            { name: "Carotte", img: "#ff0000" },
+                                            { name: "Pomme", img: "#00ff00" },
+                                            { name: "Sel", img: "#0000ff" },
+                                            { name: "Saucisse", img: "#ffff00" },
+                                            { name: "Sucre", img: "#000000" },
+                                            { name: "Poivre", img: "#000000" },
+                                            { name: "Fromage", img: "#000000" },
+                                            { name: "Huile", img: "#000000" },
+                                        ],
+                                        ingredients: [
+                                            { name: "Carotte", img: "#ff0000", caught: false },
+                                            { name: "Pomme", img: "#00ff00", caught: false },
+                                            { name: "Sel", img: "#0000ff", caught: false },
+                                            { name: "Saucisse", img: "#ffff00", caught: false },
+                                        ]
+                                    }
+                                }
+                                break;
                         }
                         rounds.push(round);
                     })
@@ -468,7 +494,7 @@ export default class OwnRoom extends Room<RoomState> {
 
                 break;
             case 'coc':
-                let players = this.sortPlayersByAnswers([...this.state.players]);
+                let players = this.sortPlayersByMapDist([...this.state.players]);
                 let index = 0;
                 players.forEach(player => {
                     if (player.chosenAnswer != null && player.chosenAnswer.dist != null) {
@@ -487,7 +513,14 @@ export default class OwnRoom extends Room<RoomState> {
                 })
                 break;
             case 'lbf':
-
+                this.state.players.forEach((player) => {
+                    if (player.chosenAnswer != null) {
+                        let record = new AnswerRecord();
+                        record.isGood = true;
+                        player.answersRecord[this.state.parameters.currentRound] = record;
+                        this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
+                    }
+                })
                 break;
         }
         this.state.players = this.sortMapByValue([...this.state.players]);
@@ -516,7 +549,7 @@ export default class OwnRoom extends Room<RoomState> {
         return sortedMap;
     }
 
-    sortPlayersByAnswers(map: any) {
+    sortPlayersByMapDist(map: any) {
         let tupleArray = [];
         for (let key in map) tupleArray.push([key, map[key]]);
 

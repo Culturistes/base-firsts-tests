@@ -31,6 +31,10 @@ export default createStore({
           gentileM: "",
           gentileF: "",
           latLng: [],
+          recette: {
+            possibleIngredients: [],
+            ingredients: [],
+          },
         },
       },
       jokersParams: {
