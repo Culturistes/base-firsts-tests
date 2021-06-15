@@ -4,15 +4,34 @@
       <img src="/img/car/semi-car.png" />
       <h1>Chassé<br />croisé</h1>
     </div>
-    <p class="baseline">Le jeu qui blabla</p>
-    <StarBtn :routerLink="true" to="/game">Créer<br />une<br />partie</StarBtn>
+    <p class="baseline" v-if="$route.params.code == undefined">
+      Le jeu qui blabla
+    </p>
+    <p class="baseline" v-if="$route.params.code != undefined">
+      Prêt à partir en vacances avec {{ name }} !
+    </p>
+    <p>
+      <StarBtn :routerLink="true" :to="'/game/' + code">C'est parti</StarBtn>
+    </p>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
 
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  code = "";
+  name = "";
+
+  mounted(): void {
+    console.log(this.$route.params, location);
+    if (typeof this.$route.params.code === "string") {
+      let params = this.$route.params.code.split("&");
+      this.code = params[0];
+      this.name = params[1];
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

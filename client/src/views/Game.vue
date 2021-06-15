@@ -84,6 +84,7 @@
     <div class="steps">
       <!-- Choix pseudo + Rejoindre ou créer une partie -->
       <JoinOrCreate
+        :code="roomCode"
         v-if="steps.JOIN_OR_CREATE == $store.state.livegame.currentStep"
       />
 
@@ -212,6 +213,7 @@ export default class Game extends Vue {
 
       let client = await new Client(`ws://${process.env.VUE_APP_SERVER_URL}`);
       this.$store.commit("updateClient", client);
+
       store.watch(
         () => this.$store.state.room,
         (room, oldVal) => {
