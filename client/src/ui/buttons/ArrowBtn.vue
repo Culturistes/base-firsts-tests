@@ -1,10 +1,11 @@
 <template>
   <button
     class="btn-arrow btn-arrow-m"
-    :class="{ disabled: disabled }"
+    :class="{ disabled: disabled, validate: validate }"
     :disabled="disabled"
   >
-    <span><slot></slot></span>
+    <span v-if="!validate"><slot></slot></span>
+    <span v-else>Lien copié !</span>
   </button>
 </template>
 
@@ -17,6 +18,10 @@ import { Options, Vue } from "vue-class-component";
       type: Boolean,
       default: false,
     },
+    validate: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class ArrowBtn extends Vue {}
@@ -24,12 +29,17 @@ export default class ArrowBtn extends Vue {}
 
 <style lang="scss" scoped>
 .btn-arrow {
+  width: 214px;
+  height: 96px;
   font-family: $btnFont;
-  color: $light-text;
+  font-weight: bold;
   text-align: left;
+  text-transform: uppercase;
+  font-size: 2rem;
 
   border: none;
 
+  background-image: url("/img/buttons/panneau.svg");
   background-color: unset;
   background-size: 100% 100%;
 
@@ -37,25 +47,14 @@ export default class ArrowBtn extends Vue {}
 
   span {
     display: block;
-    width: 9rem;
-
+    width: 100%;
     padding: 5px;
-
     text-align: center;
+    transform: translate(-11px, 0px) rotate(-4deg);
   }
 
-  &-m {
-    width: 152px;
-    height: 70px;
-
-    background-image: url("/img/buttons/button-m.png");
-  }
-
-  &-l {
-    width: 172px;
-    height: 70px;
-
-    background-image: url("/img/buttons/button-l.png");
+  &.validate {
+    background-image: url("/img/buttons/panneau-validate.svg");
   }
 
   &.disabled {

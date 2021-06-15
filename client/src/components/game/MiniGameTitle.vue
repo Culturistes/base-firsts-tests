@@ -1,7 +1,11 @@
 <template>
   <div class="minigameTitle step centered">
     <img :src="'/img/titles/' + $store.state.livegame.minigame.type + '.png'" />
-    <StarBtn v-on:click="$store.dispatch('readyForNext')">Prêt ?</StarBtn>
+    <StarBtn
+      v-on:click="$store.dispatch('readyForNext')"
+      :valid="$store.state.player.isReady"
+      >Prêt ?</StarBtn
+    >
   </div>
 </template>
 

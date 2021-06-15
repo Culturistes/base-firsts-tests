@@ -38,7 +38,7 @@
       <p class="mes-jokers">Mes jokers</p>
       <button class="btn"><img src="/img/jokers/drink.png" /></button>
       <button class="btn"><img src="/img/jokers/pouce.png" /></button>
-      <button class="btn" @click="displaySticker">
+      <button class="btn btn-spam" @click="displaySticker">
         <img src="/img/jokers/buzzer.png" />
       </button>
     </div>
@@ -170,6 +170,10 @@ export default class MiniGameRound extends Vue {
     .mes-jokers {
       margin-top: 0;
       font-size: $fontSsize;
+    }
+
+    .btn-spam {
+      margin-top: auto;
     }
   }
   .answer {

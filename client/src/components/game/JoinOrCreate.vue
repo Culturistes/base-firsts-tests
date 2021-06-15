@@ -1,8 +1,7 @@
 <template>
   <div class="joinOrCreate step">
     <StepTitle>Séléctionne ton monchu</StepTitle>
-    <!-- <Stamp people="rando"></Stamp> -->
-    <SelectPlayerList />
+    <SelectPlayerList v-model="avatar" />
     <div class="inputContainer">
       <TextInput v-model="username"> Entre ton pseudo </TextInput>
       <StarBtn v-on:click="createRoom" :disabled="username.length <= 0">
@@ -51,6 +50,7 @@ export default class JoinOrCreate extends Vue {
   };
   $store!: Store<StoreState>;
   username = "";
+  avatar = "surfeuse";
   roomID = "";
 
   created(): void {
@@ -65,7 +65,7 @@ export default class JoinOrCreate extends Vue {
       let room = await this.$store.state.client?.create("chat", {
         username: this.username,
         creator: true,
-        avatarURL: "", // TODO: Rémi add avatarURL/nom from player
+        avatarURL: this.avatar,
       });
       this.$store.commit("updateRoom", room);
       this.$store.dispatch("goNextStep");
@@ -103,7 +103,7 @@ export default class JoinOrCreate extends Vue {
     try {
       let room = await this.$store.state.client?.joinById(this.roomID, {
         username: this.username,
-        avatarURL: "", // TODO: Rémi add avatarURL/nom from player
+        avatarURL: this.avatar,
       });
       this.$store.commit("updateRoom", room);
       this.$store.dispatch("goNextStep");
