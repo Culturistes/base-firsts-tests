@@ -1,6 +1,10 @@
 <template>
   <ul class="answers">
-    <li class="answer" :key="i" v-for="(res, i) in result">
+    <li
+      class="answer"
+      :key="i"
+      v-for="(res, i) in $store.state.player.answersRecord"
+    >
       <img v-if="res.isGood" src="/img/divers/sun.svg" alt="" />
       <img v-else src="/img/divers/rain.svg" alt="" />
       <div class="barre passed"></div>
@@ -8,10 +12,9 @@
     <li
       class="answer"
       :key="i"
-      v-for="(res, i) in $store.state.livegame.paramsChosen.roundNumber -
+      v-for="(res, i) in $store.state.livegame.chosenParams.roundNumber -
       result.length"
     >
-      <!-- MAEL : remplacer à la place de 5 le nombre de question par minijeu -->
       <div class="dummy-img"></div>
       <div class="barre"></div>
     </li>
@@ -21,7 +24,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import { Store } from "vuex";
-import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 
 @Options({
