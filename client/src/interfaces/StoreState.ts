@@ -24,7 +24,7 @@ export default interface StoreState {
         currentMiniGame: number,
         currentRound: number,
         timerIsRunning: boolean,
-        paramsChosen: {
+        chosenParams: {
             minigameNumber: number,
             roundNumber: number,
         },

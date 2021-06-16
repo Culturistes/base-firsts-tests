@@ -13,17 +13,13 @@ export enum STEPS {
     GAME_RESULT,
 }
 
-const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
 export default class OwnRoom extends Room<RoomState> {
     LOBBY_CHANNEL = "$mylobby";
     apiURL = "https://api.culturiste.remiruc.fr/api";
     currQuestion = "";
     jokers = [
         { type: 'bonus', slug: "cdp", name: "Coup d'pouce" },
-        { type: 'bonus', slug: "esp", name: "Espionnage" },
         { type: 'attaque', slug: "pjn", name: "Petit jaune" },
-        { type: 'attaque', slug: "ral", name: "Ralentissement" }
     ];
     minigameTimer = 20;
     timerEnded = false;
