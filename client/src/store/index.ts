@@ -122,7 +122,6 @@ export default createStore({
       });
     },
     useJoker(ctx, payload): void {
-      console.log("useJoker", payload);
       ctx.state.room?.send("clientPacket", {
         type: "useJoker",
         datas: payload,

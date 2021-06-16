@@ -1,5 +1,4 @@
 import { Client, Room } from "colyseus.js";
-import { Howl } from 'howler';
 
 export default interface StoreState {
     client: Client | null;
