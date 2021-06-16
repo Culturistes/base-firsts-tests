@@ -1,7 +1,12 @@
 <template>
   <div class="minigameTitle step centered">
     <p class="count-minigame">
-      Mini-jeu <span>{{ actualMinigame }}/{{ totalMinigame }}</span>
+      Mini-jeu
+      <span
+        >{{ $store.state.livegame.currentMiniGame }}/{{
+          $store.state.livegame.chosenParams.minigameNumber
+        }}</span
+      >
     </p>
     <img :src="'/img/titles/' + $store.state.livegame.minigame.type + '.png'" />
     <StarBtn
@@ -24,9 +29,6 @@ export default class MiniGameTitle extends Vue {
   $refs!: any;
   $store!: Store<StoreState>;
   gameTitle!: string;
-
-  actualMinigame = 1;
-  totalMinigame = 4;
 
   created(): void {
     switch (this.$store.state.livegame.minigame.type) {
