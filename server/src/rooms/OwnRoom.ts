@@ -51,25 +51,12 @@ export default class OwnRoom extends Room<RoomState> {
                                 // Send to client ok ? datas ? ask with DA for jokers use
                                 client.send("serverPacket", { type: "jokerUsed", datas: { type: "cdp" } })
                                 break;
-                            case 'esp':
-                                // Send to client ok ? datas ? ask with DA for jokers use
-                                client.send("serverPacket", { type: "jokerUsed", datas: { type: "esp" } })
-                                break;
                             case 'pjn':
                                 this.broadcast("serverPacket", {
                                     type: "jokerUsed",
                                     datas: {
                                         attacker: client.sessionId,
                                         type: "pjn"
-                                    }
-                                })
-                                break;
-                            case 'ral':
-                                this.broadcast("serverPacket", {
-                                    type: "jokerUsed",
-                                    datas: {
-                                        attacker: client.sessionId,
-                                        type: "ral"
                                     }
                                 })
                                 break;
@@ -101,7 +88,9 @@ export default class OwnRoom extends Room<RoomState> {
             let joker = new Joker({
                 type: jk.type,
                 slug: jk.slug,
-                name: jk.name
+                name: jk.name,
+                available: true,
+                isUsed: false
             });
             jokers.set(jk.slug, joker);
         })

@@ -40,10 +40,18 @@
 
     <div class="jokers">
       <p class="mes-jokers">Mes jokers</p>
-      <button class="btn" @click="$store.dispatch('useJoker', 'pjn')">
+      <button
+        class="btn btn-joker"
+        :class="{ active: $store.state.player.jokers.pjn.available }"
+        @click="$store.dispatch('useJoker', 'pjn')"
+      >
         <img src="/img/jokers/drink.svg" />
       </button>
-      <button class="btn" @click="$store.dispatch('useJoker', 'cdp')">
+      <button
+        class="btn btn-joker"
+        :class="{ active: $store.state.player.jokers.cdp.available }"
+        @click="$store.dispatch('useJoker', 'cdp')"
+      >
         <img src="/img/jokers/pouce.svg" />
       </button>
       <button class="btn btn-spam" @click="displaySticker">
@@ -181,6 +189,15 @@ export default class MiniGameRound extends Vue {
     .mes-jokers {
       margin-top: 0;
       font-size: $fontSsize;
+    }
+
+    .btn-joker {
+      opacity: 0.5;
+      pointer-events: none;
+
+      &.active {
+        opacity: 1;
+      }
     }
 
     .btn-spam {

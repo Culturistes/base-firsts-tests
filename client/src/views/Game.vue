@@ -291,6 +291,7 @@ export default class Game extends Vue {
           var myinfos = datas.find(
             (player: any) => player.id == this.$store.state.player.id
           );
+          console.log(myinfos);
           this.$store.commit("updatePlayer", myinfos);
           break;
         case "minigame":
