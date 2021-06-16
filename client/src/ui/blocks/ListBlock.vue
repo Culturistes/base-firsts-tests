@@ -1,11 +1,12 @@
 <template>
   <li class="list-block">
     <p class="rank">{{ rank }}</p>
-    <img class="img" :src="'/img/stamps/' + perso + '-s.png'" />
+    <img class="img" :src="'/img/stamps/' + perso + '-s.svg'" />
     <div class="info">
       <p class="name">{{ name }}</p>
       <p class="score">{{ score }} km</p>
     </div>
+    <img class="ready" v-if="ready" src="/img/divers/ready.svg" />
     <div
       class="scoreWon"
       v-if="
@@ -13,6 +14,7 @@
         scoreWon > 0
       "
     >
+      <div class="anchor"></div>
       + {{ scoreWon }} km
     </div>
   </li>
@@ -46,6 +48,10 @@ import { STEPS } from "@/views/Game.vue";
       type: String,
       default: "rando",
     },
+    ready: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class QuizBlock extends Vue {
@@ -62,6 +68,7 @@ export default class QuizBlock extends Vue {
   background: rgba($color: #faf5ed, $alpha: 0.3);
   border-radius: 13px;
   padding: 5px 16px;
+  margin-bottom: 6px;
 
   font-family: $btnFont;
 
@@ -72,6 +79,11 @@ export default class QuizBlock extends Vue {
   .img {
     width: 50px;
     margin-right: 16px;
+  }
+
+  .ready {
+    position: absolute;
+    right: 8px;
   }
 
   .info {
@@ -93,11 +105,28 @@ export default class QuizBlock extends Vue {
   }
   .scoreWon {
     position: absolute;
-    right: 0%;
+    right: 6%;
     background-color: white;
     padding: 10px;
     border-radius: 12px;
     transform: translateX(110%);
+
+    .anchor {
+      position: absolute;
+      left: -10px;
+      top: calc(50% - 7px);
+      transform: scaleY(0.6);
+      z-index: -1;
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: white;
+        transform: rotate(45deg);
+      }
+    }
   }
 }
 </style>

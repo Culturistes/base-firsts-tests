@@ -2,7 +2,7 @@
   <div class="stamp-s">
     <img v-if="isMDR" class="mdr" src="/img/stamps/mdr.svg" />
     <img v-if="isReady" class="ready" src="/img/stamps/ready.svg" />
-    <img :src="'/img/stamps/' + people + '-s.png'" />
+    <img :src="'/img/stamps/' + people + '-s.svg'" />
     <span class="name"><slot></slot></span>
   </div>
 </template>
@@ -48,14 +48,14 @@ export default class StampS extends Vue {}
 
   .mdr {
     position: absolute;
-    top: -13px;
-    left: -14px;
+    top: 6px;
+    left: -19px;
   }
 
   .ready {
     position: absolute;
-    top: -10px;
-    left: -10px;
+    top: 10px;
+    left: -15px;
   }
 }
 </style>
