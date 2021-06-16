@@ -67,6 +67,8 @@ export default class StarBtn extends Vue {}
   span {
     display: block;
     transform: rotate(15deg);
+
+    pointer-events: none;
   }
 
   &.disabled {
