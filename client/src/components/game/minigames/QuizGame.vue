@@ -76,11 +76,10 @@
           /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
         "
         :showAnswer="
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT ||
+          $store.state.livegame.jokersParams.showOthersChoice
         "
-        :respondedNumber="
-          3 /*MAEL : récuperer le nombre de personne qui a répondu à cette réponse*/
-        "
+        :respondedNumber="actualLMEAnswers[0]"
         @click="
           () => {
             if (
@@ -114,11 +113,10 @@
           /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
         "
         :showAnswer="
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT ||
+          $store.state.livegame.jokersParams.showOthersChoice
         "
-        :respondedNumber="
-          3 /*MAEL : récuperer le nombre de personne qui a répondu à cette réponse*/
-        "
+        :respondedNumber="actualLMEAnswers[1]"
         @click="
           () => {
             if (

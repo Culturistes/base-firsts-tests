@@ -5,7 +5,12 @@
       <img v-else src="/img/divers/rain.svg" alt="" />
       <div class="barre passed"></div>
     </li>
-    <li class="answer" :key="i" v-for="(res, i) in 5 - result.length">
+    <li
+      class="answer"
+      :key="i"
+      v-for="(res, i) in $store.state.livegame.paramsChosen.roundNumber -
+      result.length"
+    >
       <!-- MAEL : remplacer à la place de 5 le nombre de question par minijeu -->
       <div class="dummy-img"></div>
       <div class="barre"></div>
