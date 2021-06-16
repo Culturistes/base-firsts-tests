@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue } from "vue-class-component";
 import { Store } from "node_modules/vuex/types";
 import StoreState from "@/interfaces/StoreState";
 

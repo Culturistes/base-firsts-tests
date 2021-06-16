@@ -82,6 +82,13 @@ export default class OwnRoom extends Room<RoomState> {
                         datas: packet.datas
                     })
                     break;
+                case "gameMode":
+                    this.state.parameters.minigameNumber = packet.datas.params.minigameNumber;
+                    this.state.parameters.roundNumber = packet.datas.params.roundNumber;
+                    this.state.parameters.gamemode = packet.datas.params.gamemode;
+
+                    this.broadcast("serverPacket", { type: "chosenParams", datas: packet.datas.params })
+                    break;
             }
         })
     }
@@ -117,6 +124,13 @@ export default class OwnRoom extends Room<RoomState> {
 
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
         this.broadcast("serverPacket", { type: "gameName", datas: this.state.gameName })
+        this.broadcast("serverPacket", {
+            type: "chosenParams", datas: {
+                minigameNumber: this.state.parameters.minigameNumber,
+                roundNumber: this.state.parameters.roundNumber,
+                gamemode: this.state.parameters.gamemode,
+            }
+        })
     }
 
     async onLeave(client: Client, consented: boolean) {
@@ -160,13 +174,13 @@ export default class OwnRoom extends Room<RoomState> {
         this.state.players.get(client.sessionId).isReady = packet.datas.isReady;
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
-        if (this.state.players.get(client.sessionId).isMDR && packet.datas.isReady) {
+        /* if (this.state.players.get(client.sessionId).isMDR && packet.datas.isReady) {
             console.log("he is MDR, save parameters");
             this.state.parameters.minigameNumber = packet.datas.params.minigameNumber;
             this.state.parameters.roundNumber = packet.datas.params.roundNumber;
 
             this.broadcast("serverPacket", { type: "chosenParams", datas: packet.datas.params })
-        }
+        } */
 
         if (this.state.playersReady == this.state.players.size) {
             console.log("everyone's ready, start the game!")
@@ -463,7 +477,10 @@ export default class OwnRoom extends Room<RoomState> {
                         }
                     })
                     goodAnswer = {
-                        content: this.state.currRoundParams.answers
+                        content: [
+                            { id: 0, answer: this.state.currRoundParams.answers[0], number: choices[0].length },
+                            { id: 1, answer: this.state.currRoundParams.answers[0], number: choices[1].length }
+                        ]
                     };
                 } else if (choices.length > 0) {
                     let mostPicked: Array<Player> = [];
@@ -479,7 +496,9 @@ export default class OwnRoom extends Room<RoomState> {
                         this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
                     })
                     goodAnswer = {
-                        content: [this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer]]
+                        content: [
+                            { id: mostPicked[0].chosenAnswer.selectedNAnswer, answer: this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer], number: mostPicked.length }
+                        ]
                     };
                 } else {
                     goodAnswer = {

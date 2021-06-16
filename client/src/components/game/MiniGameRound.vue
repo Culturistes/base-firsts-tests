@@ -40,8 +40,12 @@
 
     <div class="jokers">
       <p class="mes-jokers">Mes jokers</p>
-      <button class="btn"><img src="/img/jokers/drink.svg" /></button>
-      <button class="btn"><img src="/img/jokers/pouce.svg" /></button>
+      <button class="btn" @click="$store.dispatch('useJoker', 'pjn')">
+        <img src="/img/jokers/drink.svg" />
+      </button>
+      <button class="btn" @click="$store.dispatch('useJoker', 'cdp')">
+        <img src="/img/jokers/pouce.svg" />
+      </button>
       <button class="btn btn-spam" @click="displaySticker">
         <img src="/img/jokers/buzzer.svg" />
       </button>
@@ -146,6 +150,7 @@ export default class MiniGameRound extends Vue {
   }
   .round {
     width: calc(100% - 400px);
+    position: relative;
 
     .blurred {
       position: absolute;
@@ -155,6 +160,7 @@ export default class MiniGameRound extends Vue {
       left: 50%;
       transform: translate(-50%, -50%);
       backdrop-filter: blur(6px);
+      pointer-events: none;
     }
 
     &.inactive {

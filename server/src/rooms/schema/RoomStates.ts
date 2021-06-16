@@ -7,13 +7,16 @@ class Parameters extends Schema {
   minigameNumber: number = 3;
 
   @type("number")
-  roundNumber: number = 2;
+  roundNumber: number = 1;
 
   @type("number")
   currentMiniGame: number = 1;
 
   @type("number")
   currentRound: number = 1;
+
+  @type("number")
+  gamemode: number = 0;
 }
 
 export class RoundState extends Schema {
@@ -63,7 +66,7 @@ export class RoomState extends Schema {
   gameName: string = "";
 
   @type(Parameters)
-  parameters = new Parameters;
+  parameters = new Parameters();
 
   @type("number")
   currentStep: number = 0;

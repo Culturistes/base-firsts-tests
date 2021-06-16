@@ -80,8 +80,8 @@
         "
         :right="
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          false
-          /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
+          $store.state.livegame.minigame.goodAnswer.content[0] != undefined &&
+          $store.state.livegame.minigame.goodAnswer.content[0].id == 0
         "
         :showAnswer="
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT ||
@@ -117,7 +117,10 @@
         "
         :right="
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          true
+          ($store.state.livegame.minigame.goodAnswer.content[1] != undefined ||
+            ($store.state.livegame.minigame.goodAnswer.content[0] !=
+              undefined &&
+              $store.state.livegame.minigame.goodAnswer.content[0].id == 1))
           /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
         "
         :showAnswer="
@@ -266,6 +269,23 @@ export default class QuizGame extends Vue {
       (value, oldVal) => {
         if (value) {
           this.calculateLMEAnswers();
+        }
+      }
+    );
+
+    store.watch(
+      () => this.$store.state.livegame.minigame.goodAnswer,
+      (value, oldVal) => {
+        if (value) {
+          let { content } = value;
+          console.log(content, content[0], content[1]);
+          if (content[0] != undefined && content[1] != undefined) {
+            this.actualLMEAnswers = [content[0].number, content[1].number];
+          } else if (content[0] != undefined && content[0].id === 0) {
+            this.actualLMEAnswers = [content[0].number];
+          } else if (content[0] != undefined && content[0].id === 1) {
+            this.actualLMEAnswers = [content[0].number];
+          }
         }
       }
     );

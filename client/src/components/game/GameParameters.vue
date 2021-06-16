@@ -58,8 +58,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
+import { Vue } from "vue-class-component";
 import { Store } from "vuex/types";
+import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 
 /* @Options({
@@ -97,10 +98,33 @@ export default class GameParameters extends Vue {
 
   playerIsReady = false;
   inputNbMiniGame = "3";
-  inputNbRound = "3";
+  inputNbRound = "1";
+
+  mounted(): void {
+    store.watch(
+      () => this.$store.state.livegame.chosenParams,
+      (val, oldVal) => {
+        this.selectedMod = val.gamemode;
+      }
+    );
+  }
 
   changeSelectedMod(i: number): void {
-    this.selectedMod = i;
+    if (this.$store.state.player.isMDR) {
+      this.selectedMod = i;
+
+      let params = {
+        minigameNumber: this.mods[this.selectedMod].minigame,
+        roundNumber: this.mods[this.selectedMod].round,
+        gamemode: i,
+      };
+      this.$store.state.room?.send("clientPacket", {
+        type: "gameMode",
+        datas: {
+          params: params,
+        },
+      });
+    }
   }
 
   copyToClipboard() {
@@ -131,7 +155,6 @@ export default class GameParameters extends Vue {
         type: "playerReadyToStart",
         datas: {
           isReady: this.playerIsReady,
-          params: params,
         },
       });
     } else {

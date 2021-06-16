@@ -27,6 +27,7 @@ export default interface StoreState {
         chosenParams: {
             minigameNumber: number,
             roundNumber: number,
+            gamemode: number
         },
         miniGame: {
             type: string,
