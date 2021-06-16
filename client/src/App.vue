@@ -20,8 +20,10 @@ export default class App extends Vue {}
 #app {
   button > img,
   button > span,
+  button > p,
   .btn > img,
-  .btn > span {
+  .btn > span,
+  .btn > p {
     pointer-events: none;
   }
 }
