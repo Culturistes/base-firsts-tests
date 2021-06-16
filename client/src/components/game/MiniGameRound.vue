@@ -197,6 +197,7 @@ export default class MiniGameRound extends Vue {
 
       &.active {
         opacity: 1;
+        pointer-events: visible;
       }
     }
 
