@@ -29,7 +29,7 @@ import StoreState from "@/interfaces/StoreState";
 @Options({
   props: {
     result: {
-      default: null,
+      default: [],
     },
     maxRound: {
       default: 1,
@@ -51,7 +51,7 @@ export default class StampS extends Vue {
     margin-right: 10px;
 
     .dummy-img {
-      height: 20px;
+      height: 28px;
       width: 20px;
     }
     .barre {

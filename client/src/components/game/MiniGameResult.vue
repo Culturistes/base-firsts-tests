@@ -3,7 +3,11 @@
     <StepTitle>Mini game result</StepTitle>
     <p>Podium</p>
     <PlayersList />
-    <ArrowBtn v-on:click="$store.dispatch('readyForNext')">Suivant</ArrowBtn>
+    <StarBtn
+      v-on:click="$store.dispatch('readyForNext')"
+      :valid="$store.state.player?.isReady"
+      >Suivant</StarBtn
+    >
   </div>
 </template>
 

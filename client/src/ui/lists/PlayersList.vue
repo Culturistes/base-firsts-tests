@@ -2,7 +2,7 @@
   <ul class="playersList">
     <ListBlock
       :li="true"
-      :right="player.isReady"
+      :ready="player.isReady"
       class="playerName"
       v-bind:class="{ active: player.isReady }"
       v-for="(player, i) in $store.state.players"

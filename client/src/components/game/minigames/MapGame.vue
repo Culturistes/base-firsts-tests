@@ -15,7 +15,9 @@
         </p>
         <div class="input-btn">
           <TextInput color="black" v-model="gentile">Saisi le nom</TextInput>
-          <StarBtn @click="validateAnswer">Valider</StarBtn>
+          <StarBtn @click="validateAnswer" :valid="$store.state.player?.isReady"
+            >Valider</StarBtn
+          >
         </div>
       </label>
     </div>
@@ -278,6 +280,10 @@ body.leaflet-dragging {
       height: 80px;
 
       font-size: 1.3rem;
+
+      img {
+        transform: scale(0.7);
+      }
     }
 
     .input-btn {

@@ -1,22 +1,26 @@
 <template>
   <div class="joinOrCreate step">
-    <h2>
-      <span>Séléctionne ton </span><Rect :selected="selectedWord">monchu</Rect>
-    </h2>
+    <h2><span>Séléctionne ton </span><Rect :selected="selectedWord"></Rect></h2>
     <SelectPlayerList v-model="avatar" />
     <div class="inputContainer">
       <TextInput v-model="username"> Pseudo </TextInput>
-      <TextInput
+      <!-- <TextInput
+        v-if="$route.name === 'game_params'"
         v-model="roomID"
         :type="$store.state.settings.streamerMode ? 'password' : 'text'"
         :required="true"
       >
         Rejoindre une partie
-      </TextInput>
-      <StarBtn v-on:click="createRoom" :disabled="username.length <= 0">
+      </TextInput> -->
+      <StarBtn
+        v-if="$route.name === 'game'"
+        v-on:click="createRoom"
+        :disabled="username.length <= 0"
+      >
         C'est<br />parti !
       </StarBtn>
       <StarBtn
+        v-else-if="$route.name === 'game_params'"
         v-on:click="joinRoom"
         :disabled="username.length <= 0 || roomID.length <= 0"
       >

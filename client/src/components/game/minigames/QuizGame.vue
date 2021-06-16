@@ -60,14 +60,18 @@
           $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
         "
       >
-        <StarBtn @click="sendAnswer">Valider</StarBtn>
+        <StarBtn @click="sendAnswer" :valid="$store.state.player?.isReady"
+          >Valider</StarBtn
+        >
       </div>
     </div>
     <div
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      <StarBtn v-on:click="goNext">Suivant</StarBtn>
+      <StarBtn v-on:click="goNext" :valid="$store.state.player?.isReady"
+        >Suivant</StarBtn
+      >
     </div>
   </div>
   <div class="minigame mg-lme" v-else>
@@ -162,7 +166,9 @@
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      <StarBtn v-on:click="goNext">Suivant</StarBtn>
+      <StarBtn v-on:click="goNext" :valid="$store.state.player?.isReady"
+        >Suivant</StarBtn
+      >
     </div>
   </div>
 </template>

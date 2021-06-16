@@ -145,6 +145,7 @@ export default class QuizBlock extends Vue {
           this.elapsedTime > this.stepTime.right &&
           this.elapsedTime <= this.timerBar.right + this.stepTime.right
         ) {
+          this.timerBarSize.topRight = 50;
           this.timerBarSize.right =
             (100 / this.timerBar.right) *
             (this.elapsedTime - this.stepTime.right);
@@ -152,6 +153,7 @@ export default class QuizBlock extends Vue {
           this.elapsedTime > this.stepTime.bottom &&
           this.elapsedTime <= this.timerBar.bottom + this.stepTime.bottom
         ) {
+          this.timerBarSize.right = 100;
           this.timerBarSize.bottom =
             (100 / this.timerBar.bottom) *
             (this.elapsedTime - this.stepTime.bottom);
@@ -159,6 +161,7 @@ export default class QuizBlock extends Vue {
           this.elapsedTime > this.stepTime.left &&
           this.elapsedTime <= this.timerBar.left + this.stepTime.left
         ) {
+          this.timerBarSize.bottom = 100;
           this.timerBarSize.left =
             (100 / this.timerBar.left) *
             (this.elapsedTime - this.stepTime.left);
@@ -166,6 +169,7 @@ export default class QuizBlock extends Vue {
           this.elapsedTime > this.stepTime.topLeft &&
           this.elapsedTime <= this.timerBar.topLeft + this.stepTime.topLeft
         ) {
+          this.timerBarSize.left = 100;
           this.timerBarSize.topLeft =
             (50 / this.timerBar.topLeft) *
             (this.elapsedTime - this.stepTime.topLeft);
