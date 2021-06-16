@@ -50,10 +50,8 @@ export default class BonneFranquetteGame extends Vue {
   ];
 
   mounted() {
-    this.possibleIngredients =
-      this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
-    this.ingredients =
-      this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
+    this.possibleIngredients = this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
+    this.ingredients = this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
 
     this.cnv = document.querySelector("#bonne-franquette-canvas");
     this.ctx = this.cnv.getContext("2d");

@@ -35,6 +35,7 @@ export default class Rect extends Vue {
     "Vacancier",
     "Troadour",
   ];
+  selected: any;
 
   get translate() {
     return 100 * -this.selected;
