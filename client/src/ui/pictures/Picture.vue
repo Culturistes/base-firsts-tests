@@ -50,7 +50,7 @@ import { Options, Vue } from "vue-class-component";
     },
     respondedNumber: {
       type: Number,
-      default: 5,
+      default: 0,
     },
   },
 })
