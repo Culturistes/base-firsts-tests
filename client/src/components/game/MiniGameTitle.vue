@@ -1,5 +1,8 @@
 <template>
   <div class="minigameTitle step centered">
+    <p class="count-minigame">
+      Mini-jeu <span>{{ actualMinigame }}/{{ totalMinigame }}</span>
+    </p>
     <img :src="'/img/titles/' + $store.state.livegame.minigame.type + '.png'" />
     <StarBtn
       v-on:click="$store.dispatch('readyForNext')"
@@ -22,6 +25,9 @@ export default class MiniGameTitle extends Vue {
   $store!: Store<StoreState>;
   gameTitle!: string;
 
+  actualMinigame = 1;
+  totalMinigame = 4;
+
   created(): void {
     switch (this.$store.state.livegame.minigame.type) {
       case "quiz":
@@ -39,4 +45,15 @@ export default class MiniGameTitle extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.count-minigame {
+  font-family: $btnFont;
+  font-size: 1.8rem;
+
+  margin-bottom: 25px;
+
+  span {
+    font-size: 3rem;
+  }
+}
+</style>

@@ -86,8 +86,13 @@ export default class Picture extends Vue {}
       right: 17.4%;
     }
     .answer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       width: 56%;
+      height: 43%;
       left: 30%;
+      top: 22%;
     }
     p {
       transform: rotate(-11deg);
@@ -100,9 +105,13 @@ export default class Picture extends Vue {}
       right: 36.2%;
     }
     .answer {
-      width: 56%;
-      top: 32%;
-      right: 15%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 58%;
+      top: 13%;
+      height: 47%;
+      right: 14%;
     }
     p {
       transform: rotate(18deg);

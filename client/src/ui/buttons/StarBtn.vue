@@ -9,7 +9,7 @@
   <button
     v-else
     class="star-btn"
-    :class="{ disabled: disabled }"
+    :class="{ disabled: disabled, big: big }"
     :disabled="disabled"
   >
     <span v-if="!valid"><slot></slot></span>
@@ -31,6 +31,10 @@ import { Options, Vue } from "vue-class-component";
       default: false,
     },
     valid: {
+      type: Boolean,
+      default: false,
+    },
+    big: {
       type: Boolean,
       default: false,
     },
@@ -68,6 +72,11 @@ export default class StarBtn extends Vue {}
   &.disabled {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  &.big {
+    width: 160px;
+    height: 160px;
   }
 }
 </style>

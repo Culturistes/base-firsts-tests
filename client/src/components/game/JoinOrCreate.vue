@@ -1,22 +1,21 @@
 <template>
   <div class="joinOrCreate step">
-    <StepTitle>Séléctionne ton monchu</StepTitle>
+    <h2>
+      <span>Séléctionne ton </span><Rect :selected="selectedWord">monchu</Rect>
+    </h2>
     <SelectPlayerList v-model="avatar" />
     <div class="inputContainer">
-      <TextInput v-model="username"> Entre ton pseudo </TextInput>
-      <StarBtn v-on:click="createRoom" :disabled="username.length <= 0">
-        C'est<br />parti !
-      </StarBtn>
-    </div>
-
-    <div class="inputContainer">
+      <TextInput v-model="username"> Pseudo </TextInput>
       <TextInput
         v-model="roomID"
         :type="$store.state.settings.streamerMode ? 'password' : 'text'"
         :required="true"
       >
-        Entre le code
+        Rejoindre une partie
       </TextInput>
+      <StarBtn v-on:click="createRoom" :disabled="username.length <= 0">
+        C'est<br />parti !
+      </StarBtn>
       <StarBtn
         v-on:click="joinRoom"
         :disabled="username.length <= 0 || roomID.length <= 0"
@@ -35,6 +34,7 @@
 </template>
 
 <script lang="ts">
+import { Watch } from "vue-property-decorator";
 import { Vue, Options } from "vue-class-component";
 import { Store } from "vuex/types";
 import { useRoute } from "vue-router";
@@ -53,8 +53,20 @@ export default class JoinOrCreate extends Vue {
   username = "";
   avatar = "surfeuse";
   roomID: any = "";
+  selectedWord = 0;
+  maxSelectedWord = 6;
 
   route = useRoute();
+
+  @Watch("avatar")
+  onAvatarChanged(val: string, oldVal: string) {
+    this.$store.commit("updateAvatarUrl", val);
+
+    this.selectedWord++;
+    if (this.selectedWord > this.maxSelectedWord - 1) {
+      this.selectedWord = 0;
+    }
+  }
 
   mounted(): void {
     if (this.route.params.code != undefined) {
@@ -136,6 +148,19 @@ export default class JoinOrCreate extends Vue {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .joinOrCreate {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  h2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: white;
+  }
+  .select-player-list-container {
+    margin: 90px 0;
+  }
   .inputContainer {
     display: flex;
     justify-content: center;
@@ -143,7 +168,10 @@ export default class JoinOrCreate extends Vue {
     margin-bottom: 10px;
 
     > :first-child {
-      margin-right: 18px;
+      margin-right: 50px;
+    }
+    > :nth-child(2) {
+      margin-right: 20px;
     }
   }
 }

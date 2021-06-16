@@ -8,9 +8,9 @@
   justify-content: center;
   align-items: center;
 
-  width: 95px;
-  height: 95px;
-  flex: 0 0 95px;
+  width: 87px;
+  height: 87px;
+  flex: 0 0 87px;
 
   border-radius: 50%;
   border: 4px solid white;

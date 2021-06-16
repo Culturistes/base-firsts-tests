@@ -48,6 +48,7 @@ export default createStore({
     settings: {
       streamerMode: false,
     },
+    avatarUrl: "skieuse",
   },
   mutations: {
     updateClient(state: StoreState, value: Client): void {
@@ -91,6 +92,9 @@ export default createStore({
       data: { index: string; value: any }
     ): void {
       state.settings[data.index] = data.value;
+    },
+    updateAvatarUrl(state: StoreState, data: any): void {
+      state.avatarUrl = data;
     },
   },
   actions: {

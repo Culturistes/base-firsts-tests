@@ -3,17 +3,38 @@
     class="game background"
     :class="{
       'background-color1':
-        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE ||
+        ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+          $store.state.avatarUrl === 'bigoudene') ||
         ($store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'lme'),
+      'background-color2':
+        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+        $store.state.avatarUrl === 'tropique',
+      'background-color3':
+        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+        $store.state.avatarUrl === 'fermier',
+      'background-color5':
+        ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+          $store.state.avatarUrl === 'skieuse') ||
+        ($store.state.livegame.minigame &&
+          $store.state.livegame.minigame.type === 'quiz'),
+      'background-color6':
+        ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+          $store.state.avatarUrl === 'surfeuse') ||
+        ($store.state.livegame.minigame &&
+          $store.state.livegame.minigame.type === 'coc'),
+      'background-color8':
+        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+        ($store.state.avatarUrl === 'garcon' ||
+          $store.state.avatarUrl === 'camping'),
+      'background-color9':
+        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+        $store.state.avatarUrl === 'bayonnais',
+      'background-color10':
+        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+        $store.state.avatarUrl === 'touriste',
       'background-color7':
         $store.state.livegame.currentStep === steps.GAME_PARAMETERS,
-      'background-color5':
-        $store.state.livegame.minigame &&
-        $store.state.livegame.minigame.type === 'quiz',
-      'background-color6':
-        $store.state.livegame.minigame &&
-        $store.state.livegame.minigame.type === 'coc',
     }"
   >
     <!-- Début de partie -->

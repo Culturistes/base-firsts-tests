@@ -10,7 +10,12 @@
         :class="{
           'background-color1': people === 'bigoudene',
           'background-color2': people === 'tropique',
-          'background-color3': people === 'surfeuse',
+          'background-color3': people === 'fermier',
+          'background-color5': people === 'skieuse',
+          'background-color6': people === 'surfeuse',
+          'background-color8': people === 'garcon' || people === 'camping',
+          'background-color9': people === 'bayonnais',
+          'background-color10': people === 'touriste',
         }"
       ></div>
     </div>
@@ -134,7 +139,7 @@ export default class Stamp extends Vue {
   justify-content: center;
   align-items: center;
 
-  padding-right: 80px;
+  padding-right: 115px;
   opacity: 1;
 
   transition: opacity, transform 0.3s;

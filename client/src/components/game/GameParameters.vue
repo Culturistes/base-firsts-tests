@@ -46,6 +46,7 @@
         </div>
         <div class="btn-container">
           <StarBtn
+            :big="true"
             :valid="$store.state.player?.isReady"
             v-on:click="playerReady"
             >En voiture<br />Simone !</StarBtn
@@ -173,6 +174,7 @@ export default class GameParameters extends Vue {
   .parameters {
     display: flex;
     align-items: flex-end;
+    justify-content: space-between;
     width: 50%;
     margin-left: calc(#{$steps-padding} / 2);
 
@@ -182,14 +184,21 @@ export default class GameParameters extends Vue {
     }
 
     .parameters-container {
-      width: 30vw;
-      height: 37vw;
+      width: 391px;
+      min-width: 391px;
+      height: 518px;
       background-image: url("/img/divers/planche.png");
       background-size: 100% 100%;
+      transform: translateX(-24px) translateY(44px);
 
       .panneau-btn {
-        width: 75%;
+        width: 315px;
+        height: 104px;
         margin-left: 26%;
+
+        &:first-child {
+          margin-top: 47px;
+        }
       }
     }
   }
@@ -213,5 +222,9 @@ export default class GameParameters extends Vue {
       margin-bottom: 20px;
     }
   }
+}
+.star {
+  width: 160px;
+  height: 160px;
 }
 </style>

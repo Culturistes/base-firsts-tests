@@ -1,10 +1,10 @@
 <template>
   <button class="minimalist-arrow-btn" v-if="direction == 'left'">
     <img src="/img/buttons/left-arrow.svg" />
-    <slot></slot>
+    <span><slot></slot></span>
   </button>
   <button class="minimalist-arrow-btn" v-else-if="direction == 'right'">
-    <slot></slot>
+    <span><slot></slot></span>
     <img src="/img/buttons/right-arrow.svg" />
   </button>
 </template>
@@ -33,5 +33,9 @@ export default class MinimalistArrowBtn extends Vue {}
   font-weight: bold;
   background: none;
   border: none;
+
+  :first-child {
+    margin-right: 10px;
+  }
 }
 </style>

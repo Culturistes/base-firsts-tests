@@ -40,10 +40,10 @@
 
     <div class="jokers">
       <p class="mes-jokers">Mes jokers</p>
-      <button class="btn"><img src="/img/jokers/drink.png" /></button>
-      <button class="btn"><img src="/img/jokers/pouce.png" /></button>
+      <button class="btn"><img src="/img/jokers/drink.svg" /></button>
+      <button class="btn"><img src="/img/jokers/pouce.svg" /></button>
       <button class="btn btn-spam" @click="displaySticker">
-        <img src="/img/jokers/buzzer.png" />
+        <img src="/img/jokers/buzzer.svg" />
       </button>
     </div>
   </div>

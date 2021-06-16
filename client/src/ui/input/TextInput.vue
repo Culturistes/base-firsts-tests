@@ -1,9 +1,12 @@
 <template>
   <div class="input" :class="{ black: color == 'black' }">
-    <label class="input-label" :class="{ hide: modelValue.length > 0 }"
+    <label
+      class="input-label"
+      :class="{ hide: modelValue && modelValue.length > 0 }"
       ><span class="text"><slot></slot></span>
     </label>
     <input
+      v-if="!noInput"
       class="input-text"
       :type="type"
       :value="modelValue"
@@ -30,6 +33,10 @@ import { Options, Vue } from "vue-class-component";
       type: String,
     },
     required: {
+      type: Boolean,
+      default: false,
+    },
+    noInput: {
       type: Boolean,
       default: false,
     },

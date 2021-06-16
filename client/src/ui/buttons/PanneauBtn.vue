@@ -28,13 +28,17 @@ export default class PanneauBtn extends Vue {}
   background-color: $color3-light;
   border-radius: $border-radius;
 
-  padding: 25px;
+  padding: 20px;
+  margin-bottom: 10px;
 
   border: solid white 5px;
 
   text-align: left;
 
+  transition: 0.3s;
+
   .title {
+    margin: 0px;
     font-size: 1.5rem;
     font-weight: bold;
   }
@@ -42,6 +46,9 @@ export default class PanneauBtn extends Vue {}
   .description {
     font-family: $btnFont;
     font-size: 1.3rem;
+
+    margin-top: 6px;
+    margin-bottom: 0;
   }
 
   &.active {

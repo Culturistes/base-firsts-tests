@@ -1,12 +1,17 @@
 <template>
   <div class="minigame mg-map">
-    <QuizBlock> {{ $store.state.livegame.minigame.title }} ?</QuizBlock>
+    <QuizBlock :fit="true" :isTimer="true">
+      {{ $store.state.livegame.minigame.title }} ?</QuizBlock
+    >
     <div id="map"></div>
-    <div class="ui-question">
+    <div
+      v-if="$store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT"
+      class="ui-question"
+    >
       <label>
         <p>
           <!-- v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND" -->
-          Bonus : Comment s'appellent ses habitants ?
+          <span class="bonus">Bonus :</span> Comment s'appellent ses habitants ?
         </p>
         <div class="input-btn">
           <TextInput color="black" v-model="gentile">Saisi le nom</TextInput>
@@ -15,14 +20,25 @@
       </label>
     </div>
     <div
-      class="ui-result"
+      class="ui-question"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      <p>
-        Habitants: {{ $store.state.livegame.minigame.goodAnswer.gentileM }} et
-        {{ $store.state.livegame.minigame.goodAnswer.gentileF }}
-      </p>
-      <StarBtn v-on:click="goNext">Suivant</StarBtn>
+      <label>
+        <p>
+          <!-- v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND" -->
+          <span class="bonus">Bonus :</span> Comment s'appellent ses habitants ?
+        </p>
+        <div class="input-btn">
+          <TextInput color="black" :noInput="true"
+            >Les
+            {{ $store.state.livegame.minigame.goodAnswer.gentileM }}
+            !</TextInput
+          >
+          <StarBtn @click="goNext" :valid="$store.state.player.isReady"
+            >suivant</StarBtn
+          >
+        </div>
+      </label>
     </div>
   </div>
 </template>
@@ -209,9 +225,13 @@ export default class MapGame extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.mg-map {
+  max-height: 600px;
+}
 #map {
-  width: 100%;
-  height: calc(100vh - 80px - 80px - 157px);
+  width: 610px;
+  height: 610px;
+  transform: scale(0.81) translate(-55px, -55px);
 
   margin: auto;
   margin-bottom: 40px;
@@ -227,11 +247,10 @@ body.leaflet-dragging {
 
 .ui-question {
   position: absolute;
-  width: 30%;
+  width: 275px;
   top: 50%;
   right: 0;
   margin: 0;
-  padding: 20px;
 
   z-index: 3000;
 
@@ -243,8 +262,15 @@ body.leaflet-dragging {
 
     text-align: left;
 
+    font-weight: normal;
+
+    .bonus {
+      font-weight: bold;
+    }
+
     .input {
-      width: calc(100% - 80px);
+      width: 180px;
+      margin-right: 10px;
     }
 
     .star-btn {

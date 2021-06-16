@@ -4,7 +4,9 @@
     class="minigame mg-quiz"
   >
     <RoundList :result="$store.state.player.answersRecord" />
-    <QuizBlock>{{ $store.state.livegame.minigame.title }}</QuizBlock>
+    <QuizBlock :isTimer="true">{{
+      $store.state.livegame.minigame.title
+    }}</QuizBlock>
     <div class="ui-question">
       <QuizBlock
         :key="i"
@@ -38,6 +40,12 @@
         "
         :wrong="
           (selectedAnswer === answer || selectedAnswer === i.toString()) &&
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
+          !$store.state.livegame.minigame.goodAnswer.content.includes(answer)
+        "
+        :halfOpacited="
+          selectedAnswer !== answer &&
+          selectedAnswer !== i.toString() &&
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
           !$store.state.livegame.minigame.goodAnswer.content.includes(answer)
         "
