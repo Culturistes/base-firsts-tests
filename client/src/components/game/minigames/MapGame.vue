@@ -80,12 +80,17 @@ export default class MapGame extends Vue {
   hasBeenReset = false;
 
   initializeMap(): void {
-    this.myMap = L.map("map").setView([46.23, 2.2], 6);
+    this.myMap = L.map("map", {
+      zoomControl: false,
+      scrollWheelZoom: false,
+      doubleClickZoom: false,
+      touchZoom: false,
+      dragging: false,
+      boxZoom: false,
+      attributionControl: false,
+    }).setView([46.9063027184389, 2.1972656250000004], 6);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(this.myMap);
+    L.tileLayer("/img/map/{x}/{y}.png", {}).addTo(this.myMap);
 
     this.marker = L.marker([0, 0], { icon: this.iconAnswer }).addTo(this.myMap);
 
@@ -215,6 +220,8 @@ export default class MapGame extends Vue {
 
     this.marker.setLatLng([lat, lng]);
     this.marker.addTo(this.myMap);
+
+    console.log(this.myMap.getCenter());
   }
 
   goNext(): void {
@@ -231,9 +238,9 @@ export default class MapGame extends Vue {
   max-height: 600px;
 }
 #map {
-  width: 610px;
-  height: 610px;
-  transform: scale(0.81) translate(-55px, -55px);
+  width: 690px;
+  height: 690px;
+  transform: scale(0.71) translate(-110px, -153px);
 
   margin: auto;
   margin-bottom: 40px;
