@@ -18,5 +18,13 @@ export default class App extends Vue {}
 
 <style lang="scss">
 #app {
+  button > img,
+  button > span,
+  button > p,
+  .btn > img,
+  .btn > span,
+  .btn > p {
+    pointer-events: none;
+  }
 }
 </style>
