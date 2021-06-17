@@ -125,6 +125,8 @@ export default class MiniGameRound extends Vue {
   }
 
   displaySticker(): void {
+    this.$store.state.sounds["collage_sticker"].howl.play();
+
     let stickersMaxNumber = 10;
 
     let index = Math.round(Math.random() * (stickersMaxNumber - 1)) + 1;

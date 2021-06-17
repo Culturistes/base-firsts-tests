@@ -144,13 +144,12 @@ export default class GameParameters extends Vue {
   }
 
   playerReady(): void {
+    if (!this.playerIsReady) {
+      this.$store.state.sounds["lechage_timbre"].howl.play();
+    }
+
     this.playerIsReady = !this.playerIsReady;
     if (this.$store.state.player.isMDR) {
-      let params = {
-        minigameNumber: this.mods[this.selectedMod].minigame,
-        roundNumber: this.mods[this.selectedMod].round,
-      };
-      console.log(params);
       this.$store.state.room?.send("clientPacket", {
         type: "playerReadyToStart",
         datas: {

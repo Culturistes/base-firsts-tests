@@ -171,6 +171,7 @@ import MiniGameRoundResult from "@/components/game/MiniGameRoundResult.vue";
 import MiniGameResult from "@/components/game/MiniGameResult.vue";
 import GameResult from "@/components/game/GameResult.vue";
 import axios from "axios";
+import { Howl } from "howler";
 
 export enum STEPS {
   JOIN_OR_CREATE,
@@ -209,6 +210,29 @@ export default class Game extends Vue {
   stickers: any = {};
   stickerIndex = 0;
 
+  soundsArray = [
+    {
+      name: "ambiance",
+      loop: true,
+      typeEvent: "self",
+      autoplay: true,
+      volume: 0.2,
+    },
+    { name: "score_pop", loop: false, typeEvent: "self" },
+    { name: "podium", loop: false, typeEvent: "self" },
+    { name: "lbf_ramassage_ingredient", loop: false, typeEvent: "click" },
+    { name: "coc_patelin", loop: false, typeEvent: "click" },
+    { name: "lme_like", loop: false, typeEvent: "click" },
+    { name: "quiz_mauvaise_reponse", loop: false, typeEvent: "self" },
+    { name: "quiz_bonne_reponse", loop: false, typeEvent: "self" },
+    { name: "quiz_choix", loop: false, typeEvent: "click" },
+    { name: "joker_pjn", loop: false, typeEvent: "click" },
+    { name: "collage_stickers", loop: false, typeEvent: "click" },
+    { name: "cta", loop: false, typeEvent: "self" },
+    { name: "lechage_timbre", loop: false, typeEvent: "click" },
+    { name: "timer", loop: false, typeEvent: "self" },
+  ];
+
   $store!: Store<StoreState>;
 
   async created(): Promise<void> {
@@ -218,6 +242,25 @@ export default class Game extends Vue {
     });
 
     let settingsItem = localStorage.getItem("settings");
+
+    let sounds: any = {};
+    this.soundsArray.forEach((obj) => {
+      let sound: any = {};
+      sound.name = obj.name;
+      try {
+        sound.howl = new Howl({
+          src: [`/sounds/${obj.name}.mp3`],
+          loop: obj.loop,
+          autoplay: obj.autoplay ? obj.autoplay : false,
+          volume: obj.volume ? obj.volume : 0.5,
+        });
+        console.log("Sound:", sound.name, "initialized");
+        sounds[sound.name] = sound;
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    this.$store.commit("updateSounds", sounds);
 
     if (settingsItem) {
       let settings = JSON.parse(settingsItem);
@@ -454,6 +497,10 @@ export default class Game extends Vue {
 
     this.stickers[id] = sticker;
     this.stickerIndex++;
+  }
+
+  registerSound(): void {
+    //
   }
 
   unmounted(): void {

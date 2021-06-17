@@ -64,6 +64,9 @@ export default createStore({
     updatePlayers(state: StoreState, value: Array<any>): void {
       state.players = value;
     },
+    updateSounds(state: StoreState, value: Array<any>): void {
+      state.sounds = value;
+    },
     addSounds(state: StoreState, data: { name: string; value: any }): void {
       state.sounds[data.value.name] = data.value.obj;
     },
