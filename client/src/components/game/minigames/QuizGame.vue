@@ -182,7 +182,6 @@ import { Store } from "vuex";
 import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import { STEPS } from "../../../views/Game.vue";
-import { watchEffect } from "@vue/runtime-core";
 
 @Options({})
 export default class QuizGame extends Vue {
@@ -284,13 +283,13 @@ export default class QuizGame extends Vue {
       (value, oldVal) => {
         if (value) {
           let { content } = value;
-          console.log(content, content[0], content[1]);
+          //console.log(content, content[0], content[1]);
           if (content[0] != undefined && content[1] != undefined) {
             this.actualLMEAnswers = [content[0].number, content[1].number];
           } else if (content[0] != undefined && content[0].id === 0) {
-            this.actualLMEAnswers = [content[0].number];
+            this.actualLMEAnswers = [content[0].number, 0];
           } else if (content[0] != undefined && content[0].id === 1) {
-            this.actualLMEAnswers = [content[0].number];
+            this.actualLMEAnswers = [0, content[0].number];
           }
         }
       }
@@ -314,10 +313,10 @@ export default class QuizGame extends Vue {
       !this.answersUpdated &&
       this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND
     ) {
-      console.log(
+      /* console.log(
         "update answers",
         this.$store.state.livegame.minigame.answers
-      );
+      ); */
       this.selectedAnswer = null;
       if (this.$store.state.livegame.minigame.type == "quiz") {
         this.answers = this.shuffle(
@@ -325,6 +324,7 @@ export default class QuizGame extends Vue {
         );
       } else {
         this.answers = this.$store.state.livegame.minigame.answers;
+        this.actualLMEAnswers = [0, 0];
       }
       this.answersUpdated = true;
     }
@@ -342,12 +342,15 @@ export default class QuizGame extends Vue {
   calculateLMEAnswers(): void {
     let datas: Array<number> = [0, 0];
     this.$store.state.players.forEach((player) => {
-      if (player.chosenAnswer.selectedNAnswer != undefined) {
+      if (
+        player.chosenAnswer != null &&
+        player.chosenAnswer.selectedNAnswer != undefined
+      ) {
         datas[player.chosenAnswer.selectedNAnswer] += 1;
       }
     });
     this.actualLMEAnswers = datas;
-    console.log(this.actualLMEAnswers);
+    /* console.log(this.actualLMEAnswers); */
   }
 }
 </script>
