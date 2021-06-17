@@ -23,7 +23,7 @@ export default class OwnRoom extends Room<RoomState> {
     ];
     minigameTimer = 20;
     timerEnded = false;
-    minigamesOrder = ['coc', 'quiz', 'lme'];
+    minigamesOrder = ['quiz', 'lme', 'coc'];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();

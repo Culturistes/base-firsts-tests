@@ -195,6 +195,8 @@ export default class QuizGame extends Vue {
   selectedAnswer = null;
   answersUpdated = false;
 
+  answerSoundPlayed = false;
+
   actualLMEAnswers = [0, 0];
 
   log(array: Array<any>) {
@@ -319,6 +321,7 @@ export default class QuizGame extends Vue {
         "update answers",
         this.$store.state.livegame.minigame.answers
       ); */
+      this.answerSoundPlayed = false;
       this.selectedAnswer = null;
       if (this.$store.state.livegame.minigame.type == "quiz") {
         this.answers = this.shuffle(
@@ -329,6 +332,26 @@ export default class QuizGame extends Vue {
         this.actualLMEAnswers = [0, 0];
       }
       this.answersUpdated = true;
+    } else if (
+      this.$store.state.livegame.currentStep ==
+      this.steps.MINI_GAME_ROUND_RESULT
+    ) {
+      if (
+        this.$store.state.livegame.minigame.type == "quiz" &&
+        !this.answerSoundPlayed
+      ) {
+        this.answerSoundPlayed = true;
+        let item =
+          this.$store.state.player.answersRecord[
+            this.$store.state.player.answersRecord.length - 1
+          ];
+
+        if (item.isGood) {
+          this.$store.state.sounds.quiz_bonne_reponse.howl.play();
+        } else {
+          this.$store.state.sounds.quiz_mauvaise_reponse.howl.play();
+        }
+      }
     }
   }
 

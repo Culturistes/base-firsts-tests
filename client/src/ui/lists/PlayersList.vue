@@ -32,22 +32,13 @@ export default class playersList extends Vue {
 
   steps = STEPS;
 
-  mounted(): void {
-    store.watch(
-      () => this.$store.state.players,
-      (val, oldVal) => {
-        //
-      }
-    );
-  }
-
   updated(): void {
-    console.log(
+    /* console.log(
       this.$store.state.livegame.currentStep ==
         this.steps.MINI_GAME_ROUND_RESULT,
       this.$store.state.livegame.currentStep,
       this.steps.MINI_GAME_ROUND_RESULT
-    );
+    ); */
   }
 }
 </script>

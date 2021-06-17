@@ -37,18 +37,20 @@ export default class App extends Vue {
     this.soundsArray.forEach((obj: any) => {
       let sound: any = {};
       sound.name = obj.name;
-      try {
-        sound.howl = new Howl({
-          src: [`/sounds/${obj.name}.mp3`],
-          loop: obj.loop,
-          autoplay: obj.autoplay ? obj.autoplay : false,
-          volume: obj.volume ? obj.volume : 0.1,
-        });
-        console.log("Sound:", sound.name, "initialized");
-        sounds[sound.name] = sound;
-      } catch (e) {
-        console.log(e);
-      }
+      sound.howl = new Howl({
+        src: [`/sounds/${obj.name}.mp3`],
+        loop: obj.loop,
+        autoplay: obj.autoplay ? obj.autoplay : false,
+        volume: obj.volume ? obj.volume : 0.1,
+        onload: () => {
+          console.log("Sound:", sound.name, "initialized");
+          sounds[sound.name] = sound;
+        },
+        onloaderror: (id, error) => {
+          console.warn("Sound:", sound.name, "couldn't be loaded!");
+          console.warn("Due to:", error, "Check the path!");
+        },
+      });
     });
     this.$store.commit("updateSounds", sounds);
   }
