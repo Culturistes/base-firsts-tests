@@ -31,29 +31,29 @@ export default class BonneFranquetteGame extends Vue {
   maxElements = 10;
   elements: Array<Ingredient> = [];
 
-  possibleIngredients = [
-    { name: "Carotte", img: "#ff0000" },
-    { name: "Pomme", img: "#00ff00" },
-    { name: "Sel", img: "#0000ff" },
-    { name: "Saucisse", img: "#ffff00" },
-    { name: "Sucre", img: "#000000" },
-    { name: "Poivre", img: "#000000" },
-    { name: "Fromage", img: "#000000" },
-    { name: "Huile", img: "#000000" },
-  ];
-
-  ingredients = [
-    { name: "Carotte", img: "#ff0000", caught: false },
-    { name: "Pomme", img: "#00ff00", caught: false },
-    { name: "Sel", img: "#0000ff", caught: false },
-    { name: "Saucisse", img: "#ffff00", caught: false },
-  ];
+  recip = {
+    name: "",
+    possibleIngredients: [
+      { name: "Carotte", img: "#ff0000" },
+      { name: "Pomme", img: "#00ff00" },
+      { name: "Sel", img: "#0000ff" },
+      { name: "Saucisse", img: "#ffff00" },
+      { name: "Sucre", img: "#000000" },
+      { name: "Poivre", img: "#000000" },
+      { name: "Fromage", img: "#000000" },
+      { name: "Huile", img: "#000000" },
+    ],
+    ingredients: [
+      { name: "Carotte", img: "#ff0000", caught: false },
+      { name: "Pomme", img: "#00ff00", caught: false },
+      { name: "Sel", img: "#0000ff", caught: false },
+      { name: "Saucisse", img: "#ffff00", caught: false },
+    ],
+  };
 
   mounted() {
-    this.possibleIngredients =
-      this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
-    this.ingredients =
-      this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
+    this.recip.possibleIngredients = this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
+    this.recip.ingredients = this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
 
     this.cnv = document.querySelector("#bonne-franquette-canvas");
     this.ctx = this.cnv.getContext("2d");
@@ -68,11 +68,13 @@ export default class BonneFranquetteGame extends Vue {
 
   animate() {
     if (this.elements.length < this.maxElements) {
-      let i = Math.round(Math.random() * (this.possibleIngredients.length - 1));
+      let i = Math.round(
+        Math.random() * (this.recip.possibleIngredients.length - 1)
+      );
 
       this.elements.push(
         new Ingredient(
-          this.possibleIngredients[i],
+          this.recip.possibleIngredients[i],
           Math.round(Math.random() * window.innerWidth),
           -50
         )
@@ -90,12 +92,12 @@ export default class BonneFranquetteGame extends Vue {
         });
         this.elements.splice(index, 1);
 
-        const indexIngredient = this.ingredients.findIndex((e: any) => {
+        const indexIngredient = this.recip.ingredients.findIndex((e: any) => {
           return e.name === el.name;
         });
 
         if (indexIngredient >= 0) {
-          this.ingredients[indexIngredient].caught = true;
+          this.recip.ingredients[indexIngredient].caught = true;
         }
       }
     });
