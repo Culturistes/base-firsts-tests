@@ -43,14 +43,14 @@
       <button
         class="btn btn-joker"
         :class="{ active: $store.state.player.jokers.pjn.available }"
-        @click="$store.dispatch('useJoker', 'pjn')"
+        @click="useJoker('pjn')"
       >
         <img src="/img/jokers/drink.svg" />
       </button>
       <button
         class="btn btn-joker"
         :class="{ active: $store.state.player.jokers.cdp.available }"
-        @click="$store.dispatch('useJoker', 'cdp')"
+        @click="useJoker('cdp')"
       >
         <img src="/img/jokers/pouce.svg" />
       </button>
@@ -125,7 +125,7 @@ export default class MiniGameRound extends Vue {
   }
 
   displaySticker(): void {
-    this.$store.state.sounds["collage_sticker"].howl.play();
+    this.$store.state.sounds.collage_stickers.howl.play();
 
     let stickersMaxNumber = 10;
 
@@ -146,6 +146,19 @@ export default class MiniGameRound extends Vue {
       type: "STICKER",
       datas: datas,
     });
+  }
+
+  useJoker(slug: string): void {
+    this.$store.dispatch("useJoker", slug);
+
+    switch (slug) {
+      case "pjn":
+        this.$store.state.sounds.joker_pjn?.howl.play();
+        break;
+      case "cdp":
+        this.$store.state.sounds.joker_cdp?.howl.play();
+        break;
+    }
   }
 }
 </script>

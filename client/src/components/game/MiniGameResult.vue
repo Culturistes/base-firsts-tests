@@ -3,9 +3,7 @@
     <StepTitle>Mini game result</StepTitle>
     <p>Podium</p>
     <PlayersList />
-    <StarBtn
-      v-on:click="$store.dispatch('readyForNext')"
-      :valid="$store.state.player?.isReady"
+    <StarBtn v-on:click="readyForNext" :valid="$store.state.player?.isReady"
       >Suivant</StarBtn
     >
   </div>
@@ -22,6 +20,11 @@ import StoreState from "@/interfaces/StoreState";
 export default class MiniGameResult extends Vue {
   $refs!: any;
   $store!: Store<StoreState>;
+
+  readyForNext(): void {
+    this.$store.state.sounds.cta.howl.play();
+    this.$store.dispatch("readyForNext");
+  }
 }
 </script>
 

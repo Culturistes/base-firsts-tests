@@ -102,7 +102,8 @@ export default class MapGame extends Vue {
   }
 
   validateAnswer(): void {
-    console.log(this.$store.state.livegame.minigame);
+    this.$store.state.sounds.cta.howl.play();
+
     // distance in meter
     let distance = this.myMap.distance(
       this.marker.getLatLng(),
@@ -117,8 +118,6 @@ export default class MapGame extends Vue {
       gentile: this.gentile,
       latLng: [this.marker.getLatLng().lat, this.marker.getLatLng().lng],
     };
-
-    console.log(this.marker.getLatLng());
 
     this.$store.commit("updateLiveGame", {
       index: "minigame",
@@ -215,9 +214,12 @@ export default class MapGame extends Vue {
 
     this.marker.setLatLng([lat, lng]);
     this.marker.addTo(this.myMap);
+
+    this.$store.state.sounds.coc_patelin.howl.play();
   }
 
   goNext(): void {
+    this.$store.state.sounds.cta.howl.play();
     this.$store.dispatch("readyForNext");
     this.gentile = "";
     this.hasBeenReset = false;

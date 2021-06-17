@@ -226,10 +226,12 @@ export default class QuizGame extends Vue {
   sendAnswer() {
     let datas = {};
     if (this.$store.state.livegame.minigame.type == "quiz") {
+      this.$store.state.sounds.quiz_choix.howl.play();
       datas = {
         selectedSAnswer: this.selectedAnswer,
       };
     } else {
+      this.$store.state.sounds.lme_like.howl.play();
       datas = {
         selectedNAnswer: this.selectedAnswer,
       };
@@ -333,6 +335,7 @@ export default class QuizGame extends Vue {
   goNext(): void {
     this.$store.dispatch("readyForNext");
     this.answersUpdated = false;
+    this.$store.state.sounds.cta.howl.play();
     this.$store.commit("updateJokersParams", {
       index: "showOthersChoice",
       value: false,
