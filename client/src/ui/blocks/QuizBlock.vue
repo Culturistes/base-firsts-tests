@@ -218,15 +218,13 @@ $margin-between-btn: 7px;
     overflow: hidden;
     &::after {
       content: "";
-      width: 200%;
+      width: 100%;
       height: 5px;
       background: $wrong;
-      top: 0;
       left: 0;
       position: absolute;
-      transform: rotate(-10deg);
-      top: 46%;
-      left: -50%;
+      transform: rotate(-12deg) translateY(-50%) scaleX(1.5);
+      top: 50%;
     }
   }
   &.half-opacited {
