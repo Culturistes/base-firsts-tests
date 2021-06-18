@@ -1,7 +1,10 @@
 <template>
   <div
     class="stamp"
-    :class="{ little: selected !== pos }"
+    :class="{
+      little: selected !== pos,
+      out: pos - select <= -2 || pos - select >= 2,
+    }"
     :style="{ transform: 'translateX(' + translate + '%)' }"
   >
     <div class="stamp-border">
@@ -85,6 +88,10 @@ export default class Stamp extends Vue {
       width: 166.15px;
       height: 208.06px;
     }
+  }
+
+  &.out {
+    opacity: 0;
   }
 
   &-img {

@@ -70,10 +70,6 @@ import StoreState from "@/interfaces/StoreState";
   props: ["streamerMode"],
 }) */
 export default class GameParameters extends Vue {
-  $refs!: {
-    inputNbMiniGame: HTMLInputElement;
-    inputNbRound: HTMLInputElement;
-  };
   $store!: Store<StoreState>;
 
   gameSettings!: {
