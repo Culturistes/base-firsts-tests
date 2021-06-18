@@ -211,7 +211,7 @@ export default class QuizGame extends Vue {
     return array;
   }
 
-  sendAnswer(i) {
+  sendAnswer(i: number) {
     if (
       this.$store.state.livegame.currentStep !==
       this.steps.MINI_GAME_ROUND_RESULT
