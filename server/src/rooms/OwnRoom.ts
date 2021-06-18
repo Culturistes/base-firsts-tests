@@ -23,7 +23,7 @@ export default class OwnRoom extends Room<RoomState> {
     ];
     minigameTimer = 20;
     timerEnded = false;
-    minigamesOrder = ['quiz', 'lme', 'coc'];
+    minigamesOrder = ['lme', 'quiz', 'coc'];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -124,6 +124,10 @@ export default class OwnRoom extends Room<RoomState> {
 
     async onLeave(client: Client, consented: boolean) {
         console.log(client.sessionId, "left, consented?:", consented);
+
+        if (this.state.playersReady > 0) {
+            this.state.playersReady--;
+        }
 
         this.state.players.get(client.sessionId).connected = false;
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
@@ -489,20 +493,37 @@ export default class OwnRoom extends Room<RoomState> {
                     };
                 } else if (choices.length > 0) {
                     let mostPicked: Array<Player> = [];
-                    choices.forEach(choice => {
-                        if (mostPicked.length < choice.length) {
-                            mostPicked = choice;
+                    let minPicked: number = 0;
+
+                    if (choices[0] != undefined && choices[1] != undefined) {
+                        if (choices[0].length > choices[1].length) {
+                            mostPicked = choices[0];
+                            minPicked = choices[1].length;
+                        } else {
+                            mostPicked = choices[1];
+                            minPicked = choices[0].length;
                         }
-                    })
-                    mostPicked.forEach(player => {
+                    } else if (choices[0] != undefined && choices[1] == undefined) {
+                        mostPicked = choices[0];
+                    } else if (choices[0] == undefined && choices[1] != undefined) {
+                        mostPicked = choices[1];
+                    }
+
+                    console.log(mostPicked.length)
+
+                    let mostPickedSorted: MapSchema<Player> = this.sortMapByRank([...mostPicked]);
+                    let index3 = 0
+                    mostPickedSorted.forEach(player => {
+                        let score = Math.round(this.state.currRoundParams.answerPoints / (index3 + 1))
                         let record = new AnswerRecord();
                         record.isGood = true;
                         player.answersRecord[this.state.parameters.currentRound] = record;
-                        this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
+                        this.addScoreToPlayer(player, score);
+                        index3++;
                     })
                     goodAnswer = {
                         content: [
-                            { id: mostPicked[0].chosenAnswer.selectedNAnswer, answer: this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer], number: mostPicked.length }
+                            { id: mostPicked[0].chosenAnswer.selectedNAnswer, answer: this.state.currRoundParams.answers[mostPicked[0].chosenAnswer.selectedNAnswer], numbers: [mostPicked.length, minPicked] }
                         ]
                     };
                 } else {

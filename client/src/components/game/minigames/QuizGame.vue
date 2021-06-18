@@ -291,9 +291,15 @@ export default class QuizGame extends Vue {
           if (content[0] != undefined && content[1] != undefined) {
             this.actualLMEAnswers = [content[0].number, content[1].number];
           } else if (content[0] != undefined && content[0].id === 0) {
-            this.actualLMEAnswers = [content[0].number, 0];
+            this.actualLMEAnswers = [
+              content[0].numbers[0],
+              content[0].numbers[1],
+            ];
           } else if (content[0] != undefined && content[0].id === 1) {
-            this.actualLMEAnswers = [0, content[0].number];
+            this.actualLMEAnswers = [
+              content[0].numbers[1],
+              content[0].numbers[0],
+            ];
           }
         }
       }

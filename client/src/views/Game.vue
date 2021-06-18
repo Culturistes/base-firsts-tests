@@ -219,7 +219,7 @@ export default class Game extends Vue {
 
     let settingsItem = localStorage.getItem("settings");
 
-    //this.$store.state.sounds.ambiance.howl.play(); TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+    //this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
 
     if (settingsItem) {
       let settings = JSON.parse(settingsItem);
@@ -353,7 +353,7 @@ export default class Game extends Vue {
           this.$store.commit("setPlayerIsReady", false);
           break;
         case "loading":
-          this.$store.commit("updateLoading", false);
+          this.$store.commit("updateLoading", datas);
           break;
         case "goodAnswer":
           this.$store.commit("updateMinigame", {
