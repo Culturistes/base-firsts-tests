@@ -182,7 +182,7 @@ export default class GameParameters extends Vue {
   .parameters,
   .players {
     height: calc(100vh - (#{$steps-padding} * 2));
-    background-color: white;
+    background-color: rgba($color: #fff, $alpha: 0.75);
 
     border-radius: 15px;
     padding: 32px;

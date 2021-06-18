@@ -1,9 +1,17 @@
 <template>
-  <li class="list-block">
+  <li class="list-block" :class="{ minigameresult: minigameresult }">
     <p class="rank">{{ rank }}</p>
     <img class="img" :src="'/img/stamps/' + perso + '-s.svg'" />
-    <div class="info">
+    <div v-if="!minigameresult" class="info">
       <p class="name">{{ name }}</p>
+      <p class="score">{{ score }} km</p>
+    </div>
+    <div class="minigameresult-info" v-if="minigameresult">
+      <p class="name">{{ name }}</p>
+      <div class="scoreWon">
+        <div class="anchor"></div>
+        + {{ scoreWon }} km
+      </div>
       <p class="score">{{ score }} km</p>
     </div>
     <img class="ready" v-if="ready" src="/img/divers/ready.svg" />
@@ -28,6 +36,10 @@ import { STEPS } from "@/views/Game.vue";
 
 @Options({
   props: {
+    minigameresult: {
+      type: Boolean,
+      default: false,
+    },
     rank: {
       type: String,
       default: "1",
@@ -103,13 +115,49 @@ export default class QuizBlock extends Vue {
       }
     }
   }
+  &.minigameresult {
+    width: 490px;
+    background: white;
+
+    padding-right: 60px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    .minigameresult-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      .name {
+        font-size: 2.5rem;
+        margin-right: 25px;
+      }
+      .score {
+        font-size: 1.5rem;
+        font-weight: normal;
+      }
+      .scoreWon {
+        position: relative;
+        right: 0;
+        margin-right: auto;
+
+        transform: none;
+      }
+    }
+  }
   .scoreWon {
     position: absolute;
     right: 6%;
     background-color: white;
-    padding: 10px;
+    padding: 15px;
     border-radius: 12px;
-    transform: translateX(110%);
+    transform: translateX(113%);
+
+    z-index: 1;
+
+    font-size: 1.6rem;
+
+    box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
 
     .anchor {
       position: absolute;
@@ -125,6 +173,8 @@ export default class QuizBlock extends Vue {
         height: 20px;
         background: white;
         transform: rotate(45deg);
+
+        //box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
       }
     }
   }

@@ -6,6 +6,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+import Loading from "./ui/loading/Loading.vue";
+
 import PlayersList from "./ui/lists/PlayersList.vue";
 import RoundList from "./ui/lists/RoundList.vue";
 import QuizBlock from "./ui/blocks/QuizBlock.vue";
@@ -27,6 +29,8 @@ import Picture from "./ui/pictures/Picture.vue";
 const app = createApp(App);
 
 app.use(store).use(router).mount("#app");
+
+app.component("Loading", Loading);
 
 app.component("PlayersList", PlayersList);
 app.component("RoundList", RoundList);

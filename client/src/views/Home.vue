@@ -5,7 +5,7 @@
       <h1>Chassé<br />croisé</h1>
     </div>
     <p class="baseline" v-if="$route.params.code == undefined">
-      Le jeu qui blabla
+      Le jeu 100% français
     </p>
     <p class="baseline" v-if="$route.params.code != undefined">
       Prêt à partir en vacances avec {{ name }} !

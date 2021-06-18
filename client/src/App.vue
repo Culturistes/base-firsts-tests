@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <Loading v-if="isLoading" />
     <router-view />
 
     <Debug />

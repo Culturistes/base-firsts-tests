@@ -1,7 +1,8 @@
 <template>
   <span class="rect"
-    ><img src="/img/divers/rect.svg" class="bg" />
-    <div class="mask">
+    ><img v-if="!notEmpty" src="/img/divers/rect.svg" class="bg" />
+    <img v-else-if="notEmpty" src="/img/divers/rect-blue.svg" class="bg" />
+    <div v-if="!notEmpty" class="mask">
       <span
         v-for="(word, i) in wordList"
         :key="i"
@@ -9,8 +10,10 @@
         :style="{ transform: 'translateY(calc(' + translate + '% + 3px))' }"
         >{{ word }}</span
       >
-    </div></span
-  >
+    </div>
+    <div v-else-if="notEmpty" class="mask">
+      <span class="text"><slot></slot></span></div
+  ></span>
 </template>
 
 pinzutu, touriste, ESTIVANT, VACANCIER, TROADOUR
@@ -24,16 +27,20 @@ import { Options, Vue } from "vue-class-component";
       type: Number,
       default: 0,
     },
+    notEmpty: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class Rect extends Vue {
   wordList = [
-    "Monchu",
+    "monchu",
     "pinzutu",
     "touriste",
-    "Estivant",
-    "Vacancier",
-    "Troadour",
+    "estivant",
+    "vacancier",
+    "troadour",
   ];
   selected: any;
 

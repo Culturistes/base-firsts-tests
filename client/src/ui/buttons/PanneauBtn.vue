@@ -28,6 +28,8 @@ export default class PanneauBtn extends Vue {}
   background-color: $color3-light;
   border-radius: $border-radius;
 
+  box-shadow: rgba($color: #000000, $alpha: 0.2) 0px 0px 8px;
+
   padding: 20px;
   margin-bottom: 10px;
 

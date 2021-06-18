@@ -1,10 +1,13 @@
 <template>
   <div class="minigameResult step">
-    <StepTitle>Mini game result</StepTitle>
-    <p>Podium</p>
-    <PlayersList />
-    <StarBtn v-on:click="readyForNext" :valid="$store.state.player?.isReady"
-      >Suivant</StarBtn
+    <p class="title">L'air des <Rect :notEmpty="true">résultats</Rect></p>
+    <PlayersList :minigameresult="true" />
+    <StarBtn
+      class="btn"
+      :big="true"
+      v-on:click="readyForNext"
+      :valid="$store.state.player?.isReady"
+      >Mini-jeu<br />suivant</StarBtn
     >
   </div>
 </template>
@@ -29,4 +32,14 @@ export default class MiniGameResult extends Vue {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.title {
+  font-size: 3rem;
+}
+
+.btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+</style>

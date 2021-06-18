@@ -4,15 +4,17 @@
     :class="{
       'background-color1':
         ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
-          $store.state.avatarUrl === 'bigoudene') ||
+          $store.state.avatarUrl === 'bigouden') ||
         ($store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'lme'),
       'background-color2':
         $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
         $store.state.avatarUrl === 'tropique',
       'background-color3':
-        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
-        $store.state.avatarUrl === 'fermier',
+        ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+          $store.state.avatarUrl === 'fermier') ||
+        ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+          $store.state.avatarUrl === 'rando'),
       'background-color5':
         ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
           $store.state.avatarUrl === 'skieuse') ||
@@ -34,7 +36,8 @@
         $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
         $store.state.avatarUrl === 'touriste',
       'background-color7':
-        $store.state.livegame.currentStep === steps.GAME_PARAMETERS,
+        $store.state.livegame.currentStep === steps.GAME_PARAMETERS ||
+        $store.state.livegame.currentStep === steps.MINI_GAME_RESULT,
     }"
   >
     <!-- Début de partie -->
@@ -152,9 +155,7 @@
       />
     </div>
 
-    <div class="loader" v-if="isLoading">
-      <span>Loading... Wait please :)</span>
-    </div>
+    <Loading v-if="isLoading" />
   </div>
 </template>
 
@@ -209,14 +210,51 @@ export default class Game extends Vue {
   notifications: Array<string> = [];
   streamerMode = false;
   steps = STEPS;
-  isLoading = false;
+  isLoading = true;
 
   stickers: any = {};
   stickerIndex = 0;
 
   $store!: Store<StoreState>;
 
+  //FOR PRELOAD IMG
+  img: any = null;
+  numberLoaded = 0;
   async created(): Promise<void> {
+    //PRELOAD IMG
+    this.img = [
+      new Image(),
+      new Image(),
+      new Image(),
+      new Image(),
+      new Image(),
+      new Image(),
+      new Image(),
+      new Image(),
+      new Image(),
+    ];
+
+    this.img[0].src = "/img/animations/camping.png";
+    this.img[1].src = "/img/animations/fermier.png";
+    this.img[2].src = "/img/animations/garcon.png";
+    this.img[3].src = "/img/animations/skieuse.png";
+    this.img[4].src = "/img/animations/surfeuse.png";
+    this.img[5].src = "/img/animations/touriste.png";
+    this.img[6].src = "/img/animations/bigouden.png";
+    this.img[7].src = "/img/animations/rando.png";
+    this.img[8].src = "/img/animations/bayonnais.png";
+
+    this.img.forEach((el: any) => {
+      el.onload = () => {
+        this.numberLoaded++;
+
+        if (this.numberLoaded >= 9) {
+          this.isLoading = false;
+        }
+      };
+    });
+    //END PRELOAD IMG
+
     this.$store.commit("updateLiveGame", {
       index: "currentStep",
       value: this.steps.JOIN_OR_CREATE,
@@ -572,20 +610,6 @@ export default class Game extends Vue {
     &.active {
       color: green;
     }
-  }
-
-  .loader {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.8);
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 999;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }
 </style>

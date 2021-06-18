@@ -17,7 +17,7 @@
     </div>
 
     <div class="round" :class="{ inactive: /*!canAnswer*/ false }">
-      <p>Timer {{ timer }}</p>
+      <!-- <p>Timer {{ timer }}</p> -->
 
       <QuizGame
         v-if="
@@ -271,6 +271,11 @@ export default class MiniGameRound extends Vue {
 
     .btn-spam {
       margin-top: auto;
+
+      img {
+        width: 88px;
+        height: 88px;
+      }
     }
   }
   .answer {

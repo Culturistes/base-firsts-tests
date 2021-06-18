@@ -35,7 +35,7 @@ export default class MinimalistArrowBtn extends Vue {}
   border: none;
 
   :first-child {
-    margin-right: 10px;
+    margin-right: 16px;
   }
 }
 </style>
