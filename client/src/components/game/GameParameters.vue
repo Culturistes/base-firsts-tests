@@ -103,7 +103,8 @@ export default class GameParameters extends Vue {
   inputNbMiniGame = "3";
   inputNbRound = "1";
 
-  mounted(): void {
+  created(): void {
+    this.selectedMod = this.$store.state.livegame.chosenParams.gamemode;
     store.watch(
       () => this.$store.state.livegame.chosenParams,
       (val, oldVal) => {

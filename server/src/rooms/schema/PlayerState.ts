@@ -78,4 +78,7 @@ export class Player extends Schema {
 
     @type([AnswerRecord])
     answersRecord: Array<AnswerRecord> = new Array<AnswerRecord>();
+
+    @type("number")
+    playerAnswerRank: number = 100;
 }

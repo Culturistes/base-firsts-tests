@@ -213,6 +213,9 @@ export default class OwnRoom extends Room<RoomState> {
             if (packet.datas.chosenAnswer != null) {
 
                 let newChosenAnswer = new ChosenAnswer();
+                if (this.state.players.get(client.sessionId).playerAnswerRank == 100) {
+                    this.state.players.get(client.sessionId).playerAnswerRank = this.state.playersReady;
+                }
                 newChosenAnswer.selectedNAnswer = packet.datas.chosenAnswer.selectedNAnswer != null ? parseInt(packet.datas.chosenAnswer.selectedNAnswer) : newChosenAnswer.selectedNAnswer;
                 newChosenAnswer.selectedSAnswer = packet.datas.chosenAnswer.selectedSAnswer ? packet.datas.chosenAnswer.selectedSAnswer : newChosenAnswer.selectedSAnswer;
                 newChosenAnswer.dist = packet.datas.chosenAnswer.dist ? packet.datas.chosenAnswer.dist : newChosenAnswer.dist;
@@ -245,6 +248,9 @@ export default class OwnRoom extends Room<RoomState> {
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
             this.calculateScore();
             this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+            this.state.players.forEach(player => {
+                player.playerAnswerRank = 100;
+            })
         }
 
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND_RESULT) {
@@ -298,8 +304,6 @@ export default class OwnRoom extends Room<RoomState> {
     }
 
     startTimer() {
-        console.log("Trying to start timer");
-        console.log("state", this.state.currentStep)
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
             this.clock.start();
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
@@ -435,13 +439,25 @@ export default class OwnRoom extends Room<RoomState> {
 
         switch (this.state.currRoundParams.type) {
             case 'quiz':
+                let playersGoodAnswers: Array<Player> = [];
                 this.state.players.forEach((player) => {
                     if (player.chosenAnswer != null) {
                         if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
+                            playersGoodAnswers.push(player);
+                        }
+                    }
+                })
+                let newList = this.sortMapByRank([...playersGoodAnswers]);
+                let indx = 0;
+                newList.forEach((player: any) => {
+                    if (player.chosenAnswer != null) {
+                        if (player.chosenAnswer.selectedSAnswer.slice(0, 1) == "$") {
+                            let score = Math.round(this.state.currRoundParams.answerPoints / (indx + 1))
                             let record = new AnswerRecord();
                             record.isGood = true;
                             player.answersRecord[this.state.parameters.currentRound] = record;
-                            this.addScoreToPlayer(player, this.state.currRoundParams.answerPoints)
+                            this.addScoreToPlayer(player, score);
+                            indx++;
                         }
                     }
                 })
@@ -553,6 +569,31 @@ export default class OwnRoom extends Room<RoomState> {
         return sortedMap;
     }
 
+    sortMapByRank(map: any) {
+        if (map.length <= 1) {
+            return map;
+        }
+        let tupleArray = [];
+        for (let key in map) tupleArray.push([key, map[key]]);
+
+        tupleArray.sort(function (a, b) {
+            if (b == undefined) {
+                return -1
+            } else if (a == undefined) {
+                return 1;
+            } else {
+                return a[1].playerAnswerRank - b[1].playerAnswerRank
+            }
+        });
+
+        let sortedMap: MapSchema<Player> = new MapSchema<Player>();
+        tupleArray.forEach(function (el) {
+            sortedMap.set(el[0], el[1]);
+        });
+
+        return sortedMap;
+    }
+
     sortPlayersByMapDist(map: any) {
         let tupleArray = [];
         for (let key in map) tupleArray.push([key, map[key]]);
@@ -561,9 +602,9 @@ export default class OwnRoom extends Room<RoomState> {
             if (a[1][1].chosenAnswer == null && b[1][1].chosenAnswer == null) {
                 return 0
             } else if (a[1][1].chosenAnswer == null && b[1][1].chosenAnswer != null) {
-                return 2000 - b[1][1].chosenAnswer.dist
+                return 4000 - b[1][1].chosenAnswer.dist
             } else if (a[1][1].chosenAnswer != null && b[1][1].chosenAnswer == null) {
-                return a[1][1].chosenAnswer.dist - 2000
+                return a[1][1].chosenAnswer.dist - 4000
             } else {
                 return a[1][1].chosenAnswer.dist - b[1][1].chosenAnswer.dist
             }

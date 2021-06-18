@@ -324,6 +324,7 @@ export default class Game extends Vue {
             index: "chosenParams",
             value: datas,
           });
+          console.log(datas);
           break;
         case "canGoNext":
           if (datas) {
