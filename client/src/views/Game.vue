@@ -154,8 +154,6 @@
         v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
       />
     </div>
-
-    <Loading v-if="isLoading" />
   </div>
 </template>
 
@@ -210,7 +208,6 @@ export default class Game extends Vue {
   notifications: Array<string> = [];
   streamerMode = false;
   steps = STEPS;
-  isLoading = true;
 
   stickers: any = {};
   stickerIndex = 0;
@@ -249,7 +246,7 @@ export default class Game extends Vue {
         this.numberLoaded++;
 
         if (this.numberLoaded >= 9) {
-          this.isLoading = false;
+          this.$store.commit("updateLoading", false);
         }
       };
     });
@@ -263,6 +260,22 @@ export default class Game extends Vue {
     let settingsItem = localStorage.getItem("settings");
 
     //this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+
+    this.$store.state.room?.state.listen(
+      "currentStep",
+      (val: boolean, oldVal: boolean) => {
+        this.$store.commit("updateLiveGame", {
+          index: "jokersParams",
+          value: {
+            showOthersChoice: false,
+            othersCursor: [],
+            showMapRange: false,
+            highlightItems: false,
+            screenIsBlurred: false,
+          },
+        });
+      }
+    );
 
     if (settingsItem) {
       let settings = JSON.parse(settingsItem);
@@ -283,7 +296,7 @@ export default class Game extends Vue {
       store.watch(
         () => this.$store.state.isLoading,
         (val, oldVal) => {
-          this.isLoading = val;
+          this.$store.commit("updateLoading", val);
         }
       );
 

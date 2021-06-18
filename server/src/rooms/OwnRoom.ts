@@ -24,7 +24,7 @@ export default class OwnRoom extends Room<RoomState> {
     ];
     minigameTimer = 20;
     timerEnded = false;
-    minigamesOrder = ['lme', 'quiz', 'coc'];
+    minigamesOrder = ['lbf', 'lme', 'quiz', 'coc'];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -217,7 +217,6 @@ export default class OwnRoom extends Room<RoomState> {
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND && this.state.playersCanAnswer) {
             console.log("client", client.sessionId, "packet:", packet)
             if (packet.datas.chosenAnswer != null) {
-
                 let newChosenAnswer = new ChosenAnswer();
                 if (this.state.players.get(client.sessionId).playerAnswerRank == 100) {
                     this.state.players.get(client.sessionId).playerAnswerRank = this.state.playersReady;
@@ -227,15 +226,25 @@ export default class OwnRoom extends Room<RoomState> {
                 newChosenAnswer.dist = packet.datas.chosenAnswer.dist ? packet.datas.chosenAnswer.dist : newChosenAnswer.dist;
                 newChosenAnswer.gentile = packet.datas.chosenAnswer.gentile ? packet.datas.chosenAnswer.gentile : newChosenAnswer.gentile;
                 newChosenAnswer.latLng = packet.datas.chosenAnswer.latLng ? packet.datas.chosenAnswer.latLng : newChosenAnswer.latLng;
+                newChosenAnswer.recette = packet.datas.chosenAnswer.recette ? packet.datas.chosenAnswer.recette : newChosenAnswer.recette;
 
                 this.state.players.get(client.sessionId).chosenAnswer = newChosenAnswer;
 
                 this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+
+                if (packet.datas.chosenAnswer.recette) {
+                    this.state.playersCanAnswer = false;
+                    this.clock.clear();
+                    this.state.currentTimer = this.minigameTimer;
+                    this.mustEndTheRound();
+                }
             }
         }
 
         if (this.state.playersReady == this.state.players.size) {
             console.log("=== everyone's ready!")
+
+
 
             this.clock.clear();
             this.state.currentTimer = this.minigameTimer;
@@ -312,6 +321,9 @@ export default class OwnRoom extends Room<RoomState> {
     startTimer() {
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
             this.clock.start();
+            if (this.state.currRoundParams.type == "lbf") {
+                this.state.currentTimer = 60;
+            }
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
                 this.state.playersCanAnswer = true;
             }
@@ -417,6 +429,7 @@ export default class OwnRoom extends Room<RoomState> {
     }
 
     calculateScore() {
+        console.log("Caculating score")
         let goodAnswer = {};
 
         this.state.players.forEach((player) => {

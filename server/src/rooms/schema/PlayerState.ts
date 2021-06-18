@@ -32,6 +32,9 @@ export class ChosenAnswer extends Schema {
 
     @type(['number'])
     latLng?: ArraySchema<number> = new ArraySchema<number>();
+
+    @type('boolean')
+    recette: boolean = false;
 }
 
 export class AnswerRecord extends Schema {

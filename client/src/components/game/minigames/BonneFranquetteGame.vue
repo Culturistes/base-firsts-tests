@@ -3,10 +3,13 @@
     <canvas id="bonne-franquette-canvas"></canvas>
 
     <ul>
-      <li :key="i" v-for="(ingredient, i) in recette.ingredients">
+      <li :key="i" v-for="(ingredient, i) in recip.ingredients">
         {{ ingredient.name }} - {{ ingredient.catched }}
       </li>
     </ul>
+    <StarBtn v-on:click="goNext" :valid="$store.state.player?.isReady"
+      >Suivant</StarBtn
+    >
   </div>
 </template>
 
@@ -15,10 +18,12 @@ import { Options, Vue } from "vue-class-component";
 import Ingredient from "@/classes/Ingredient";
 import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
+import { STEPS } from "../../../views/Game.vue";
 
 @Options({})
 export default class BonneFranquetteGame extends Vue {
   $store!: Store<StoreState>;
+  steps = STEPS;
 
   cnv: any;
   ctx: any;
@@ -30,6 +35,10 @@ export default class BonneFranquetteGame extends Vue {
 
   maxElements = 10;
   elements: Array<Ingredient> = [];
+
+  ingredientsFound = 0;
+
+  gamePlaying = true;
 
   /* recip = {
     name: "",
@@ -58,9 +67,9 @@ export default class BonneFranquetteGame extends Vue {
   };
 
   mounted() {
-    this.recip.name = this.$store.state.livegame.minigame.name;
     this.recip.possibleIngredients = this.$store.state.livegame.minigame;
-    this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
+    this.recip.possibleIngredients =
+      this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
     this.recip.ingredients =
       this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
 
@@ -75,42 +84,88 @@ export default class BonneFranquetteGame extends Vue {
     this.animate();
   }
 
-  animate() {
-    if (this.elements.length < this.maxElements) {
-      let i = Math.round(
-        Math.random() * (this.recip.possibleIngredients.length - 1)
-      );
+  updated(): void {
+    if (this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND) {
+      this.recip.possibleIngredients = this.$store.state.livegame.minigame;
+      this.recip.possibleIngredients =
+        this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
+      this.recip.ingredients =
+        this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
 
-      this.elements.push(
-        new Ingredient(
-          this.recip.possibleIngredients[i],
-          Math.round(Math.random() * window.innerWidth),
-          -50
-        )
-      );
+      this.gamePlaying = true;
+    } else if (
+      this.$store.state.livegame.currentStep ==
+      this.steps.MINI_GAME_ROUND_RESULT
+    ) {
+      // Reset everything, it's round result
+      this.elements = [];
+      this.ingredientsFound = 0;
+      this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      this.gamePlaying = false;
     }
+  }
 
-    this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  animate() {
+    if (this.gamePlaying) {
+      console.log("animating canvas");
+      if (this.elements.length < this.maxElements) {
+        let i = Math.round(
+          Math.random() * (this.recip.possibleIngredients.length - 1)
+        );
 
-    this.elements.forEach((el: any) => {
-      el.update(this.ctx, this.mouse);
-
-      if (el.y >= window.innerHeight) {
-        const index = this.elements.findIndex((e) => {
-          return e === el;
-        });
-        this.elements.splice(index, 1);
-
-        const indexIngredient = this.recip.ingredients.findIndex((e: any) => {
-          return e.name === el.name;
-        });
-
-        if (indexIngredient >= 0) {
-          this.recip.ingredients[indexIngredient].caught = true;
-        }
+        this.elements.push(
+          new Ingredient(
+            this.recip.possibleIngredients[i],
+            Math.round(Math.random() * window.innerWidth),
+            -50
+          )
+        );
       }
-    });
 
+      this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      this.elements.forEach((el: any) => {
+        el.update(this.ctx, this.mouse);
+
+        if (el.y >= window.innerHeight) {
+          const index = this.elements.findIndex((e) => {
+            return e === el;
+          });
+          this.elements.splice(index, 1);
+
+          const indexIngredient = this.recip.ingredients.findIndex((e: any) => {
+            return e.name === el.name;
+          });
+
+          if (indexIngredient >= 0) {
+            if (!this.recip.ingredients[indexIngredient].caught) {
+              this.recip.ingredients[indexIngredient].caught = true;
+              this.ingredientsFound++;
+            }
+
+            if (this.ingredientsFound == this.recip.ingredients.length) {
+              let datas = {
+                recette: true,
+              };
+
+              this.gamePlaying = false;
+
+              this.$store.commit("updateLiveGame", {
+                index: "minigame",
+                value: {
+                  ...this.$store.state.livegame.minigame,
+                  chosenAnswer: datas,
+                },
+              });
+
+              this.$store.dispatch("readyForNext", {
+                chosenAnswer: datas,
+              });
+            }
+          }
+        }
+      });
+    }
     requestAnimationFrame(this.animate);
   }
 
@@ -122,11 +177,16 @@ export default class BonneFranquetteGame extends Vue {
   }
 
   getMousePos(evt: any) {
-    console.log(this.mouse);
+    //console.log(this.mouse);
     this.mouse = {
       x: evt.clientX - this.rect.left,
       y: evt.clientY - this.rect.top,
     };
+  }
+
+  goNext(): void {
+    this.$store.dispatch("readyForNext");
+    this.$store.state.sounds.cta.howl.play();
   }
 }
 </script>
@@ -138,5 +198,6 @@ export default class BonneFranquetteGame extends Vue {
   left: 0;
   width: 100%;
   height: 100vh;
+  z-index: -1;
 }
 </style>
