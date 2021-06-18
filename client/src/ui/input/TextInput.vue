@@ -2,7 +2,7 @@
   <div class="input" :class="{ black: color == 'black' }">
     <label
       class="input-label"
-      :class="{ hide: modelValue && modelValue.length > 0 }"
+      :class="{ hide: modelValue && modelValue.length > 0, noInput: noInput }"
       ><span class="text"><slot></slot></span>
     </label>
     <input
@@ -12,6 +12,7 @@
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"
       :required="required"
+      :maxlength="maxlength"
     />
   </div>
 </template>
@@ -28,6 +29,10 @@ import { Options, Vue } from "vue-class-component";
     color: {
       type: String,
       default: "white",
+    },
+    maxlength: {
+      type: Number,
+      default: 50,
     },
     modelValue: {
       type: String,
@@ -86,6 +91,10 @@ export default class TextInput extends Vue {}
       .text {
         opacity: 0;
       }
+    }
+
+    &.noInput {
+      position: unset;
     }
   }
 

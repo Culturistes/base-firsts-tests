@@ -3,7 +3,7 @@
     <h2><span>Séléctionne ton </span><Rect :selected="selectedWord"></Rect></h2>
     <SelectPlayerList v-model="avatar" />
     <div class="inputContainer">
-      <TextInput v-model="username"> Pseudo </TextInput>
+      <TextInput :maxlength="8" v-model="username"> Pseudo </TextInput>
       <!-- <TextInput
         v-if="$route.name === 'game_params'"
         v-model="roomID"
@@ -24,7 +24,7 @@
         v-on:click="joinRoom"
         :disabled="username.length <= 0 || roomID.length <= 0"
       >
-        Rejoindre
+        C'est<br />partie !
       </StarBtn>
     </div>
     <!-- <div>
@@ -172,10 +172,7 @@ export default class JoinOrCreate extends Vue {
     margin-bottom: 10px;
 
     > :first-child {
-      margin-right: 50px;
-    }
-    > :nth-child(2) {
-      margin-right: 20px;
+      margin-right: 24px;
     }
   }
 }

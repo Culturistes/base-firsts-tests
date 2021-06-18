@@ -1,5 +1,6 @@
 <template>
   <div class="minigame mg-map">
+    <RoundList :result="$store.state.player.answersRecord" />
     <QuizBlock :fit="true" :isTimer="true">
       {{ $store.state.livegame.minigame.title }} ?</QuizBlock
     >
@@ -67,9 +68,9 @@ export default class MapGame extends Vue {
     popupAnchor: [0, -76],
   });
   iconTrue = L.icon({
-    iconUrl: "/img/map/icon_true.svg",
+    iconUrl: "/img/divers/sun.svg",
     iconSize: [40, 40],
-    iconAnchor: [20, 40],
+    iconAnchor: [0, 0],
     popupAnchor: [0, -76],
   });
 
@@ -238,9 +239,9 @@ export default class MapGame extends Vue {
   max-height: 600px;
 }
 #map {
-  width: 690px;
-  height: 690px;
-  transform: scale(0.71) translate(-110px, -153px);
+  width: 990px;
+  height: 870px;
+  transform: scale(0.7) translate(-30%, -30%);
 
   margin: auto;
   margin-bottom: 40px;

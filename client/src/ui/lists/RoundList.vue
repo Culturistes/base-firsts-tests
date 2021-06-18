@@ -60,7 +60,9 @@ export default class StampS extends Vue {
       background: black;
       border-radius: 37px;
 
-      opacity: 0.5;
+      margin-top: 3px;
+
+      opacity: 0.3;
 
       &.passed {
         opacity: 1;

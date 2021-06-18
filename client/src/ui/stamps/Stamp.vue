@@ -8,9 +8,9 @@
       <div
         class="stamp-bg"
         :class="{
-          'background-color1': people === 'bigoudene',
+          'background-color1': people === 'bigouden',
           'background-color2': people === 'tropique',
-          'background-color3': people === 'fermier',
+          'background-color3': people === 'fermier' || people === 'rando',
           'background-color5': people === 'skieuse',
           'background-color6': people === 'surfeuse',
           'background-color8': people === 'garcon' || people === 'camping',
@@ -20,13 +20,8 @@
       ></div>
     </div>
     <div
-      :style="{
-        'background-image': 'url(\'/img/animations/' + people + '.png\')',
-        'background-position': `-${216 * actualImgPos.x}px -${
-          380 * actualImgPos.y
-        }px`,
-      }"
       class="stamp-img"
+      :class="[selected == pos ? 'play' : null, people]"
     ></div>
   </div>
 </template>
@@ -50,81 +45,6 @@ import { Watch } from "vue-property-decorator";
   },
 })
 export default class Stamp extends Vue {
-  actualImg = 0;
-  actualImgPos: any = {
-    x: 0,
-    y: 0,
-  };
-  lastImg: any = {
-    surfeuse: 30,
-    garcon: 316,
-    fermier: 364,
-    skieuse: 97,
-    camping: 390,
-    touriste: 132,
-  };
-
-  time = 0;
-  lastTime = 0;
-
-  get people(): string {
-    return this.people;
-  }
-
-  @Watch("selected")
-  onSselectedChanged(val: number, oldVal: number) {
-    if (val == this.pos) {
-      this.lastTime = Date.now();
-      this.animate();
-    }
-  }
-
-  animate() {
-    let now = Date.now();
-    let delta = now - this.lastTime;
-    this.lastTime = now;
-
-    this.time += delta;
-
-    // Animate at 30fps
-    if (this.time >= 33.3) {
-      this.time = 0;
-
-      let temp = this.actualImg;
-      let tempX = this.actualImgPos.x;
-      let tempY = this.actualImgPos.y;
-      temp++;
-      //console.log(temp, tempX, tempY);
-      if (temp > this.lastImg[this.people]) {
-        this.actualImg = 0;
-        this.actualImgPos = {
-          x: 0,
-          y: 0,
-        };
-      } else {
-        tempX++;
-        if (tempX > 99) {
-          tempX = 0;
-          tempY++;
-        }
-        this.actualImg = temp;
-        this.actualImgPos = {
-          x: tempX,
-          y: tempY,
-        };
-      }
-    }
-
-    // Stop animation when not selected
-    if (this.selected === this.pos) {
-      requestAnimationFrame(this.animate);
-    }
-  }
-
-  mounted() {
-    this.lastTime = Date.now();
-    this.animate();
-  }
   selected!: number;
   pos!: number;
   get translate() {
@@ -176,6 +96,109 @@ export default class Stamp extends Vue {
     height: 380px;
 
     transition: transform 0.3s;
+
+    @keyframes spriteCamping {
+      to {
+        background-position: -84456px;
+      }
+    }
+    &.camping {
+      background: url("/img/animations/camping.png");
+      animation: spriteCamping 13s steps(391) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteSurfeuse {
+      to {
+        background-position: -6696px;
+      }
+    }
+    &.surfeuse {
+      background: url("/img/animations/surfeuse.png");
+      animation: spriteSurfeuse 1s steps(31) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteGarcon {
+      to {
+        background-position: -68472px;
+      }
+    }
+    &.garcon {
+      background: url("/img/animations/garcon.png");
+      animation: spriteGarcon 10.5s steps(317) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteSkieuse {
+      to {
+        background-position: -21168px;
+      }
+    }
+    &.skieuse {
+      background: url("/img/animations/skieuse.png");
+      animation: spriteSkieuse 3.3s steps(98) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteFermier {
+      to {
+        background-position: -78840px;
+      }
+    }
+    &.fermier {
+      background: url("/img/animations/fermier.png");
+      animation: spriteFermier 12.1s steps(365) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteTouriste {
+      to {
+        background-position: -28728px;
+      }
+    }
+    &.touriste {
+      background: url("/img/animations/touriste.png");
+      animation: spriteTouriste 4.4s steps(133) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteBigouden {
+      to {
+        background-position: -45360px;
+      }
+    }
+    &.bigouden {
+      background: url("/img/animations/bigouden.png");
+      animation: spriteBigouden 7s steps(210) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteRando {
+      to {
+        background-position: -29160px;
+      }
+    }
+    &.rando {
+      background: url("/img/animations/rando.png");
+      animation: spriteRando 4.5s steps(135) infinite;
+      animation-play-state: paused;
+    }
+
+    @keyframes spriteBayonnais {
+      to {
+        background-position: -46872px;
+      }
+    }
+    &.bayonnais {
+      background: url("/img/animations/bayonnais.png");
+      animation: spriteBayonnais 7.2s steps(217) infinite;
+      animation-play-state: paused;
+    }
+
+    &.play {
+      animation-play-state: running;
+    }
   }
 
   &.little {

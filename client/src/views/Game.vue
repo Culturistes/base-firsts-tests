@@ -4,15 +4,17 @@
     :class="{
       'background-color1':
         ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
-          $store.state.avatarUrl === 'bigoudene') ||
+          $store.state.avatarUrl === 'bigouden') ||
         ($store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'lme'),
       'background-color2':
         $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
         $store.state.avatarUrl === 'tropique',
       'background-color3':
-        $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
-        $store.state.avatarUrl === 'fermier',
+        ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+          $store.state.avatarUrl === 'fermier') ||
+        ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
+          $store.state.avatarUrl === 'rando'),
       'background-color5':
         ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
           $store.state.avatarUrl === 'skieuse') ||
@@ -34,7 +36,8 @@
         $store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
         $store.state.avatarUrl === 'touriste',
       'background-color7':
-        $store.state.livegame.currentStep === steps.GAME_PARAMETERS,
+        $store.state.livegame.currentStep === steps.GAME_PARAMETERS ||
+        $store.state.livegame.currentStep === steps.MINI_GAME_RESULT,
     }"
   >
     <!-- Début de partie -->
@@ -256,9 +259,9 @@ export default class Game extends Vue {
     this.img[3].src = "/img/animations/skieuse.png";
     this.img[4].src = "/img/animations/surfeuse.png";
     this.img[5].src = "/img/animations/touriste.png";
-    this.img[6].src = "/img/animations/camping.png";
-    this.img[7].src = "/img/animations/camping.png";
-    this.img[8].src = "/img/animations/camping.png";
+    this.img[6].src = "/img/animations/bigouden.png";
+    this.img[7].src = "/img/animations/rando.png";
+    this.img[8].src = "/img/animations/bayonnais.png";
 
     this.img.forEach((el: any) => {
       el.onload = () => {

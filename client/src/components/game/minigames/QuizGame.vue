@@ -4,7 +4,10 @@
     class="minigame mg-quiz"
   >
     <RoundList :result="$store.state.player.answersRecord" />
-    <QuizBlock :isTimer="true">{{
+    <p class="number-question">
+      Question {{ $store.state.livegame.currentRound }}
+    </p>
+    <QuizBlock class="question" :isTimer="true">{{
       $store.state.livegame.minigame.title
     }}</QuizBlock>
     <div class="ui-question">
@@ -357,9 +360,24 @@ export default class QuizGame extends Vue {
 
 <style lang="scss">
 .mg-quiz {
+  max-width: 625px;
   .ui-result,
   .ui-valid {
     margin: auto;
+  }
+  .number-question {
+    max-width: 130px;
+    font-size: 1.4rem;
+    font-family: $btnFont;
+    padding: 12px 20px;
+
+    border-radius: 6px;
+
+    background-color: $color3;
+
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
   }
   .ui-question {
     display: flex;

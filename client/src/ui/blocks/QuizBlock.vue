@@ -180,7 +180,12 @@ export default class QuizBlock extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.leaflet-tile {
+  width: 258px !important;
+  height: 258px !important;
+  margin: -1px !important;
+}
 $margin-between-btn: 7px;
 
 .quiz-block {
@@ -194,6 +199,10 @@ $margin-between-btn: 7px;
   background-color: $light-text;
   border: solid 5px white;
   border-radius: $border-radius;
+
+  z-index: 1;
+
+  box-shadow: rgba($color: #000000, $alpha: 0.2) 0px 0px 8px;
 
   &.selected {
     border: solid $wrong 5px;
@@ -243,6 +252,7 @@ $margin-between-btn: 7px;
   $paddingSide: 20px;
   &.fit {
     width: auto;
+    min-width: 215px;
     display: table;
     margin-left: auto;
     margin-right: auto;

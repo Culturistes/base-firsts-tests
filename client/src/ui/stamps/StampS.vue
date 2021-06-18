@@ -1,7 +1,12 @@
 <template>
-  <div class="stamp-s">
+  <div class="stamp-s" :style="{ transform: 'rotate(' + rotate + 'deg)' }">
     <img v-if="isMDR" class="mdr" src="/img/stamps/mdr.svg" />
-    <img v-if="isReady" class="ready" src="/img/stamps/ready.svg" />
+    <img
+      v-if="isReady"
+      class="ready"
+      :class="{ mdr: isMDR }"
+      src="/img/stamps/ready.svg"
+    />
     <img :src="'/img/stamps/' + people + '-s.svg'" />
     <span class="name"><slot></slot></span>
   </div>
@@ -26,7 +31,9 @@ import { Options, Vue } from "vue-class-component";
     },
   },
 })
-export default class StampS extends Vue {}
+export default class StampS extends Vue {
+  rotate: number = Math.random() * 10 - 5;
+}
 </script>
 
 <style lang="scss" scoped>
@@ -43,7 +50,7 @@ export default class StampS extends Vue {}
 
   .name {
     margin-top: 5px;
-    font-size: 1.3rem;
+    font-size: 2rem;
   }
 
   .mdr {
@@ -56,6 +63,11 @@ export default class StampS extends Vue {}
     position: absolute;
     top: 10px;
     left: -15px;
+
+    &.mdr {
+      left: unset;
+      right: -15px;
+    }
   }
 }
 </style>

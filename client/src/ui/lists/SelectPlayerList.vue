@@ -30,9 +30,9 @@ import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 
 const PEOPLE = [
-  "surfeuse",
-  "surfeuse",
-  "surfeuse",
+  "rando",
+  "bigouden",
+  "bayonnais",
   "garcon",
   "surfeuse",
   "fermier",
