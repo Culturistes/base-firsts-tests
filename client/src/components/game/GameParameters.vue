@@ -141,7 +141,11 @@ export default class GameParameters extends Vue {
 
     document.body.appendChild(dummy);
 
-    dummy.value = `${location.origin}/${this.$store.state.room?.id}&${this.$store.state.livegame.gameName}`;
+    let name = this.$store.state.livegame.gameName
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "");
+
+    dummy.value = `${location.origin}/${this.$store.state.room?.id}&${name}`;
     dummy.select();
     document.execCommand("copy");
     document.body.removeChild(dummy);

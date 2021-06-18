@@ -214,12 +214,10 @@ export default class QuizGame extends Vue {
   sendAnswer(i: number) {
     if (
       this.$store.state.livegame.currentStep !==
-      this.steps.MINI_GAME_ROUND_RESULT
+        this.steps.MINI_GAME_ROUND_RESULT &&
+      this.$store.state.livegame.minigame.type == "quiz"
     ) {
-      this.selectedAnswer =
-        this.$store.state.livegame.minigame.type == "quiz"
-          ? this.answers[i]
-          : i.toString();
+      this.selectedAnswer = this.answers[i];
     }
 
     let datas = {};
