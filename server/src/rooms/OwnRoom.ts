@@ -169,14 +169,6 @@ export default class OwnRoom extends Room<RoomState> {
         this.state.players.get(client.sessionId).isReady = packet.datas.isReady;
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
-        /* if (this.state.players.get(client.sessionId).isMDR && packet.datas.isReady) {
-            console.log("he is MDR, save parameters");
-            this.state.parameters.minigameNumber = packet.datas.params.minigameNumber;
-            this.state.parameters.roundNumber = packet.datas.params.roundNumber;
-
-            this.broadcast("serverPacket", { type: "chosenParams", datas: packet.datas.params })
-        } */
-
         if (this.state.playersReady == this.state.players.size) {
             console.log("everyone's ready, start the game!")
 

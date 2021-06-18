@@ -8,9 +8,13 @@
     </div>
     <div class="minigameresult-info" v-if="minigameresult">
       <p class="name">{{ name }}</p>
-      <div class="scoreWon">
+      <div class="scoreWonContainer">
         <div class="anchor"></div>
-        + {{ scoreWon }} km
+        <div class="scoreWon">
+          <div class="shadow1"></div>
+          <div class="shadow2"></div>
+          <div class="label">+ {{ scoreWon }} km</div>
+        </div>
       </div>
       <p class="score">{{ score }} km</p>
     </div>
@@ -41,20 +45,20 @@ import { STEPS } from "@/views/Game.vue";
       default: false,
     },
     rank: {
-      type: String,
-      default: "1",
+      type: Number,
+      default: 1,
     },
     name: {
       type: String,
       default: "Moi",
     },
     score: {
-      type: String,
-      default: "0",
+      type: Number,
+      default: 0,
     },
     scoreWon: {
-      type: String,
-      default: "0",
+      type: Number,
+      default: 0,
     },
     perso: {
       type: String,
@@ -136,7 +140,7 @@ export default class QuizBlock extends Vue {
         font-size: 1.5rem;
         font-weight: normal;
       }
-      .scoreWon {
+      .scoreWonContainer {
         position: relative;
         right: 0;
         margin-right: auto;
@@ -145,26 +149,108 @@ export default class QuizBlock extends Vue {
       }
     }
   }
-  .scoreWon {
+  .scoreWonContainer {
     position: absolute;
     right: 6%;
-    background-color: white;
-    padding: 15px;
-    border-radius: 12px;
     transform: translateX(113%);
 
-    z-index: 1;
+    .scoreWon {
+      position: relative;
 
-    font-size: 1.6rem;
+      //box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
 
-    box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
+      //box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
 
+      .shadow1 {
+        position: absolute;
+        padding: 15px;
+        border-radius: 12px;
+        background-color: white;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 12px;
+          height: 10px;
+          border-top-left-radius: 12px;
+          z-index: 0;
+          box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 20px;
+          height: 12px;
+          z-index: 0;
+          background-color: white;
+          border-bottom-left-radius: 12px;
+          box-shadow: rgba($color: #000, $alpha: 0.25) 0px -2px 5px;
+        }
+      }
+
+      .shadow2 {
+        position: absolute;
+        padding: 15px;
+        border-radius: 12px;
+        background-color: white;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 20px;
+          height: 80%;
+          border-top-right-radius: 12px;
+          z-index: 0;
+          box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 20px;
+          z-index: 0;
+          background-color: white;
+          border-bottom-left-radius: 12px;
+          border-bottom-right-radius: 12px;
+          box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
+        }
+      }
+
+      .label {
+        position: relative;
+        z-index: 10;
+
+        padding: 15px;
+        border-radius: 12px;
+        background-color: white;
+
+        font-size: 1.6rem;
+      }
+    }
     .anchor {
       position: absolute;
+      width: 20px;
+      height: 20px;
+      transform: translate(-50%, -50%) scaleY(0.6);
+      top: 50%;
       left: -10px;
-      top: calc(50% - 7px);
-      transform: scaleY(0.6);
-      z-index: -1;
+      z-index: 0;
 
       &::after {
         content: "";
@@ -173,8 +259,9 @@ export default class QuizBlock extends Vue {
         height: 20px;
         background: white;
         transform: rotate(45deg);
+        z-index: 0;
 
-        //box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
+        box-shadow: rgba($color: #000, $alpha: 0.25) 0px 5px 5px;
       }
     }
   }
