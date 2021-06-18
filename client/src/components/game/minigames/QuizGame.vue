@@ -14,24 +14,7 @@
       <QuizBlock
         :key="i"
         v-for="(answer, i) in answers"
-        @click="
-          () => {
-            this.log([
-              this.$store.state.livegame.minigame.goodAnswer,
-              answer,
-              this.selectedAnswer,
-            ]);
-            if (
-              this.$store.state.livegame.currentStep !==
-              steps.MINI_GAME_ROUND_RESULT
-            ) {
-              this.selectedAnswer =
-                this.$store.state.livegame.minigame.type == 'quiz'
-                  ? this.answers[i]
-                  : i.toString();
-            }
-          }
-        "
+        @click="sendAnswer(i)"
         :button="true"
         :selected="
           (selectedAnswer === answer || selectedAnswer === i.toString()) &&
@@ -228,7 +211,17 @@ export default class QuizGame extends Vue {
     return array;
   }
 
-  sendAnswer() {
+  sendAnswer(i) {
+    if (
+      this.$store.state.livegame.currentStep !==
+      this.steps.MINI_GAME_ROUND_RESULT
+    ) {
+      this.selectedAnswer =
+        this.$store.state.livegame.minigame.type == "quiz"
+          ? this.answers[i]
+          : i.toString();
+    }
+
     let datas = {};
     if (this.$store.state.livegame.minigame.type == "quiz") {
       this.$store.state.sounds.quiz_choix.howl.play();
