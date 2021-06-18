@@ -11,7 +11,12 @@
       Prêt à partir en vacances avec {{ name }} !
     </p>
     <p>
-      <StarBtn :routerLink="true" :to="'/game/' + code">C'est parti</StarBtn>
+      <StarBtn
+        :routerLink="true"
+        :to="'/game/' + code"
+        @click="$store.state.sounds.cta.howl.play()"
+        >C'est parti</StarBtn
+      >
     </p>
   </div>
 </template>

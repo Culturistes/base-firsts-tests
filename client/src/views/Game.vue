@@ -172,7 +172,6 @@ import MiniGameRoundResult from "@/components/game/MiniGameRoundResult.vue";
 import MiniGameResult from "@/components/game/MiniGameResult.vue";
 import GameResult from "@/components/game/GameResult.vue";
 import axios from "axios";
-import { Howl } from "howler";
 
 export enum STEPS {
   JOIN_OR_CREATE,
@@ -210,29 +209,6 @@ export default class Game extends Vue {
 
   stickers: any = {};
   stickerIndex = 0;
-
-  soundsArray = [
-    {
-      name: "ambiance",
-      loop: true,
-      typeEvent: "self",
-      autoplay: true,
-      volume: 0.2,
-    },
-    { name: "score_pop", loop: false, typeEvent: "self" },
-    { name: "podium", loop: false, typeEvent: "self" },
-    { name: "lbf_ramassage_ingredient", loop: false, typeEvent: "click" },
-    { name: "coc_patelin", loop: false, typeEvent: "click" },
-    { name: "lme_like", loop: false, typeEvent: "click" },
-    { name: "quiz_mauvaise_reponse", loop: false, typeEvent: "self" },
-    { name: "quiz_bonne_reponse", loop: false, typeEvent: "self" },
-    { name: "quiz_choix", loop: false, typeEvent: "click" },
-    { name: "joker_pjn", loop: false, typeEvent: "click" },
-    { name: "collage_stickers", loop: false, typeEvent: "click" },
-    { name: "cta", loop: false, typeEvent: "self" },
-    { name: "lechage_timbre", loop: false, typeEvent: "click" },
-    { name: "timer", loop: false, typeEvent: "self" },
-  ];
 
   $store!: Store<StoreState>;
 
@@ -281,24 +257,7 @@ export default class Game extends Vue {
 
     let settingsItem = localStorage.getItem("settings");
 
-    let sounds: any = {};
-    this.soundsArray.forEach((obj) => {
-      let sound: any = {};
-      sound.name = obj.name;
-      try {
-        sound.howl = new Howl({
-          src: [`/sounds/${obj.name}.mp3`],
-          loop: obj.loop,
-          autoplay: obj.autoplay ? obj.autoplay : false,
-          volume: obj.volume ? obj.volume : 0.5,
-        });
-        console.log("Sound:", sound.name, "initialized");
-        sounds[sound.name] = sound;
-      } catch (e) {
-        console.log(e);
-      }
-    });
-    this.$store.commit("updateSounds", sounds);
+    //this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
 
     if (settingsItem) {
       let settings = JSON.parse(settingsItem);
@@ -317,6 +276,13 @@ export default class Game extends Vue {
       this.$store.commit("updateClient", client);
 
       store.watch(
+        () => this.$store.state.isLoading,
+        (val, oldVal) => {
+          this.isLoading = val;
+        }
+      );
+
+      store.watch(
         () => this.$store.state.room,
         (room, oldVal) => {
           if (room !== null) {
@@ -324,10 +290,13 @@ export default class Game extends Vue {
             this.listenToServer(room, "serverPacket");
 
             if (oldVal == null) {
-              this.$store.commit("updateLiveGame", {
-                index: "currentStep",
-                value: STEPS.GAME_PARAMETERS,
-              });
+              setTimeout(() => {
+                this.$store.commit("updateLoading", false);
+                this.$store.commit("updateLiveGame", {
+                  index: "currentStep",
+                  value: STEPS.GAME_PARAMETERS,
+                });
+              }, 1000);
             }
           }
         }
@@ -361,7 +330,7 @@ export default class Game extends Vue {
             roomId: room.id,
             expiration: new Date().getTime() + 120 * 1000,
           };
-          // Instantiate all listener when server send back players infos ? test for optimization/perfs
+          // Instantiate all listener when server send back players infos ? > test for optimization/perfs
 
           // TODO: work on the 2min reconnect without localStorage
           localStorage.setItem(`player_params`, JSON.stringify(newDatas));
@@ -393,10 +362,11 @@ export default class Game extends Vue {
             index: "chosenParams",
             value: datas,
           });
+          console.log(datas);
           break;
         case "canGoNext":
           if (datas) {
-            this.isLoading = false;
+            this.$store.commit("updateLoading", false);
             this.$store.dispatch("goNextStep");
           }
           break;
@@ -421,14 +391,13 @@ export default class Game extends Vue {
           this.$store.commit("setPlayerIsReady", false);
           break;
         case "loading":
-          this.isLoading = true;
+          this.$store.commit("updateLoading", datas);
           break;
         case "goodAnswer":
           this.$store.commit("updateMinigame", {
             index: "goodAnswer",
             value: datas,
           });
-          console.log(datas);
           break;
         case "toggleTimer":
           this.$store.commit("updateLiveGame", {

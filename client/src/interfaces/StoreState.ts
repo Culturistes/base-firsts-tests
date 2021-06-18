@@ -59,5 +59,6 @@ export default interface StoreState {
         [key: string]: any,
         streamerMode: boolean
     },
+    isLoading: boolean,
     avatarUrl: string
 }

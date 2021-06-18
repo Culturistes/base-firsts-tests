@@ -49,6 +49,7 @@ export default createStore({
     settings: {
       streamerMode: false,
     },
+    isLoading: false,
     avatarUrl: "skieuse",
   },
   mutations: {
@@ -72,6 +73,9 @@ export default createStore({
     },
     setPlayerIsReady(state: StoreState, value: boolean): void {
       state.player.isReady = value;
+    },
+    updateLoading(state: StoreState, value: boolean): void {
+      state.isLoading = value;
     },
     updateLiveGame(
       state: StoreState,

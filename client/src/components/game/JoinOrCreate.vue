@@ -86,7 +86,9 @@ export default class JoinOrCreate extends Vue {
   }
 
   async createRoom(): Promise<void> {
+    this.$store.state.sounds.cta.howl.play();
     try {
+      this.$store.commit("updateLoading", true);
       let room = await this.$store.state.client?.create("chat", {
         username: this.username,
         creator: true,
@@ -94,6 +96,7 @@ export default class JoinOrCreate extends Vue {
       });
       this.$store.commit("updateRoom", room);
     } catch (e) {
+      this.$store.commit("updateLoading", false);
       console.error("join error", e);
     }
   }
@@ -124,25 +127,32 @@ export default class JoinOrCreate extends Vue {
   }
 
   async connect(): Promise<void> {
+    this.$store.state.sounds.cta.howl.play();
     try {
+      this.$store.commit("updateLoading", true);
       let room = await this.$store.state.client?.joinById(this.roomID, {
         username: this.username,
         avatarURL: this.avatar,
       });
       this.$store.commit("updateRoom", room);
     } catch (e) {
+      this.$store.commit("updateLoading", false);
       console.error("Join error");
     }
   }
 
   async reconnect(item: any): Promise<void> {
+    this.$store.state.sounds.cta.howl.play();
     try {
+      this.$store.commit("updateLoading", true);
       const room = await this.$store.state.client?.reconnect(
         this.roomID,
         item.data.id
       );
+      this.$store.state.sounds.cta.howl.play();
       this.$store.commit("updateRoom", room);
     } catch (e) {
+      this.$store.commit("updateLoading", false);
       console.error("join error", e);
     }
   }

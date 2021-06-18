@@ -43,14 +43,14 @@
       <button
         class="btn btn-joker"
         :class="{ active: $store.state.player.jokers.pjn.available }"
-        @click="$store.dispatch('useJoker', 'pjn')"
+        @click="useJoker('pjn')"
       >
         <img src="/img/jokers/drink.svg" />
       </button>
       <button
         class="btn btn-joker"
         :class="{ active: $store.state.player.jokers.cdp.available }"
-        @click="$store.dispatch('useJoker', 'cdp')"
+        @click="useJoker('cdp')"
       >
         <img src="/img/jokers/pouce.svg" />
       </button>
@@ -64,10 +64,12 @@
 <script lang="ts">
 import { Vue, Options } from "vue-class-component";
 import { Store } from "vuex/types";
+import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import QuizGame from "@/components/game/minigames/QuizGame.vue";
 import MapGame from "@/components/game/minigames/MapGame.vue";
 import BonneFranquetteGame from "@/components/game/minigames/BonneFranquetteGame.vue";
+import { STEPS } from "@/views/Game.vue";
 
 @Options({
   components: { QuizGame, MapGame, BonneFranquetteGame },
@@ -81,19 +83,70 @@ export default class MiniGameRound extends Vue {
   timer = 10;
   canAnswer = false;
 
+  pointsSoundPlayed = false;
+  timerSoundStarted = false;
+
+  steps = STEPS;
+
   mounted(): void {
     this.$store.state.room?.state.listen(
       "currentTimer",
       (val: number, oldVal: number) => {
         this.timer = Math.round(val);
+        if (
+          !this.timerSoundStarted &&
+          this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND
+        ) {
+          this.timerSoundStarted = true;
+          this.$store.state.sounds.timer.howl.play();
+        }
+        if (this.timer <= 0) {
+          this.$store.state.sounds.timer.howl.stop();
+          this.timerSoundStarted = false;
+        }
       }
     );
+
     this.$store.state.room?.state.listen(
       "playersCanAnswer",
       (val: boolean, oldVal: boolean) => {
         this.canAnswer = val;
       }
     );
+
+    store.watch(
+      () => this.$store.state.player,
+      (val, oldVal) => {
+        if (
+          val.scoreWon > 0 &&
+          !this.pointsSoundPlayed &&
+          this.$store.state.livegame.currentStep ==
+            this.steps.MINI_GAME_ROUND_RESULT
+        ) {
+          this.pointsSoundPlayed = true;
+          this.$store.state.sounds.score_pop.howl.play();
+        }
+      }
+    );
+
+    store.watch(
+      () => this.$store.state.livegame.currentStep,
+      (val, oldVal) => {
+        if (val == this.steps.MINI_GAME_ROUND) {
+          this.pointsSoundPlayed = false;
+        }
+      }
+    );
+  }
+
+  updated(): void {
+    if (
+      this.$store.state.livegame.currentStep ==
+      this.steps.MINI_GAME_ROUND_RESULT
+    ) {
+      this.$store.state.sounds.timer.howl.stop();
+      this.timerSoundStarted = false;
+    }
   }
 
   unmounted(): void {
@@ -125,7 +178,7 @@ export default class MiniGameRound extends Vue {
   }
 
   displaySticker(): void {
-    this.$store.state.sounds["collage_sticker"].howl.play();
+    this.$store.state.sounds.collage_stickers.howl.play();
 
     let stickersMaxNumber = 10;
 
@@ -146,6 +199,19 @@ export default class MiniGameRound extends Vue {
       type: "STICKER",
       datas: datas,
     });
+  }
+
+  useJoker(slug: string): void {
+    this.$store.dispatch("useJoker", slug);
+
+    switch (slug) {
+      case "pjn":
+        this.$store.state.sounds.joker_pjn?.howl.play();
+        break;
+      case "cdp":
+        this.$store.state.sounds.joker_cdp?.howl.play();
+        break;
+    }
   }
 }
 </script>

@@ -198,6 +198,8 @@ export default class QuizGame extends Vue {
   selectedAnswer = null;
   answersUpdated = false;
 
+  answerSoundPlayed = false;
+
   actualLMEAnswers = [0, 0];
 
   log(array: Array<any>) {
@@ -229,10 +231,12 @@ export default class QuizGame extends Vue {
   sendAnswer() {
     let datas = {};
     if (this.$store.state.livegame.minigame.type == "quiz") {
+      this.$store.state.sounds.quiz_choix.howl.play();
       datas = {
         selectedSAnswer: this.selectedAnswer,
       };
     } else {
+      this.$store.state.sounds.lme_like.howl.play();
       datas = {
         selectedNAnswer: this.selectedAnswer,
       };
@@ -290,9 +294,15 @@ export default class QuizGame extends Vue {
           if (content[0] != undefined && content[1] != undefined) {
             this.actualLMEAnswers = [content[0].number, content[1].number];
           } else if (content[0] != undefined && content[0].id === 0) {
-            this.actualLMEAnswers = [content[0].number, 0];
+            this.actualLMEAnswers = [
+              content[0].numbers[0],
+              content[0].numbers[1],
+            ];
           } else if (content[0] != undefined && content[0].id === 1) {
-            this.actualLMEAnswers = [0, content[0].number];
+            this.actualLMEAnswers = [
+              content[0].numbers[1],
+              content[0].numbers[0],
+            ];
           }
         }
       }
@@ -320,6 +330,7 @@ export default class QuizGame extends Vue {
         "update answers",
         this.$store.state.livegame.minigame.answers
       ); */
+      this.answerSoundPlayed = false;
       this.selectedAnswer = null;
       if (this.$store.state.livegame.minigame.type == "quiz") {
         this.answers = this.shuffle(
@@ -330,12 +341,33 @@ export default class QuizGame extends Vue {
         this.actualLMEAnswers = [0, 0];
       }
       this.answersUpdated = true;
+    } else if (
+      this.$store.state.livegame.currentStep ==
+      this.steps.MINI_GAME_ROUND_RESULT
+    ) {
+      if (
+        this.$store.state.livegame.minigame.type == "quiz" &&
+        !this.answerSoundPlayed
+      ) {
+        this.answerSoundPlayed = true;
+        let item =
+          this.$store.state.player.answersRecord[
+            this.$store.state.player.answersRecord.length - 1
+          ];
+
+        if (item.isGood) {
+          this.$store.state.sounds.quiz_bonne_reponse.howl.play();
+        } else {
+          this.$store.state.sounds.quiz_mauvaise_reponse.howl.play();
+        }
+      }
     }
   }
 
   goNext(): void {
     this.$store.dispatch("readyForNext");
     this.answersUpdated = false;
+    this.$store.state.sounds.cta.howl.play();
     this.$store.commit("updateJokersParams", {
       index: "showOthersChoice",
       value: false,

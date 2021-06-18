@@ -16,6 +16,10 @@ import StoreState from "@/interfaces/StoreState";
 export default class GameResult extends Vue {
   $refs!: any;
   $store!: Store<StoreState>;
+
+  mounted(): void {
+    this.$store.state.sounds.podium.howl.play();
+  }
 }
 </script>
 

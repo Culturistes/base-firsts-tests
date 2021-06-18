@@ -21,7 +21,10 @@
       </div>
 
       <div class="parameters">
-        <div class="parameters-container">
+        <div
+          class="parameters-container"
+          :class="{ canInteract: this.$store.state.player.isMDR }"
+        >
           <PanneauBtn
             @click="changeSelectedMod(0)"
             :active="selectedMod == 0"
@@ -100,7 +103,8 @@ export default class GameParameters extends Vue {
   inputNbMiniGame = "3";
   inputNbRound = "1";
 
-  mounted(): void {
+  created(): void {
+    this.selectedMod = this.$store.state.livegame.chosenParams.gamemode;
     store.watch(
       () => this.$store.state.livegame.chosenParams,
       (val, oldVal) => {
@@ -111,6 +115,8 @@ export default class GameParameters extends Vue {
 
   changeSelectedMod(i: number): void {
     if (this.$store.state.player.isMDR) {
+      this.$store.state.sounds.cta.howl.play();
+
       this.selectedMod = i;
 
       let params = {
@@ -128,6 +134,8 @@ export default class GameParameters extends Vue {
   }
 
   copyToClipboard() {
+    this.$store.state.sounds.cta.howl.play();
+
     this.linkCopied = true;
     var dummy = document.createElement("textarea");
 
@@ -212,6 +220,11 @@ export default class GameParameters extends Vue {
       background-image: url("/img/divers/planche.png");
       background-size: 100% 100%;
       transform: translateX(-24px) translateY(44px);
+      pointer-events: none;
+
+      &.canInteract {
+        pointer-events: visible;
+      }
 
       .panneau-btn {
         width: 315px;

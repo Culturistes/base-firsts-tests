@@ -9,9 +9,7 @@
       >
     </p>
     <img :src="'/img/titles/' + $store.state.livegame.minigame.type + '.png'" />
-    <StarBtn
-      v-on:click="$store.dispatch('readyForNext')"
-      :valid="$store.state.player.isReady"
+    <StarBtn v-on:click="readyForNext" :valid="$store.state.player.isReady"
       >Prêt ?</StarBtn
     >
   </div>
@@ -42,6 +40,11 @@ export default class MiniGameTitle extends Vue {
         this.gameTitle = "Ché où ça";
         break;
     }
+  }
+
+  readyForNext(): void {
+    this.$store.state.sounds.cta.howl.play();
+    this.$store.dispatch("readyForNext");
   }
 }
 </script>

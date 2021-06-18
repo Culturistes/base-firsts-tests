@@ -111,12 +111,12 @@ export default class playersList extends Vue {
   }
 
   updated(): void {
-    console.log(
+    /* console.log(
       this.$store.state.livegame.currentStep ==
         this.steps.MINI_GAME_ROUND_RESULT,
       this.$store.state.livegame.currentStep,
       this.steps.MINI_GAME_ROUND_RESULT
-    );
+    ); */
   }
 }
 </script>
