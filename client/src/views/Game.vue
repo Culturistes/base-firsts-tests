@@ -114,6 +114,8 @@
         v-if="steps.GAME_PARAMETERS == $store.state.livegame.currentStep"
       />
 
+      <Tutorial v-if="steps.TUTORIAL == $store.state.livegame.currentStep" />
+
       <!-- En jeu -->
 
       <!-- Ecran titre de mini jeu -->
@@ -164,6 +166,7 @@ import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 import JoinOrCreate from "@/components/game/JoinOrCreate.vue";
 import GameParameters from "@/components/game/GameParameters.vue";
+import Tutorial from "@/components/game/Tutorial.vue";
 import MiniGameTitle from "@/components/game/MiniGameTitle.vue";
 import MiniGameRoundTitle from "@/components/game/MiniGameRoundTitle.vue";
 import MiniGameRound from "@/components/game/MiniGameRound.vue";
@@ -175,6 +178,7 @@ import axios from "axios";
 export enum STEPS {
   JOIN_OR_CREATE,
   GAME_PARAMETERS,
+  TUTORIAL,
   MINI_GAME_TITLE,
   MINI_GAME_ROUND,
   MINI_GAME_ROUND_RESULT,
@@ -186,6 +190,7 @@ export enum STEPS {
   components: {
     JoinOrCreate,
     GameParameters,
+    Tutorial,
     MiniGameTitle,
     MiniGameRoundTitle,
     MiniGameRound,

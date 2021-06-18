@@ -31,7 +31,7 @@ export default class BonneFranquetteGame extends Vue {
   maxElements = 10;
   elements: Array<Ingredient> = [];
 
-  recip = {
+  /* recip = {
     name: "",
     possibleIngredients: [
       { name: "Carotte", img: "#ff0000" },
@@ -49,11 +49,18 @@ export default class BonneFranquetteGame extends Vue {
       { name: "Sel", img: "#0000ff", caught: false },
       { name: "Saucisse", img: "#ffff00", caught: false },
     ],
+  }; */
+
+  recip: any = {
+    name: "",
+    possibleIngredients: [],
+    ingredients: [],
   };
 
   mounted() {
-    this.recip.possibleIngredients =
-      this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
+    this.recip.name = this.$store.state.livegame.minigame.name;
+    this.recip.possibleIngredients = this.$store.state.livegame.minigame;
+    this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
     this.recip.ingredients =
       this.$store.state.livegame.minigame.goodAnswer.recette.ingredients;
 
