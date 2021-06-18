@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <Loading v-if="isLoading" />
+    <Loading v-if="$store.state.isLoading" />
     <router-view />
 
     <Debug />
@@ -32,9 +32,11 @@ export default class App extends Vue {
     { name: "lechage_timbre", loop: false, typeEvent: "click" },
     { name: "timer", loop: false, typeEvent: "self" },
   ];
+  soundsLoaded = 0;
 
   created(): void {
     let sounds: any = {};
+    this.$store.commit("updateLoading", true);
     this.soundsArray.forEach((obj: any) => {
       let sound: any = {};
       sound.name = obj.name;
@@ -44,12 +46,18 @@ export default class App extends Vue {
         autoplay: obj.autoplay ? obj.autoplay : false,
         volume: obj.volume ? obj.volume : 0.1,
         onload: () => {
-          console.log("Sound:", sound.name, "initialized");
           sounds[sound.name] = sound;
+          this.soundsLoaded++;
+          console.log("Sound loaded:", sound.name);
+          if (this.soundsLoaded == this.soundsArray.length) {
+            console.log("all sounds loaded!");
+            this.$store.commit("updateLoading", false);
+          }
         },
         onloaderror: (id, error) => {
           console.warn("Sound:", sound.name, "couldn't be loaded!");
           console.warn("Due to:", error, "Check the path!");
+          this.soundsLoaded++;
         },
       });
     });

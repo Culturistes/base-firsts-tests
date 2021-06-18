@@ -6,6 +6,7 @@ import { AnswerRecord, ChosenAnswer, Joker, Player } from "./schema/PlayerState"
 
 export enum STEPS {
     GAME_PARAMETERS,
+    TUTORIAL,
     MINI_GAME_TITLE,
     MINI_GAME_ROUND,
     MINI_GAME_ROUND_RESULT,
@@ -23,7 +24,7 @@ export default class OwnRoom extends Room<RoomState> {
     ];
     minigameTimer = 20;
     timerEnded = false;
-    minigamesOrder = ['lme', 'quiz', 'coc'];
+    minigamesOrder = ['lbf', 'lme', 'quiz', 'coc'];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -129,6 +130,7 @@ export default class OwnRoom extends Room<RoomState> {
             this.state.playersReady--;
         }
 
+        this.state.players.get(client.sessionId).isReady = false;
         this.state.players.get(client.sessionId).connected = false;
         this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
@@ -215,7 +217,6 @@ export default class OwnRoom extends Room<RoomState> {
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND && this.state.playersCanAnswer) {
             console.log("client", client.sessionId, "packet:", packet)
             if (packet.datas.chosenAnswer != null) {
-
                 let newChosenAnswer = new ChosenAnswer();
                 if (this.state.players.get(client.sessionId).playerAnswerRank == 100) {
                     this.state.players.get(client.sessionId).playerAnswerRank = this.state.playersReady;
@@ -225,15 +226,25 @@ export default class OwnRoom extends Room<RoomState> {
                 newChosenAnswer.dist = packet.datas.chosenAnswer.dist ? packet.datas.chosenAnswer.dist : newChosenAnswer.dist;
                 newChosenAnswer.gentile = packet.datas.chosenAnswer.gentile ? packet.datas.chosenAnswer.gentile : newChosenAnswer.gentile;
                 newChosenAnswer.latLng = packet.datas.chosenAnswer.latLng ? packet.datas.chosenAnswer.latLng : newChosenAnswer.latLng;
+                newChosenAnswer.recette = packet.datas.chosenAnswer.recette ? packet.datas.chosenAnswer.recette : newChosenAnswer.recette;
 
                 this.state.players.get(client.sessionId).chosenAnswer = newChosenAnswer;
 
                 this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+
+                if (packet.datas.chosenAnswer.recette) {
+                    this.state.playersCanAnswer = false;
+                    this.clock.clear();
+                    this.state.currentTimer = this.minigameTimer;
+                    this.mustEndTheRound();
+                }
             }
         }
 
         if (this.state.playersReady == this.state.players.size) {
             console.log("=== everyone's ready!")
+
+
 
             this.clock.clear();
             this.state.currentTimer = this.minigameTimer;
@@ -310,6 +321,9 @@ export default class OwnRoom extends Room<RoomState> {
     startTimer() {
         if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
             this.clock.start();
+            if (this.state.currRoundParams.type == "lbf") {
+                this.state.currentTimer = 60;
+            }
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
                 this.state.playersCanAnswer = true;
             }
@@ -386,28 +400,13 @@ export default class OwnRoom extends Room<RoomState> {
                                 }
                                 break;
                             case 'lbf':
-                                // To be generated
-                                round.name = "La tarte aux pommes, carottes et saucisses"
+                                round.name = data.name;
 
                                 round.goodAnswer = {
                                     content: [],
                                     recette: {
-                                        possibleIngredients: [
-                                            { name: "Carotte", img: "#ff0000" },
-                                            { name: "Pomme", img: "#00ff00" },
-                                            { name: "Sel", img: "#0000ff" },
-                                            { name: "Saucisse", img: "#ffff00" },
-                                            { name: "Sucre", img: "#000000" },
-                                            { name: "Poivre", img: "#000000" },
-                                            { name: "Fromage", img: "#000000" },
-                                            { name: "Huile", img: "#000000" },
-                                        ],
-                                        ingredients: [
-                                            { name: "Carotte", img: "#ff0000", caught: false },
-                                            { name: "Pomme", img: "#00ff00", caught: false },
-                                            { name: "Sel", img: "#0000ff", caught: false },
-                                            { name: "Saucisse", img: "#ffff00", caught: false },
-                                        ]
+                                        possibleIngredients: data.possibleIngredients,
+                                        ingredients: data.ingredients
                                     }
                                 }
                                 break;
@@ -430,6 +429,7 @@ export default class OwnRoom extends Room<RoomState> {
     }
 
     calculateScore() {
+        console.log("Caculating score")
         let goodAnswer = {};
 
         this.state.players.forEach((player) => {
@@ -438,8 +438,6 @@ export default class OwnRoom extends Room<RoomState> {
             player.answersRecord[this.state.parameters.currentRound] = record;
             this.addScoreToPlayer(player, 0)
         })
-
-        console.log('calculate score');
 
         switch (this.state.currRoundParams.type) {
             case 'quiz':
