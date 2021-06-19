@@ -18,7 +18,7 @@ export default createStore({
       currentRound: 1,
       timerIsRunning: false,
       chosenParams: {
-        minigameNumber: 3,
+        minigameNumber: 4,
         roundNumber: 1,
         gamemode: 0,
       },

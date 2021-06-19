@@ -7,7 +7,10 @@
         {{ ingredient.name }} - {{ ingredient.catched }}
       </li>
     </ul>
-    <StarBtn v-on:click="goNext" :valid="$store.state.player?.isReady"
+    <StarBtn
+      v-on:click="goNext"
+      :valid="$store.state.player?.isReady"
+      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
       >Suivant</StarBtn
     >
   </div>

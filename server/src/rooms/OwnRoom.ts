@@ -298,6 +298,8 @@ export default class OwnRoom extends Room<RoomState> {
 
                 this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
                 this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+
+                this.startTimer();
                 return false;
             }
         }
@@ -333,6 +335,7 @@ export default class OwnRoom extends Room<RoomState> {
                 }
             }, 100)
         } else if (this.state.currentStep == STEPS.MINI_GAME_TITLE) {
+            console.log("START TIMER FOR TITLE")
             this.clock.start();
             this.state.currentTimer = 0;
             this.clock.setInterval(() => {

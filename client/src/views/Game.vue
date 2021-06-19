@@ -161,7 +161,9 @@
         v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
       />
 
-      <MuteBtn />
+      <MuteBtn
+        v-if="steps.MINI_GAME_ROUND != $store.state.livegame.currentStep"
+      />
     </div>
   </div>
 </template>
