@@ -9,6 +9,8 @@ export default createStore({
     player: null,
     players: [],
     sounds: {},
+    soundsLoaded: false,
+    assetsLoaded: false,
     livegame: {
       gameName: "",
       currentStep: 0,
@@ -103,6 +105,12 @@ export default createStore({
     },
     updateAvatarUrl(state: StoreState, data: any): void {
       state.avatarUrl = data;
+    },
+    soundsAllLoaded(state: StoreState): void {
+      state.soundsLoaded = true;
+    },
+    assetsAllLoaded(state: StoreState): void {
+      state.assetsLoaded = true;
     },
   },
   actions: {

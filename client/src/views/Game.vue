@@ -251,10 +251,13 @@ export default class Game extends Vue {
       el.onload = () => {
         this.numberLoaded++;
         console.log("Sprite loaded:", el.src);
-
         if (this.numberLoaded >= 9) {
           console.log("All sprites loaded");
-          this.$store.commit("updateLoading", false);
+          this.$store.commit("assetsAllLoaded");
+
+          if (this.$store.state.soundsLoaded) {
+            this.$store.commit("updateLoading", false);
+          }
         }
       };
     });
@@ -267,7 +270,14 @@ export default class Game extends Vue {
 
     let settingsItem = localStorage.getItem("settings");
 
-    //this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+    store.watch(
+      () => this.$store.state.soundsLoaded,
+      (val, oldVal) => {
+        if (val === true) {
+          this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+        }
+      }
+    );
 
     this.$store.state.room?.state.listen(
       "currentStep",
@@ -368,7 +378,6 @@ export default class Game extends Vue {
           var myinfos = datas.find(
             (player: any) => player.id == this.$store.state.player.id
           );
-          console.log(myinfos);
           this.$store.commit("updatePlayer", myinfos);
           break;
         case "minigame":
@@ -389,7 +398,6 @@ export default class Game extends Vue {
             index: "chosenParams",
             value: datas,
           });
-          console.log(datas);
           break;
         case "canGoNext":
           if (datas) {

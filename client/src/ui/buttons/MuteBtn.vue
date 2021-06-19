@@ -1,24 +1,20 @@
 <template>
-  <router-link
-    v-if="routerLink"
-    class="star-btn"
-    :class="{ disabled: disabled }"
-  >
-    <span><slot></slot></span>
-  </router-link>
   <button
-    v-else
-    class="star-btn"
+    class="mute-btn"
     :class="{ disabled: disabled, big: big }"
     :disabled="disabled"
+    @click="toggleSound()"
   >
-    <span v-if="!valid"><slot></slot></span>
-    <span v-else><img src="/img/button/trumpet_muted.svg" /></span>
+    <span v-if="!soundMuted"><img src="/img/buttons/sound_active.svg" /></span>
+    <span v-else><img src="/img/buttons/sound_inactive.svg" /></span>
   </button>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import store from "@/store";
+import { Store } from "vuex/types";
+import StoreState from "@/interfaces/StoreState";
 
 @Options({
   props: {
@@ -30,22 +26,59 @@ import { Options, Vue } from "vue-class-component";
       type: Boolean,
       default: false,
     },
-    valid: {
-      type: Boolean,
-      default: false,
-    },
     big: {
       type: Boolean,
       default: false,
     },
   },
 })
-export default class MuteBtn extends Vue {}
+export default class MuteBtn extends Vue {
+  $store!: Store<StoreState>;
+
+  soundMuted = false;
+
+  created(): void {
+    store.watch(
+      () => this.$store.state.soundsLoaded,
+      (val, oldVal) => {
+        if (val) {
+          if (localStorage.getItem("soundMuted") != null) {
+            let muted =
+              localStorage.getItem("soundMuted") == "true" ? true : false;
+            this.toggleSound(null, muted);
+          }
+        }
+      }
+    );
+  }
+
+  toggleSound(ev: any, val?: boolean): void {
+    if (val) {
+      this.soundMuted = val;
+    } else {
+      val = !this.soundMuted;
+      this.soundMuted = val;
+    }
+
+    localStorage.setItem("soundMuted", val + "");
+
+    if (this.soundMuted) {
+      Object.entries(this.$store.state.sounds).forEach((obj: any) => {
+        obj[1].howl.mute(true);
+      });
+    } else {
+      Object.entries(this.$store.state.sounds).forEach((obj: any) => {
+        obj[1].howl.mute(false);
+      });
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.star-btn {
+.mute-btn {
   position: absolute;
+  z-index: 10;
   right: 10px;
   top: 10px;
   display: inline-flex;
@@ -67,7 +100,8 @@ export default class MuteBtn extends Vue {}
   text-transform: uppercase;
   text-decoration: none;
 
-  span {
+  span,
+  img {
     display: block;
 
     pointer-events: none;

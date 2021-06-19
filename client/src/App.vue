@@ -39,7 +39,7 @@ export default class App extends Vue {
       let sound: any = {};
       sound.name = obj.name;
       sound.howl = new Howl({
-        src: [`/sounds/${obj.name}.mp3`],
+        src: [`/sounds/${obj.name}.mp3`, `/sounds/${obj.name}.m4a`],
         loop: obj.loop,
         autoplay: obj.autoplay ? obj.autoplay : false,
         volume: obj.volume ? obj.volume : 0.1,
@@ -49,7 +49,14 @@ export default class App extends Vue {
           console.log("Sound loaded:", sound.name);
           if (this.soundsLoaded == this.soundsArray.length) {
             console.log("all sounds loaded!");
-            this.$store.commit("updateLoading", false);
+            this.$store.commit("soundsAllLoaded");
+            if (
+              this.$store.state.assetsLoaded ||
+              this.$route.name == "home" ||
+              this.$route.name == "home_params"
+            ) {
+              this.$store.commit("updateLoading", false);
+            }
           }
         },
         onloaderror: (id, error) => {

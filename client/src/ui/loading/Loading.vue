@@ -10,9 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Options } from "vue-class-component";
-import { Store } from "vuex/types";
-import StoreState from "@/interfaces/StoreState";
+import { Vue } from "vue-class-component";
 
 export default class Loading extends Vue {
   wordList = [
