@@ -2,8 +2,6 @@
   <div class="app">
     <Loading v-if="$store.state.isLoading" />
     <router-view />
-
-    <Debug />
   </div>
 </template>
 

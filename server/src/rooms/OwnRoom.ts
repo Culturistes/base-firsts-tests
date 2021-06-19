@@ -23,6 +23,7 @@ export default class OwnRoom extends Room<RoomState> {
         { type: 'attaque', slug: "pjn", name: "Petit jaune" },
     ];
     minigameTimer = 20;
+    gameTitleTimer = 10;
     timerEnded = false;
     minigamesOrder = ['lbf', 'lme', 'quiz', 'coc'];
 
@@ -315,6 +316,8 @@ export default class OwnRoom extends Room<RoomState> {
             this.clock.start();
             if (this.state.currRoundParams.type == "lbf") {
                 this.state.currentTimer = 60;
+            } else {
+                this.state.currentTimer = this.minigameTimer;
             }
             if (this.state.currentStep == STEPS.MINI_GAME_ROUND) {
                 this.state.playersCanAnswer = true;
@@ -327,6 +330,19 @@ export default class OwnRoom extends Room<RoomState> {
                     this.mustEndTheRound();
                 } else {
                     this.state.currentTimer -= 0.1;
+                }
+            }, 100)
+        } else if (this.state.currentStep == STEPS.MINI_GAME_TITLE) {
+            this.clock.start();
+            this.state.currentTimer = 0;
+            this.clock.setInterval(() => {
+                if (this.state.currentTimer >= this.gameTitleTimer) {
+                    this.state.playersCanAnswer = false;
+                    this.clock.clear();
+                    this.state.currentTimer = this.minigameTimer;
+                    this.mustEndTheRound();
+                } else {
+                    this.state.currentTimer += 0.1;
                 }
             }, 100)
         }

@@ -1,5 +1,6 @@
 <template>
   <div class="minigameTitle step centered">
+    <div class="timer"><span :style="{ width: timerWidth + '%' }"></span></div>
     <p class="count-minigame">
       Mini-jeu
       <span
@@ -63,9 +64,12 @@ import StoreState from "@/interfaces/StoreState";
   props: ["streamerMode"],
 }) */
 export default class MiniGameTitle extends Vue {
-  $refs!: any;
   $store!: Store<StoreState>;
   gameTitle!: string;
+
+  timer = 0;
+  timerMaxWidth = 0;
+  timerWidth = 0;
 
   contextes: any = {
     quiz: "C’est l’heure du fameux quizz Questions pour un chauvin sur Radio Soleil !",
@@ -111,6 +115,15 @@ export default class MiniGameTitle extends Vue {
     }
   }
 
+  mounted(): void {
+    this.$store.state.room?.state.listen(
+      "currentTimer",
+      (val: number, oldVal: number) => {
+        this.timerWidth = +((val * 100) / 10).toFixed(2);
+      }
+    );
+  }
+
   readyForNext(): void {
     this.$store.state.sounds.cta.howl.play();
     this.$store.dispatch("readyForNext");
@@ -120,6 +133,27 @@ export default class MiniGameTitle extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.steps {
+  padding: 0;
+}
+.timer {
+  background-color: rgba(#2c2c2c, 0.3);
+  width: 100%;
+  height: 4px;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 4px;
+    background-color: #2c2c2c;
+  }
+}
+
 .count-minigame {
   font-family: $btnFont;
   font-size: 1.8rem;
@@ -133,7 +167,7 @@ export default class MiniGameTitle extends Vue {
 
 .instructions-video {
   display: flex;
-  margin-top: 15px;
+  margin-top: 30px;
   .video {
     display: flex;
   }
