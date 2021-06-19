@@ -3,7 +3,7 @@
     class="stamp"
     :class="{
       little: selected !== pos,
-      out: pos - select <= -2 || pos - select >= 2,
+      out: pos - selected <= -2 || pos - selected >= 2,
     }"
     :style="{ transform: 'translateX(' + translate + '%)' }"
   >
@@ -51,6 +51,7 @@ export default class Stamp extends Vue {
   selected!: number;
   pos!: number;
   get translate() {
+    console.log(this.pos, this.pos - this.selected);
     return 100 * -this.selected;
   }
 }
@@ -88,10 +89,6 @@ export default class Stamp extends Vue {
       width: 166.15px;
       height: 208.06px;
     }
-  }
-
-  &.out {
-    opacity: 0;
   }
 
   &-img {
@@ -217,6 +214,10 @@ export default class Stamp extends Vue {
     .stamp-img {
       transform: scale(0.5);
     }
+  }
+
+  &.out {
+    opacity: 0;
   }
 }
 </style>
