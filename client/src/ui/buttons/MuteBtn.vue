@@ -3,7 +3,7 @@
     class="mute-btn"
     :class="{ disabled: disabled, big: big }"
     :disabled="disabled"
-    @click="toggleSound()"
+    @click="() => toggleSound()"
   >
     <span v-if="!soundMuted"><img src="/img/buttons/sound_active.svg" /></span>
     <span v-else><img src="/img/buttons/sound_inactive.svg" /></span>
@@ -38,6 +38,13 @@ export default class MuteBtn extends Vue {
   soundMuted = false;
 
   created(): void {
+    if (localStorage.getItem("soundMuted") != null) {
+      let muted = localStorage.getItem("soundMuted") == "true" ? true : false;
+      this.soundMuted = muted;
+    }
+  }
+
+  mounted(): void {
     store.watch(
       () => this.$store.state.soundsLoaded,
       (val, oldVal) => {
@@ -45,22 +52,17 @@ export default class MuteBtn extends Vue {
           if (localStorage.getItem("soundMuted") != null) {
             let muted =
               localStorage.getItem("soundMuted") == "true" ? true : false;
-            this.toggleSound(null, muted);
+            this.toggleSound(muted);
           }
         }
       }
     );
   }
 
-  toggleSound(ev: any, val?: boolean): void {
-    if (val) {
-      this.soundMuted = val;
-    } else {
-      val = !this.soundMuted;
-      this.soundMuted = val;
-    }
+  toggleSound(val?: boolean): void {
+    this.soundMuted = val != undefined ? val : !this.soundMuted;
 
-    localStorage.setItem("soundMuted", val + "");
+    localStorage.setItem("soundMuted", this.soundMuted + "");
 
     if (this.soundMuted) {
       Object.entries(this.$store.state.sounds).forEach((obj: any) => {

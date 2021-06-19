@@ -221,6 +221,7 @@ export default class Game extends Vue {
   //FOR PRELOAD IMG
   img: any = null;
   numberLoaded = 0;
+
   async created(): Promise<void> {
     this.$store.commit("updateLoading", true);
 
@@ -270,11 +271,36 @@ export default class Game extends Vue {
 
     let settingsItem = localStorage.getItem("settings");
 
+    if (this.$store.state.soundsLoaded) {
+      this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+    }
+
     store.watch(
       () => this.$store.state.soundsLoaded,
       (val, oldVal) => {
-        if (val === true) {
+        if (val) {
           this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+        }
+      }
+    );
+
+    store.watch(
+      () => this.$store.state.livegame.currentStep,
+      (val, oldVal) => {
+        if (
+          this.steps.MINI_GAME_ROUND_RESULT ==
+          this.$store.state.livegame.currentStep
+        ) {
+          this.$store.commit("updateLiveGame", {
+            index: "jokersParams",
+            value: {
+              showOthersChoice: false,
+              othersCursor: [],
+              showMapRange: false,
+              highlightItems: false,
+              screenIsBlurred: false,
+            },
+          });
         }
       }
     );
@@ -282,7 +308,7 @@ export default class Game extends Vue {
     this.$store.state.room?.state.listen(
       "currentStep",
       (val: boolean, oldVal: boolean) => {
-        console.log("===== should reset jokers used");
+        console.log("currentStep:", val);
         this.$store.commit("updateLiveGame", {
           index: "jokersParams",
           value: {

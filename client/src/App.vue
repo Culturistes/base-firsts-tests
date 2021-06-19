@@ -9,6 +9,7 @@
 import { Vue } from "vue-class-component";
 import { Howl } from "howler";
 import { Store } from "vuex";
+import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 
 export default class App extends Vue {
@@ -31,6 +32,29 @@ export default class App extends Vue {
     { name: "timer", loop: false, typeEvent: "self" },
   ];
   soundsLoaded = 0;
+
+  created(): void {
+    store.watch(
+      () => this.$store.state.soundsLoaded,
+      (val, oldVal) => {
+        if (val) {
+          if (localStorage.getItem("soundMuted") != null) {
+            let muted =
+              localStorage.getItem("soundMuted") == "true" ? true : false;
+            if (muted) {
+              Object.entries(this.$store.state.sounds).forEach((obj: any) => {
+                obj[1].howl.mute(true);
+              });
+            } else {
+              Object.entries(this.$store.state.sounds).forEach((obj: any) => {
+                obj[1].howl.mute(false);
+              });
+            }
+          }
+        }
+      }
+    );
+  }
 
   mounted(): void {
     let sounds: any = {};
