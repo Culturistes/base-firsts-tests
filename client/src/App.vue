@@ -66,7 +66,7 @@ export default class App extends Vue {
         src: [`/sounds/${obj.name}.mp3`, `/sounds/${obj.name}.m4a`],
         loop: obj.loop,
         autoplay: obj.autoplay ? obj.autoplay : false,
-        volume: obj.volume ? obj.volume : 0.1,
+        volume: obj.volume ? obj.volume : 0.2,
         onload: () => {
           sounds[sound.name] = sound;
           this.soundsLoaded++;
