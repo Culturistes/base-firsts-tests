@@ -29,13 +29,14 @@ export default class ArrowBtn extends Vue {}
 
 <style lang="scss" scoped>
 .btn-arrow {
-  width: 214px;
-  height: 96px;
+  width: 300px;
+  height: 150px;
   font-family: $btnFont;
   font-weight: bold;
   text-align: left;
   text-transform: uppercase;
-  font-size: 2rem;
+  font-size: 2.3rem;
+  margin-left: 60px;
 
   border: none;
 

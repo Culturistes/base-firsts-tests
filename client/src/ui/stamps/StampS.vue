@@ -7,7 +7,7 @@
       :class="{ mdr: isMDR }"
       src="/img/stamps/ready.svg"
     />
-    <img :src="'/img/stamps/' + people + '-s.svg'" />
+    <img class="people" :src="'/img/stamps/' + people + '-s.svg'" />
     <span class="name"><slot></slot></span>
   </div>
 </template>
@@ -55,8 +55,14 @@ export default class StampS extends Vue {
 
   .mdr {
     position: absolute;
-    top: 6px;
-    left: -19px;
+    top: -5px;
+    left: -35px;
+    z-index: 1;
+    transform: scale(1.3);
+  }
+
+  .people {
+    transform: scale(1.3);
   }
 
   .ready {

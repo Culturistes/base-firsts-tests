@@ -3,7 +3,8 @@
     <div class="gameParameters-content">
       <div class="players">
         <ArrowBtn @click="copyToClipboard" class="invite" :validate="linkCopied"
-          >Inviter des vacanciers</ArrowBtn
+          >Inviter des <br />
+          vacanciers</ArrowBtn
         >
         <ul class="players-list">
           <li v-for="player in $store.state.players" v-bind:key="player.id">
@@ -217,7 +218,8 @@ export default class GameParameters extends Vue {
       height: 518px;
       background-image: url("/img/divers/planche.png");
       background-size: 100% 100%;
-      transform: translateX(-24px) translateY(44px);
+      transform: translateX(-24px) translateY(44px) scale(1.3);
+      transform-origin: bottom left;
       pointer-events: none;
 
       &.canInteract {
@@ -247,12 +249,16 @@ export default class GameParameters extends Vue {
   .players-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
     list-style: none;
     padding: 0;
 
     li {
-      margin-right: $steps-padding;
-      margin-bottom: 20px;
+      //margin-right: $steps-padding;
+      margin-bottom: 60px;
+      width: 30%;
+      display: flex;
+      justify-content: center;
     }
   }
 }
