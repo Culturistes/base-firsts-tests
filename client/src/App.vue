@@ -32,7 +32,7 @@ export default class App extends Vue {
   ];
   soundsLoaded = 0;
 
-  created(): void {
+  mounted(): void {
     let sounds: any = {};
     this.$store.commit("updateLoading", true);
     this.soundsArray.forEach((obj: any) => {

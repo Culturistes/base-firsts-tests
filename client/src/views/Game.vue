@@ -153,6 +153,8 @@
       <GameResult
         v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
       />
+
+      <MuteBtn />
     </div>
   </div>
 </template>
@@ -172,6 +174,7 @@ import MiniGameRound from "@/components/game/MiniGameRound.vue";
 import MiniGameRoundResult from "@/components/game/MiniGameRoundResult.vue";
 import MiniGameResult from "@/components/game/MiniGameResult.vue";
 import GameResult from "@/components/game/GameResult.vue";
+import MuteBtn from "@/ui/buttons/MuteBtn.vue";
 import axios from "axios";
 
 export enum STEPS {
@@ -196,6 +199,7 @@ export enum STEPS {
     MiniGameRoundResult,
     MiniGameResult,
     GameResult,
+    MuteBtn,
   },
 })
 export default class Game extends Vue {
@@ -218,6 +222,8 @@ export default class Game extends Vue {
   img: any = null;
   numberLoaded = 0;
   async created(): Promise<void> {
+    this.$store.commit("updateLoading", true);
+
     //PRELOAD IMG
     this.img = [
       new Image(),
@@ -244,8 +250,10 @@ export default class Game extends Vue {
     this.img.forEach((el: any) => {
       el.onload = () => {
         this.numberLoaded++;
+        console.log("Sprite loaded:", el.src);
 
         if (this.numberLoaded >= 9) {
+          console.log("All sprites loaded");
           this.$store.commit("updateLoading", false);
         }
       };
@@ -264,6 +272,7 @@ export default class Game extends Vue {
     this.$store.state.room?.state.listen(
       "currentStep",
       (val: boolean, oldVal: boolean) => {
+        console.log("===== should reset jokers used");
         this.$store.commit("updateLiveGame", {
           index: "jokersParams",
           value: {
