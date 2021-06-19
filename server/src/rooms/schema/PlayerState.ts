@@ -2,7 +2,7 @@ import { Schema, type, MapSchema, ArraySchema } from "@colyseus/schema";
 
 export class Joker extends Schema {
     @type("string")
-    type: string; // Bonus / Attaque ?
+    type: string;
 
     @type("string")
     slug: string;

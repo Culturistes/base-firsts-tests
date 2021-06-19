@@ -9,6 +9,7 @@
 import { Vue } from "vue-class-component";
 import { Howl } from "howler";
 import { Store } from "vuex";
+import store from "@/store";
 import StoreState from "@/interfaces/StoreState";
 
 export default class App extends Vue {
@@ -33,23 +34,53 @@ export default class App extends Vue {
   soundsLoaded = 0;
 
   created(): void {
+    store.watch(
+      () => this.$store.state.soundsLoaded,
+      (val, oldVal) => {
+        if (val) {
+          if (localStorage.getItem("soundMuted") != null) {
+            let muted =
+              localStorage.getItem("soundMuted") == "true" ? true : false;
+            if (muted) {
+              Object.entries(this.$store.state.sounds).forEach((obj: any) => {
+                obj[1].howl.mute(true);
+              });
+            } else {
+              Object.entries(this.$store.state.sounds).forEach((obj: any) => {
+                obj[1].howl.mute(false);
+              });
+            }
+          }
+        }
+      }
+    );
+  }
+
+  mounted(): void {
     let sounds: any = {};
     this.$store.commit("updateLoading", true);
     this.soundsArray.forEach((obj: any) => {
       let sound: any = {};
       sound.name = obj.name;
       sound.howl = new Howl({
-        src: [`/sounds/${obj.name}.mp3`],
+        src: [`/sounds/${obj.name}.mp3`, `/sounds/${obj.name}.m4a`],
         loop: obj.loop,
         autoplay: obj.autoplay ? obj.autoplay : false,
-        volume: obj.volume ? obj.volume : 0.1,
+        volume: obj.volume ? obj.volume : 0.2,
         onload: () => {
           sounds[sound.name] = sound;
           this.soundsLoaded++;
           console.log("Sound loaded:", sound.name);
           if (this.soundsLoaded == this.soundsArray.length) {
             console.log("all sounds loaded!");
-            this.$store.commit("updateLoading", false);
+            this.$store.commit("soundsAllLoaded");
+            if (
+              this.$store.state.assetsLoaded ||
+              this.$route.name == "home" ||
+              this.$route.name == "home_params"
+            ) {
+              this.$store.commit("updateLoading", false);
+            }
           }
         },
         onloaderror: (id, error) => {

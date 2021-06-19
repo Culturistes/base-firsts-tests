@@ -16,6 +16,8 @@ export default interface StoreState {
     sounds: {
         [key: string]: any
     },
+    soundsLoaded: boolean,
+    assetsLoaded: boolean,
     livegame: {
         [key: string]: any,
         gameName: string,

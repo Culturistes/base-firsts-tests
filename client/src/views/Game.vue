@@ -160,6 +160,8 @@
       <GameResult
         v-if="steps.GAME_RESULT == $store.state.livegame.currentStep"
       />
+
+      <MuteBtn />
     </div>
   </div>
 </template>
@@ -179,6 +181,7 @@ import MiniGameRound from "@/components/game/MiniGameRound.vue";
 import MiniGameRoundResult from "@/components/game/MiniGameRoundResult.vue";
 import MiniGameResult from "@/components/game/MiniGameResult.vue";
 import GameResult from "@/components/game/GameResult.vue";
+import MuteBtn from "@/ui/buttons/MuteBtn.vue";
 import axios from "axios";
 
 export enum STEPS {
@@ -203,6 +206,7 @@ export enum STEPS {
     MiniGameRoundResult,
     MiniGameResult,
     GameResult,
+    MuteBtn,
   },
 })
 export default class Game extends Vue {
@@ -224,7 +228,10 @@ export default class Game extends Vue {
   //FOR PRELOAD IMG
   img: any = null;
   numberLoaded = 0;
+
   async created(): Promise<void> {
+    this.$store.commit("updateLoading", true);
+
     //PRELOAD IMG
     this.img = [
       new Image(),
@@ -251,9 +258,14 @@ export default class Game extends Vue {
     this.img.forEach((el: any) => {
       el.onload = () => {
         this.numberLoaded++;
-
+        console.log("Sprite loaded:", el.src);
         if (this.numberLoaded >= 9) {
-          this.$store.commit("updateLoading", false);
+          console.log("All sprites loaded");
+          this.$store.commit("assetsAllLoaded");
+
+          if (this.$store.state.soundsLoaded) {
+            this.$store.commit("updateLoading", false);
+          }
         }
       };
     });
@@ -266,11 +278,44 @@ export default class Game extends Vue {
 
     let settingsItem = localStorage.getItem("settings");
 
-    //this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+    if (this.$store.state.soundsLoaded) {
+      this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+    }
+
+    store.watch(
+      () => this.$store.state.soundsLoaded,
+      (val, oldVal) => {
+        if (val) {
+          this.$store.state.sounds.ambiance.howl.play(); // TODO IMPORTANT REACTIVE POUR PROD (commenté pour les tests sinon moi cogner pc)
+        }
+      }
+    );
+
+    store.watch(
+      () => this.$store.state.livegame.currentStep,
+      (val, oldVal) => {
+        if (
+          this.steps.MINI_GAME_ROUND_RESULT ==
+          this.$store.state.livegame.currentStep
+        ) {
+          this.$store.commit("updateLiveGame", {
+            index: "jokersParams",
+            value: {
+              showOthersChoice: false,
+              othersCursor: [],
+              showMapRange: false,
+              highlightItems: false,
+              screenIsBlurred: false,
+            },
+          });
+        }
+      }
+    );
 
     this.$store.state.room?.state.listen(
       "currentStep",
       (val: boolean, oldVal: boolean) => {
+        console.log("currentStep:", val);
         this.$store.commit("updateLiveGame", {
           index: "jokersParams",
           value: {
@@ -366,7 +411,6 @@ export default class Game extends Vue {
           var myinfos = datas.find(
             (player: any) => player.id == this.$store.state.player.id
           );
-          console.log(myinfos);
           this.$store.commit("updatePlayer", myinfos);
           break;
         case "minigame":
@@ -387,7 +431,6 @@ export default class Game extends Vue {
             index: "chosenParams",
             value: datas,
           });
-          console.log(datas);
           break;
         case "canGoNext":
           if (datas) {
