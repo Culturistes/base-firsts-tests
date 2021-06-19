@@ -36,7 +36,7 @@ export default class ArrowBtn extends Vue {}
   text-align: left;
   text-transform: uppercase;
   font-size: 2.3rem;
-  margin-left: 60px;
+  margin-left: 50px;
 
   border: none;
 

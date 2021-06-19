@@ -49,16 +49,16 @@ export default class StampS extends Vue {
   font-family: $btnFont;
 
   .name {
-    margin-top: 5px;
+    margin-top: 20px;
     font-size: 2rem;
   }
 
   .mdr {
     position: absolute;
     top: -5px;
-    left: -35px;
+    left: -40px;
     z-index: 1;
-    transform: scale(1.3);
+    transform: scale(1.2);
   }
 
   .people {
@@ -67,8 +67,10 @@ export default class StampS extends Vue {
 
   .ready {
     position: absolute;
-    top: 10px;
-    left: -15px;
+    top: 0;
+    left: -25px;
+    z-index: 1;
+    transform: scale(1.3);
 
     &.mdr {
       left: unset;

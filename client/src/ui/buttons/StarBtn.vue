@@ -12,6 +12,7 @@
     :class="{ disabled: disabled, big: big }"
     :disabled="disabled"
   >
+    <span class="back"></span>
     <span v-if="!valid"><slot></slot></span>
     <span v-else><img src="/img/divers/valid.svg" /></span>
   </button>
@@ -45,16 +46,15 @@ export default class StarBtn extends Vue {}
 
 <style lang="scss" scoped>
 .star-btn {
+  position: relative;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  backface-visibility: hidden;
 
   width: 130px;
   height: 130px;
-  background-color: unset;
-  background-image: url("/img/buttons/star.svg");
-  background-size: 100%;
   border: none;
 
   font-family: "Baloo";
@@ -64,9 +64,41 @@ export default class StarBtn extends Vue {}
   text-transform: uppercase;
   text-decoration: none;
 
+  .back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: unset;
+    background-image: url("/img/buttons/star.svg");
+    background-size: 100%;
+    transition: transform 0.2s ease;
+
+    animation: rotation 8s forwards linear infinite;
+    animation-play-state: paused;
+  }
+
+  &:hover {
+    .back {
+      //transform: rotate(20deg);
+      animation-play-state: running;
+    }
+  }
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
   span {
     display: block;
     transform: rotate(15deg);
+    backface-visibility: hidden;
 
     pointer-events: none;
   }

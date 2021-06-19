@@ -15,7 +15,7 @@
               >{{ player.username }}</StampS
             >
           </li>
-          <li :key="n" v-for="n in 10 - $store.state.players.length">
+          <li :key="n" v-for="n in 9 - $store.state.players.length">
             <StampS people="empty"></StampS>
           </li>
         </ul>
@@ -255,7 +255,7 @@ export default class GameParameters extends Vue {
 
     li {
       //margin-right: $steps-padding;
-      margin-bottom: 60px;
+      margin-bottom: 40px;
       width: 30%;
       display: flex;
       justify-content: center;
