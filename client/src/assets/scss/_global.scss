@@ -16,6 +16,9 @@ body {
     font-family: $titleFont;
     font-weight: bold;
     font-size: $fontMsize;
+
+    max-height: 100vh;
+    overflow-y: hidden;
 }
 
 #app {

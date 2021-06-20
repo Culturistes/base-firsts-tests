@@ -196,11 +196,12 @@ export default class BonneFranquetteGame extends Vue {
 
 <style lang="scss">
 #bonne-franquette-canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   z-index: -1;
+  inset: 0;
 }
 </style>

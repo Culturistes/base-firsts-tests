@@ -114,4 +114,7 @@ export default class App extends Vue {
     backface-visibility: hidden;
   }
 }
+
+.app {
+}
 </style>

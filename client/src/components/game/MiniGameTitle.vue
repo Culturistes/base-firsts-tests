@@ -50,6 +50,7 @@
       class="btn"
       v-on:click="readyForNext"
       :valid="$store.state.player.isReady"
+      :absolute="true"
       >Prêt ?</StarBtn
     >
   </div>

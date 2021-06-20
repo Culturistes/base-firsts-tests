@@ -25,6 +25,7 @@ import StampS from "./ui/stamps/StampS.vue";
 import VSStamp from "./ui/stamps/VSStamp.vue";
 import Rect from "./ui/stamps/Rect.vue";
 import Picture from "./ui/pictures/Picture.vue";
+import PictureSolo from "./ui/pictures/PictureSolo.vue";
 
 const app = createApp(App);
 
@@ -49,6 +50,7 @@ app.component("StampS", StampS);
 app.component("VSStamp", VSStamp);
 app.component("Rect", Rect);
 app.component("Picture", Picture);
+app.component("PictureSolo", PictureSolo);
 
 app.config.globalProperties.$filters = {
   hideDollar(value: string) {

@@ -20,14 +20,18 @@
     </div>
     <img class="ready" v-if="ready" src="/img/divers/ready.svg" />
     <div
-      class="scoreWon"
       v-if="
         $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
         scoreWon > 0
       "
+      class="scoreWonContainer"
     >
       <div class="anchor"></div>
-      + {{ scoreWon }} km
+      <div class="scoreWon">
+        <div class="shadow1"></div>
+        <div class="shadow2"></div>
+        <div class="label">+ {{ scoreWon }} km</div>
+      </div>
     </div>
   </li>
 </template>
