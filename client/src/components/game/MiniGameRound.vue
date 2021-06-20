@@ -34,7 +34,7 @@
 
       <div
         class="blurred"
-        v-if="$store.state.livegame.jokersParams.screenIsBlurred"
+        v-if="true /*$store.state.livegame.jokersParams.screenIsBlurred*/"
       ></div>
     </div>
 
@@ -244,6 +244,7 @@ export default class MiniGameRound extends Vue {
       transform: translate(-50%, -50%);
       backdrop-filter: blur(6px);
       pointer-events: none;
+      z-index: 99;
     }
 
     &.inactive {

@@ -31,7 +31,7 @@
             :active="selectedMod == 0"
             title="Mode Autoroute"
             >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
-            pressés..</PanneauBtn
+            pressés...</PanneauBtn
           >
           <PanneauBtn
             @click="changeSelectedMod(1)"
@@ -44,7 +44,7 @@
             @click="changeSelectedMod(2)"
             :active="selectedMod == 2"
             title="Mode Détour"
-            >Tous les chemins mènent à Rome ! Laissez vous guider avec ce mode
+            >Tous les chemins mènent à Rome ! Laissez-vous guider avec ce mode
             de jeu mystèrieux.</PanneauBtn
           >
         </div>
