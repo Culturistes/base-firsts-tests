@@ -25,7 +25,7 @@ export default class OwnRoom extends Room<RoomState> {
     minigameTimer = 20;
     gameTitleTimer = 10;
     timerEnded = false;
-    minigamesOrder = ['lbf', 'lme', 'quiz', 'coc'];
+    minigamesOrder = ['quiz', 'lbf', 'lme', 'coc'];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -564,7 +564,7 @@ export default class OwnRoom extends Room<RoomState> {
                 break;
             case 'lbf':
                 this.state.players.forEach((player) => {
-                    if (player.chosenAnswer != null) {
+                    if (player.chosenAnswer != null && player.chosenAnswer.recette) {
                         let record = new AnswerRecord();
                         record.isGood = true;
                         player.answersRecord[this.state.parameters.currentRound] = record;

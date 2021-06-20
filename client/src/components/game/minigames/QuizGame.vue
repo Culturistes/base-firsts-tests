@@ -39,7 +39,7 @@
         {{ $filters.hideDollar(answer) }}
       </QuizBlock>
 
-      <div
+      <!-- <div
         class="ui-valid"
         v-if="
           selectedAnswer != null &&
@@ -49,7 +49,7 @@
         <StarBtn @click="sendAnswer" :valid="$store.state.player?.isReady"
           >Valider</StarBtn
         >
-      </div>
+      </div> -->
     </div>
     <div
       class="ui-result"

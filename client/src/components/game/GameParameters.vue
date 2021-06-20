@@ -218,7 +218,7 @@ export default class GameParameters extends Vue {
       height: 518px;
       background-image: url("/img/divers/planche.png");
       background-size: 100% 100%;
-      transform: translateX(-24px) translateY(44px) scale(1.3);
+      transform: translateX(-24px) translateY(44px) scale(1.2);
       transform-origin: bottom left;
       pointer-events: none;
 
@@ -255,7 +255,7 @@ export default class GameParameters extends Vue {
 
     li {
       //margin-right: $steps-padding;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       width: 30%;
       display: flex;
       justify-content: center;
