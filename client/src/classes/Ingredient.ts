@@ -11,7 +11,7 @@ export default class Ingredient {
   constructor(ingredient: any, x: number, y: number) {
     this.name = ingredient.name;
     this.img = ingredient.img;
-    this.imgHighlight = ingredient.imgHighlight;
+    this.imgHighlight = ingredient.img + "-highlighted";
     this.x = x;
     this.y = y;
   }
@@ -26,7 +26,7 @@ export default class Ingredient {
     this.draw(ctx, highlight);
   }
 
-  draw(ctx: any, highlight: boolean) {
+  draw(ctx: any, highlight = false) {
     ctx.fillStyle = highlight ? this.imgHighlight : this.img;
     ctx.fillRect(this.x, this.y, this.size, this.size);
   }

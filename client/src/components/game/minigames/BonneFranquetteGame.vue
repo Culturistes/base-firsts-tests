@@ -127,7 +127,7 @@ export default class BonneFranquetteGame extends Vue {
 
       this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-      this.elements.forEach((el: any) => {
+      this.elements.forEach((el: any, i: number) => {
         el.update(
           this.ctx,
           this.mouse,
