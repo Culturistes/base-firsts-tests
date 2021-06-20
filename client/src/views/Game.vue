@@ -451,6 +451,10 @@ export default class Game extends Vue {
               index: "currentMiniGame",
               value: datas.minigame,
             });
+            this.$store.commit("updateLiveGame", {
+              index: "currentRound",
+              value: 1,
+            });
           }
           if (datas.round) {
             this.$store.commit("updateLiveGame", {
