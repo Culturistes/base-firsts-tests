@@ -63,93 +63,99 @@
   <div class="minigame mg-lme" v-else>
     <RoundList :result="$store.state.player.answersRecord" />
     <div class="ui-question">
-      <Picture
-        :selected="
-          selectedAnswer === 0 &&
-          $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
-        "
-        :right="
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          $store.state.livegame.minigame.goodAnswer.content[0] != undefined &&
-          $store.state.livegame.minigame.goodAnswer.content[0].id == 0
-        "
-        :showAnswer="
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT ||
-          $store.state.livegame.jokersParams.showOthersChoice
-        "
-        :respondedNumber="actualLMEAnswers[0]"
-        @click="
-          () => {
-            if (
-              this.$store.state.livegame.currentStep !==
-              steps.MINI_GAME_ROUND_RESULT
-            ) {
-              this.selectedAnswer = 0;
-              sendAnswer();
-            }
-          }
-        "
-        >{{ answers[0] }}
-        <span
-          v-if="
-            $store.state.livegame.minigame.type == 'lme' &&
+      <div class="pictures-container">
+        <PictureSolo
+          :key="i"
+          v-for="(pic, i) in $store.state.livegame.chosenParams.roundNumber"
+          :i="i"
+          :isQuestion="$store.state.livegame.currentRound == i + 1"
+          :isOut="$store.state.livegame.currentRound > i + 1"
+          :selected="
+            selectedAnswer === 0 &&
+            $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
+          "
+          :right="
+            $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
+            $store.state.livegame.minigame.goodAnswer.content[0] != undefined &&
+            $store.state.livegame.minigame.goodAnswer.content[0].id == 0
+          "
+          :showAnswer="
+            $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT ||
             $store.state.livegame.jokersParams.showOthersChoice
           "
+          :result="actualLMEAnswers[0]"
+          @click="
+            () => {
+              if (
+                this.$store.state.livegame.currentStep !==
+                steps.MINI_GAME_ROUND_RESULT
+              ) {
+                this.selectedAnswer = 0;
+                sendAnswer();
+              }
+            }
+          "
+          >{{ answers[0] }}
+          <span
+            v-if="
+              $store.state.livegame.minigame.type == 'lme' &&
+              $store.state.livegame.jokersParams.showOthersChoice
+            "
+          >
+            | {{ actualLMEAnswers[0] }}
+          </span></PictureSolo
         >
-          | {{ actualLMEAnswers[0] }}
-        </span></Picture
-      >
+      </div>
       <VSStamp />
-      <Picture
-        :selected="
-          selectedAnswer === 1 &&
-          $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
-        "
-        :right="
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          ($store.state.livegame.minigame.goodAnswer.content[1] != undefined ||
-            ($store.state.livegame.minigame.goodAnswer.content[0] !=
-              undefined &&
-              $store.state.livegame.minigame.goodAnswer.content[0].id == 1))
-          /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
-        "
-        :showAnswer="
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT ||
-          $store.state.livegame.jokersParams.showOthersChoice
-        "
-        :respondedNumber="actualLMEAnswers[1]"
-        @click="
-          () => {
-            if (
-              this.$store.state.livegame.currentStep !==
-              steps.MINI_GAME_ROUND_RESULT
-            ) {
-              this.selectedAnswer = 1;
-              sendAnswer();
-            }
-          }
-        "
-        color="rose"
-        >{{ answers[1] }}
-        <span
-          v-if="
-            $store.state.livegame.minigame.type == 'lme' &&
+      <div class="pictures-container">
+        <PictureSolo
+          :key="i"
+          v-for="(pic, i) in $store.state.livegame.chosenParams.roundNumber"
+          color="rose"
+          :i="i"
+          :isQuestion="$store.state.livegame.currentRound == i + 1"
+          :isOut="$store.state.livegame.currentRound > i + 1"
+          :selected="
+            selectedAnswer === 1 &&
+            $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
+          "
+          :right="
+            $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
+            ($store.state.livegame.minigame.goodAnswer.content[1] !=
+              undefined ||
+              ($store.state.livegame.minigame.goodAnswer.content[0] !=
+                undefined &&
+                $store.state.livegame.minigame.goodAnswer.content[0].id == 1))
+            /* MAEL : A la place de true/false, retourner si la réponse à gagné ou pas*/
+          "
+          :showAnswer="
+            $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT ||
             $store.state.livegame.jokersParams.showOthersChoice
           "
+          :result="actualLMEAnswers[1]"
+          @click="
+            () => {
+              if (
+                this.$store.state.livegame.currentStep !==
+                steps.MINI_GAME_ROUND_RESULT
+              ) {
+                this.selectedAnswer = 1;
+                sendAnswer();
+              }
+            }
+          "
+          >{{ answers[1] }}
+          <span
+            v-if="
+              $store.state.livegame.minigame.type == 'lme' &&
+              $store.state.livegame.jokersParams.showOthersChoice
+            "
+          >
+            | {{ actualLMEAnswers[1] }}
+          </span></PictureSolo
         >
-          | {{ actualLMEAnswers[1] }}
-        </span></Picture
-      >
+      </div>
     </div>
-    <!-- <div
-      class="ui-valid"
-      v-if="
-        selectedAnswer != null &&
-        $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
-      "
-    >
-      <StarBtn @click="sendAnswer">Valider</StarBtn>
-    </div> -->
 
     <div
       class="ui-result"
@@ -414,6 +420,18 @@ export default class QuizGame extends Vue {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .pictures-container {
+    position: relative;
+    display: flex;
+
+    width: 218px;
+    height: 248px;
+
+    .slide-container {
+      position: absolute;
+    }
   }
 }
 </style>

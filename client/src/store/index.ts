@@ -52,7 +52,7 @@ export default createStore({
       streamerMode: false,
     },
     isLoading: false,
-    avatarUrl: "skieuse",
+    avatarUrl: "surfeuse",
   },
   mutations: {
     updateClient(state: StoreState, value: Client): void {

@@ -7,6 +7,7 @@
       :big="true"
       v-on:click="readyForNext"
       :valid="$store.state.player?.isReady"
+      :absolute="true"
       >Mini-jeu<br />suivant</StarBtn
     >
   </div>

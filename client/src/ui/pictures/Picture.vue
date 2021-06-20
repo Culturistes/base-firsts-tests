@@ -57,7 +57,7 @@ import { Options, Vue } from "vue-class-component";
 export default class Picture extends Vue {}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .picture {
   display: flex;
   justify-content: center;

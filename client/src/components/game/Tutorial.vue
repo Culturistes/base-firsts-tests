@@ -1,6 +1,6 @@
 <template>
   <div class="tutorial step">
-    <img src="/img/titles/depart.svg" />
+    <img class="title" src="/img/titles/depart.svg" />
     <MinimalistArrowBtn
       v-if="step > 1"
       class="btn-left"
@@ -71,6 +71,7 @@
       v-on:click="readyForNext"
       :valid="$store.state.player?.isReady"
       :big="true"
+      :absolute="true"
       >C'est<br />parti !</StarBtn
     >
   </div>
@@ -127,6 +128,10 @@ export default class Tutorial extends Vue {
 
     transition: transform 0.3s;
   }
+}
+
+.title {
+  width: 315px;
 }
 
 .points {

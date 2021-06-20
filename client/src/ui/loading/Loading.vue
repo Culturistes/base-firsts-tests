@@ -46,7 +46,7 @@ export default class Loading extends Vue {
   .car {
     height: 240px;
     width: 240px;
-    background: url("/img/animations/loader.png");
+    background: url("/img/animations/loader.webp");
     animation: sprite 1.5s steps(28) infinite;
 
     margin-bottom: 24px;

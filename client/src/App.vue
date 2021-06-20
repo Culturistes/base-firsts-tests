@@ -106,4 +106,7 @@ export default class App extends Vue {
     pointer-events: none;
   }
 }
+
+.app {
+}
 </style>
