@@ -120,7 +120,7 @@ export default class MiniGameTitle extends Vue {
     this.$store.state.room?.state.listen(
       "currentTimer",
       (val: number, oldVal: number) => {
-        this.timerWidth = +((val * 100) / 10).toFixed(2);
+        this.timerWidth = +((val * 100) / 20).toFixed(2);
       }
     );
   }
