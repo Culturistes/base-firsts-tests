@@ -229,6 +229,7 @@ $margin-between-btn: 7px;
   }
   &.half-opacited {
     opacity: 0.5;
+    pointer-events: none;
   }
 
   &-button {

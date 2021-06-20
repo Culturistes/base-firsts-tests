@@ -39,11 +39,17 @@
     </div>
 
     <div class="jokers">
-      <p class="mes-jokers">Mes jokers</p>
+      <p
+        class="mes-jokers"
+        v-if="steps.MINI_GAME_ROUND == $store.state.livegame.currentStep"
+      >
+        Mes jokers
+      </p>
       <button
         class="btn btn-joker"
         :class="{ active: $store.state.player.jokers.pjn.available }"
         @click="useJoker('pjn')"
+        v-if="steps.MINI_GAME_ROUND == $store.state.livegame.currentStep"
       >
         <img src="/img/jokers/drink.svg" />
       </button>
@@ -51,6 +57,7 @@
         class="btn btn-joker"
         :class="{ active: $store.state.player.jokers.cdp.available }"
         @click="useJoker('cdp')"
+        v-if="steps.MINI_GAME_ROUND == $store.state.livegame.currentStep"
       >
         <img src="/img/jokers/pouce.svg" />
       </button>
@@ -237,6 +244,7 @@ export default class MiniGameRound extends Vue {
       transform: translate(-50%, -50%);
       backdrop-filter: blur(6px);
       pointer-events: none;
+      z-index: 99;
     }
 
     &.inactive {
@@ -249,6 +257,9 @@ export default class MiniGameRound extends Vue {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+
+    position: relative;
+    z-index: 100;
 
     width: 100px;
 

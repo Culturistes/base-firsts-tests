@@ -81,8 +81,8 @@ export default class MuteBtn extends Vue {
 .mute-btn {
   position: absolute;
   z-index: 10;
-  right: 10px;
-  top: 10px;
+  left: 24px;
+  bottom: 24px;
   display: inline-flex;
   justify-content: center;
   align-items: center;

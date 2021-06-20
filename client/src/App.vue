@@ -105,6 +105,14 @@ export default class App extends Vue {
   .btn > p {
     pointer-events: none;
   }
+
+  p,
+  span,
+  button {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
 }
 
 .app {

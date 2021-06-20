@@ -25,7 +25,7 @@ export default class OwnRoom extends Room<RoomState> {
     minigameTimer = 20;
     gameTitleTimer = 10;
     timerEnded = false;
-    minigamesOrder = ['lbf', 'lme', 'quiz', 'coc'];
+    minigamesOrder = ['quiz', 'lbf', 'lme', 'coc'];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -44,7 +44,7 @@ export default class OwnRoom extends Room<RoomState> {
                     break;
                 case "useJoker":
                     if (this.state.players.get(client.sessionId).jokers.get(packet.datas).available && this.state.currentStep == STEPS.MINI_GAME_ROUND) {
-                        this.state.players.get(client.sessionId).jokers.get(packet.datas).available = false;
+                        //this.state.players.get(client.sessionId).jokers.get(packet.datas).available = false;
 
                         client.send("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
@@ -298,6 +298,8 @@ export default class OwnRoom extends Room<RoomState> {
 
                 this.broadcast("serverPacket", { type: "goOnStep", datas: { step: this.state.currentStep + 1, minigame: this.state.parameters.currentMiniGame } });
                 this.broadcast("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
+
+                this.startTimer();
                 return false;
             }
         }
@@ -333,6 +335,7 @@ export default class OwnRoom extends Room<RoomState> {
                 }
             }, 100)
         } else if (this.state.currentStep == STEPS.MINI_GAME_TITLE) {
+            console.log("START TIMER FOR TITLE")
             this.clock.start();
             this.state.currentTimer = 0;
             this.clock.setInterval(() => {
@@ -561,7 +564,7 @@ export default class OwnRoom extends Room<RoomState> {
                 break;
             case 'lbf':
                 this.state.players.forEach((player) => {
-                    if (player.chosenAnswer != null) {
+                    if (player.chosenAnswer != null && player.chosenAnswer.recette) {
                         let record = new AnswerRecord();
                         record.isGood = true;
                         player.answersRecord[this.state.parameters.currentRound] = record;

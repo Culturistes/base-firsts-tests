@@ -58,19 +58,19 @@ export default class StampS extends Vue {
     top: -5px;
     left: -40px;
     z-index: 1;
-    transform: scale(1.2);
+    transform: scale(1.1);
   }
 
   .people {
-    transform: scale(1.3);
+    transform: scale(1.2);
   }
 
   .ready {
     position: absolute;
     top: 0;
-    left: -25px;
+    right: -30px;
     z-index: 1;
-    transform: scale(1.3);
+    transform: scale(1.2);
 
     &.mdr {
       left: unset;

@@ -12,7 +12,6 @@
     :class="{ disabled: disabled, big: big, absolute: absolute }"
     :disabled="disabled"
   >
-    <span class="back"></span>
     <span v-if="!valid"><slot></slot></span>
     <span v-else><img src="/img/divers/valid.svg" /></span>
   </button>
@@ -55,8 +54,6 @@ export default class StarBtn extends Vue {}
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  backface-visibility: hidden;
-
   width: 130px;
   height: 130px;
   border: none;
@@ -72,7 +69,8 @@ export default class StarBtn extends Vue {}
     position: absolute;
   }
 
-  .back {
+  &::before {
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -88,8 +86,7 @@ export default class StarBtn extends Vue {}
   }
 
   &:hover {
-    .back {
-      //transform: rotate(20deg);
+    &::before {
       animation-play-state: running;
     }
   }
@@ -105,9 +102,7 @@ export default class StarBtn extends Vue {}
 
   span {
     display: block;
-    transform: rotate(15deg);
-    backface-visibility: hidden;
-
+    transform: translateZ(0) rotate(15deg);
     pointer-events: none;
   }
 
