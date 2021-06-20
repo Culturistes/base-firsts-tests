@@ -24,7 +24,7 @@
         v-on:click="joinRoom"
         :disabled="username.length <= 0 || roomID.length <= 0"
       >
-        C'est<br />partie !
+        C'est<br />parti !
       </StarBtn>
     </div>
     <!-- <div>

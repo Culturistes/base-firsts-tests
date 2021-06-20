@@ -33,7 +33,7 @@
         <img src="/img/animations/tuto2.gif" />
         <p>Le petit jaune</p>
         <p>
-          C’est l’heure de l’apéro ! Profitez-en pour prendre de l’avance !
+          C’est l’heure de l’apéro ! Profitez-en pour prendre de l’avance !<br />
           Chargez un peu le verre des autres pour réduire leur visibilité.
         </p>
       </div>
@@ -54,10 +54,7 @@
       >
         <img src="/img/animations/tuto4.gif" />
         <p>Le champi</p>
-        <p>
-          Vous avez déjà répondu ? Appuyez sur le champi pour déconcentrer les
-          autres joueurs !
-        </p>
+        <p>Appuyez sur le champi pour déconcentrer les autres joueurs !</p>
       </div>
     </div>
     <div class="points">
