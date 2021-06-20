@@ -4,7 +4,7 @@ import { Player } from "./PlayerState";
 
 class Parameters extends Schema {
   @type("number")
-  minigameNumber: number = 3;
+  minigameNumber: number = 4;
 
   @type("number")
   roundNumber: number = 1;

@@ -32,11 +32,14 @@
         :halfOpacited="
           selectedAnswer !== answer &&
           selectedAnswer !== i.toString() &&
-          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
-          !$store.state.livegame.minigame.goodAnswer.content.includes(answer)
+          (($store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT &&
+            !$store.state.livegame.minigame.goodAnswer.content.includes(
+              answer
+            )) ||
+            isBadAnswer(answer))
         "
       >
-        {{ $filters.hideDollar(answer) }}
+        {{ hideHashtag($filters.hideDollar(answer)) }}
       </QuizBlock>
 
       <!-- <div
@@ -211,6 +214,18 @@ export default class QuizGame extends Vue {
     return array;
   }
 
+  isBadAnswer(word: string) {
+    return word.slice(0, 1) == "#";
+  }
+
+  hideHashtag(word: string) {
+    if (word.slice(0, 1) == "#") {
+      return word.substring(1);
+    } else {
+      return word;
+    }
+  }
+
   sendAnswer(i: number) {
     if (
       this.$store.state.livegame.currentStep !==
@@ -317,12 +332,9 @@ export default class QuizGame extends Vue {
       !this.answersUpdated &&
       this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND
     ) {
-      /* console.log(
-        "update answers",
-        this.$store.state.livegame.minigame.answers
-      ); */
       this.answerSoundPlayed = false;
       this.selectedAnswer = null;
+      console.log(this.$store.state.livegame.minigame.answers);
       if (this.$store.state.livegame.minigame.type == "quiz") {
         this.answers = this.shuffle(
           this.$store.state.livegame.minigame.answers
@@ -359,10 +371,6 @@ export default class QuizGame extends Vue {
     this.$store.dispatch("readyForNext");
     this.answersUpdated = false;
     this.$store.state.sounds.cta.howl.play();
-    this.$store.commit("updateJokersParams", {
-      index: "showOthersChoice",
-      value: false,
-    });
   }
 
   calculateLMEAnswers(): void {

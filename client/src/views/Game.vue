@@ -485,13 +485,19 @@ export default class Game extends Vue {
                 case "quiz":
                   // Remove 2 bad answers
                   var answers = this.$store.state.livegame.minigame.answers;
-                  var newAnswers = [
-                    answers.find((ans: string) => ans.slice(0, 1) == "$"),
-                    answers.find((ans: string) => ans.slice(0, 1) != "$"),
-                  ];
+                  var badNumber = 0;
+                  answers.forEach((ans: string, idx: number) => {
+                    if (badNumber < 2) {
+                      if (ans.slice(0, 1) != "$") {
+                        badNumber++;
+                        answers[idx] = "#" + ans;
+                        console.log("new ans:", ans);
+                      }
+                    }
+                  });
                   this.$store.commit("updateMinigame", {
                     index: "answers",
-                    value: newAnswers,
+                    value: answers,
                   });
                   break;
                 case "lme":
