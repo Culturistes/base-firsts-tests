@@ -1,6 +1,7 @@
 export default class Ingredient {
   name: string;
   img: string;
+  imgHighlight: string;
   x: number;
   y: number;
 
@@ -10,22 +11,23 @@ export default class Ingredient {
   constructor(ingredient: any, x: number, y: number) {
     this.name = ingredient.name;
     this.img = ingredient.img;
+    this.imgHighlight = ingredient.imgHighlight;
     this.x = x;
     this.y = y;
   }
 
-  update(ctx: any, mouse: any) {
+  update(ctx: any, mouse: any, highlight: boolean) {
     this.y = Math.round(this.y + this.velocity);
 
     if (this.isHover(mouse)) {
       this.y = window.innerHeight + 1000;
     }
 
-    this.draw(ctx);
+    this.draw(ctx, highlight);
   }
 
-  draw(ctx: any) {
-    ctx.fillStyle = this.img;
+  draw(ctx: any, highlight: boolean) {
+    ctx.fillStyle = highlight ? this.imgHighlight : this.img;
     ctx.fillRect(this.x, this.y, this.size, this.size);
   }
 

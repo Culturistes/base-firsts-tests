@@ -128,7 +128,11 @@ export default class BonneFranquetteGame extends Vue {
       this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       this.elements.forEach((el: any) => {
-        el.update(this.ctx, this.mouse);
+        el.update(
+          this.ctx,
+          this.mouse,
+          this.$store.state.livegame.jokersParams.highlightItems
+        );
 
         if (el.y >= window.innerHeight) {
           const index = this.elements.findIndex((e) => {
