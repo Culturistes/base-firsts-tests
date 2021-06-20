@@ -12,9 +12,10 @@
       <label>
         <p>
           <!-- v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND" -->
-          <span class="bonus">Bonus :</span> Comment s'appellent ses habitants ?
+          <span class="bonus">Bonus :</span> Comment s'appellent <br />ses
+          habitants ?
         </p>
-        <div class="input-btn">
+        <div class="input-btn user">
           <TextInput color="black" v-model="gentile">Saisi le nom</TextInput>
           <StarBtn @click="validateAnswer" :valid="$store.state.player?.isReady"
             >Valider</StarBtn
@@ -29,7 +30,8 @@
       <label>
         <p>
           <!-- v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND" -->
-          <span class="bonus">Bonus :</span> Comment s'appellent ses habitants ?
+          <span class="bonus">Bonus :</span> Comment s'appellent <br />ses
+          habitants ?
         </p>
         <div class="input-btn">
           <TextInput color="black" :noInput="true"
@@ -257,7 +259,7 @@ body.leaflet-dragging {
 
 .ui-question {
   position: absolute;
-  width: 275px;
+  //width: 350px;
   top: 50%;
   right: 0;
   margin: 0;
@@ -279,8 +281,8 @@ body.leaflet-dragging {
     }
 
     .input {
-      width: 180px;
-      margin-right: 10px;
+      min-width: 150px;
+      margin-right: 20px;
     }
 
     .star-btn {
@@ -288,6 +290,11 @@ body.leaflet-dragging {
       height: 80px;
 
       font-size: 1.3rem;
+
+      &::before {
+        background-position: center;
+        background-repeat: no-repeat;
+      }
 
       img {
         transform: scale(0.7);
@@ -298,6 +305,12 @@ body.leaflet-dragging {
       display: flex;
       justify-content: center;
       align-items: center;
+
+      &.user {
+        .input {
+          width: 200px;
+        }
+      }
     }
   }
 

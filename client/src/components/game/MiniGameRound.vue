@@ -228,7 +228,7 @@ export default class MiniGameRound extends Vue {
 .minigameRound {
   display: flex;
   .info-player {
-    width: 200px;
+    //width: 200px;
     margin-right: 100px;
   }
   .round {

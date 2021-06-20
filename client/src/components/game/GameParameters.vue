@@ -251,7 +251,7 @@ export default class GameParameters extends Vue {
     flex-wrap: wrap;
     justify-content: space-between;
     list-style: none;
-    padding: 0;
+    padding: 0 70px;
 
     li {
       //margin-right: $steps-padding;

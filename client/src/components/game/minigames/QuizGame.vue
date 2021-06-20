@@ -424,6 +424,10 @@ export default class QuizGame extends Vue {
 }
 
 .mg-lme {
+  position: relative;
+  top: 50%;
+  transform: translateY(-60%);
+
   .ui-question {
     display: flex;
     justify-content: center;
@@ -433,6 +437,7 @@ export default class QuizGame extends Vue {
   .pictures-container {
     position: relative;
     display: flex;
+    margin: 0 60px;
 
     width: 218px;
     height: 248px;

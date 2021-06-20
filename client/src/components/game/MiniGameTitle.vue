@@ -73,8 +73,8 @@ export default class MiniGameTitle extends Vue {
   timerWidth = 0;
 
   contextes: any = {
-    quiz: "C’est l’heure du fameux quizz Questions pour un chauvin sur Radio Soleil !",
-    lme: "Péage : Ne vous trompez pas de voie, cela risque de vous retarder ! Faites les bons choix.",
+    quiz: 'C’est l’heure du fameux quizz "Question pour un chauvin" sur Radio Soleil !',
+    lme: "Péage : ne vous trompez pas de voie, cela risque de vous retarder ! Faites les bons choix.",
     coc: "Vous êtes perdu ! À l’aide de la carte tentez de retrouver la destination indiquée.",
     lbf: "Une petite pause s’impose !  Récoltez les bons ingédients à l’aide de votre panier et reconstituez les spécialités françaises.",
   };
@@ -82,7 +82,7 @@ export default class MiniGameTitle extends Vue {
   instructions: any = {
     quiz: [
       "Choisi la bonne réponse à l’aide de ta souris.",
-      "Dépêche toi de répondre, le temps est compte.",
+      "Dépêche toi de répondre, le temps est compté.",
       "Cumules un maximum de bonnes réponses !",
     ],
     lme: [
@@ -98,7 +98,7 @@ export default class MiniGameTitle extends Vue {
     lbf: [
       "Déplace ta souris pour déplacer le panier",
       "Attention aux pièges, n’attrappe que le necessaire !",
-      "Amasse tous les ingrédients de la recette !",
+      "Ramasse tous les ingrédients de la recette !",
     ],
   };
 

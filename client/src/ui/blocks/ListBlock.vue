@@ -87,7 +87,7 @@ export default class QuizBlock extends Vue {
   align-items: center;
   background: rgba($color: #faf5ed, $alpha: 0.3);
   border-radius: 13px;
-  padding: 5px 16px;
+  padding: 5px 57px 5px 16px;
   margin-bottom: 6px;
 
   font-family: $btnFont;
@@ -103,7 +103,7 @@ export default class QuizBlock extends Vue {
 
   .ready {
     position: absolute;
-    right: 8px;
+    right: 16px;
   }
 
   .info {

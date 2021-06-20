@@ -171,6 +171,7 @@ export default class JoinOrCreate extends Vue {
     align-items: center;
     font-size: 3rem;
     color: white;
+    font-weight: 900;
   }
   .select-player-list-container {
     margin: 90px 0;

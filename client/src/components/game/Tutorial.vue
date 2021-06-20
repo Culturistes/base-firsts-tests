@@ -1,6 +1,5 @@
 <template>
   <div class="tutorial step">
-    <img class="title" src="/img/titles/depart.svg" />
     <MinimalistArrowBtn
       v-if="step > 1"
       class="btn-left"
@@ -15,53 +14,56 @@
       @click="changeStep('+')"
       >Suivant</MinimalistArrowBtn
     >
-    <div class="tuto-container">
-      <div
-        class="tuto-step"
-        :style="{ transform: 'translateX(-' + translate + '%)' }"
-      >
-        <img src="/img/animations/tuto1.gif" />
-        <p>
-          C’est le début des vacances !<br />Vous allez vous affronter dans des
-          minis jeux.
-        </p>
+    <div class="tuto-container-container">
+      <img class="title" src="/img/titles/depart.svg" />
+      <div class="tuto-container">
+        <div
+          class="tuto-step"
+          :style="{ transform: 'translateX(-' + translate + '%)' }"
+        >
+          <img src="/img/animations/tuto1.gif" />
+          <p>
+            C’est le début des vacances !<br />Vous allez vous affronter dans
+            des minis jeux.
+          </p>
+        </div>
+        <div
+          class="tuto-step"
+          :style="{ transform: 'translateX(calc(-' + translate + '% - 32px))' }"
+        >
+          <img src="/img/animations/tuto2.gif" />
+          <p class="tuto-subtitle">Le petit jaune</p>
+          <p>
+            C’est l’heure de l’apéro ! Profitez-en pour prendre de l’avance !<br />
+            Chargez un peu le verre des autres pour réduire leur visibilité.
+          </p>
+        </div>
+        <div
+          class="tuto-step"
+          :style="{ transform: 'translateX(calc(-' + translate + '% - 64px))' }"
+        >
+          <img src="/img/animations/tuto3.gif" />
+          <p class="tuto-subtitle">Le coup de pouce</p>
+          <p>
+            Votre GPS ne marche plus et vous êtes un peu perdu ? Le coup de
+            pouce vous vient en aide !
+          </p>
+        </div>
+        <div
+          class="tuto-step"
+          :style="{ transform: 'translateX(calc(-' + translate + '% - 96px))' }"
+        >
+          <img src="/img/animations/tuto4.gif" />
+          <p class="tuto-subtitle">Le champi</p>
+          <p>Appuyez sur le champi pour déconcentrer les autres joueurs !</p>
+        </div>
       </div>
-      <div
-        class="tuto-step"
-        :style="{ transform: 'translateX(calc(-' + translate + '% - 32px))' }"
-      >
-        <img src="/img/animations/tuto2.gif" />
-        <p>Le petit jaune</p>
-        <p>
-          C’est l’heure de l’apéro ! Profitez-en pour prendre de l’avance !<br />
-          Chargez un peu le verre des autres pour réduire leur visibilité.
-        </p>
+      <div class="points">
+        <div class="point" :class="{ active: step == 1 }"></div>
+        <div class="point" :class="{ active: step == 2 }"></div>
+        <div class="point" :class="{ active: step == 3 }"></div>
+        <div class="point" :class="{ active: step == 4 }"></div>
       </div>
-      <div
-        class="tuto-step"
-        :style="{ transform: 'translateX(calc(-' + translate + '% - 64px))' }"
-      >
-        <img src="/img/animations/tuto3.gif" />
-        <p>Le coup de pouce</p>
-        <p>
-          Votre GPS ne marche plus et vous êtes un peu perdu ? Le coup de pouce
-          vous vient en aide !
-        </p>
-      </div>
-      <div
-        class="tuto-step"
-        :style="{ transform: 'translateX(calc(-' + translate + '% - 96px))' }"
-      >
-        <img src="/img/animations/tuto4.gif" />
-        <p>Le champi</p>
-        <p>Appuyez sur le champi pour déconcentrer les autres joueurs !</p>
-      </div>
-    </div>
-    <div class="points">
-      <div class="point" :class="{ active: step == 1 }"></div>
-      <div class="point" :class="{ active: step == 2 }"></div>
-      <div class="point" :class="{ active: step == 3 }"></div>
-      <div class="point" :class="{ active: step == 4 }"></div>
     </div>
     <StarBtn
       class="btn"
@@ -113,22 +115,33 @@ export default class Tutorial extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.tuto-container {
-  display: flex;
-  .tuto-step {
-    min-width: calc(100vw - 64px);
-    margin-right: 32px;
+.tuto-container-container {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
 
-    font-family: $btnFont;
-    font-weight: normal;
-    font-size: 1.8rem;
+  .tuto-container {
+    display: flex;
+    .tuto-step {
+      min-width: calc(100vw - 64px);
+      margin-right: 32px;
 
-    transition: transform 0.3s;
+      font-family: $btnFont;
+      font-weight: normal;
+      font-size: 1.8rem;
+
+      transition: transform 0.3s;
+
+      .tuto-subtitle {
+        font-weight: bold;
+      }
+    }
   }
 }
 
 .title {
   width: 315px;
+  margin-bottom: 20px;
 }
 
 .points {

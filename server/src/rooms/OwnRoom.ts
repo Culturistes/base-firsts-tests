@@ -25,7 +25,7 @@ export default class OwnRoom extends Room<RoomState> {
     minigameTimer = 20;
     gameTitleTimer = 20;
     timerEnded = false;
-    minigamesOrder = ['lbf', 'lme', 'quiz', 'coc'];
+    minigamesOrder = ['lme', 'quiz', 'coc', 'lbf',];
 
     async onCreate(options: any) {
         this.roomId = await this.generateRoomId();
@@ -44,7 +44,7 @@ export default class OwnRoom extends Room<RoomState> {
                     break;
                 case "useJoker":
                     if (this.state.players.get(client.sessionId).jokers.get(packet.datas).available && this.state.currentStep == STEPS.MINI_GAME_ROUND) {
-                        //this.state.players.get(client.sessionId).jokers.get(packet.datas).available = false;
+                        this.state.players.get(client.sessionId).jokers.get(packet.datas).available = false;
 
                         client.send("serverPacket", { type: "playersList", datas: this.mapToArray(this.state.players) });
 
