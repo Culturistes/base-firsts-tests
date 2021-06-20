@@ -2,11 +2,21 @@
   <div class="minigame mg-bonnefranquette">
     <canvas id="bonne-franquette-canvas"></canvas>
 
-    <ul>
-      <li :key="i" v-for="(ingredient, i) in recip.ingredients">
-        {{ ingredient.name }} - {{ ingredient.catched }}
-      </li>
-    </ul>
+    <div class="list-ingredients">
+      <p class="title">La liste de course:</p>
+      <ul class="list">
+        <li :key="i" v-for="(ingredient, i) in recip.ingredients">
+          <img
+            class="img-ingredient"
+            :src="'/img/ingredients/' + ingredient.img + '.png'"
+          />{{ ingredient.name }} - {{ ingredient.caught }}
+        </li>
+      </ul>
+      <div class="score">
+        <p>Total</p>
+        <p>+ 200 km</p>
+      </div>
+    </div>
     <StarBtn
       v-on:click="goNext"
       :valid="$store.state.player?.isReady"
@@ -110,7 +120,6 @@ export default class BonneFranquetteGame extends Vue {
 
   animate() {
     if (this.gamePlaying) {
-      console.log("animating canvas");
       if (this.elements.length < this.maxElements) {
         let i = Math.round(
           Math.random() * (this.recip.possibleIngredients.length - 1)
@@ -128,11 +137,14 @@ export default class BonneFranquetteGame extends Vue {
       this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       this.elements.forEach((el: any, i: number) => {
-        el.update(
-          this.ctx,
-          this.mouse,
-          this.$store.state.livegame.jokersParams.highlightItems
-        );
+        console.log(el.canBeDraw, el.imgLoaded, el.img, el.imgHighlight);
+        if (el.canBeDraw) {
+          el.update(
+            this.ctx,
+            this.mouse,
+            this.$store.state.livegame.jokersParams.highlightItems
+          );
+        }
 
         if (el.y >= window.innerHeight) {
           const index = this.elements.findIndex((e) => {
@@ -207,5 +219,45 @@ export default class BonneFranquetteGame extends Vue {
   height: 100vh;
   z-index: -1;
   inset: 0;
+}
+
+.list-ingredients {
+  width: 261px;
+  height: 338px;
+  padding: 30px 20px;
+  background: $color7;
+
+  border-radius: 15px;
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .list {
+    height: 189px;
+    font-size: 1.4rem;
+    font-family: $btnFont;
+    font-weight: bold;
+    text-align: left;
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .img-ingredient {
+      width: 27px;
+      height: 27px;
+    }
+  }
+
+  .score {
+    display: flex;
+    justify-content: space-between;
+
+    font-size: 1.4rem;
+    font-family: $btnFont;
+    font-weight: bold;
+    text-align: left;
+  }
 }
 </style>

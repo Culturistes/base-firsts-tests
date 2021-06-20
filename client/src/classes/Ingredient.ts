@@ -1,19 +1,52 @@
 export default class Ingredient {
   name: string;
-  img: string;
-  imgHighlight: string;
+  img: any;
+  imgHighlight: any;
   x: number;
   y: number;
+  imgLoaded: number;
+  canBeDraw: boolean;
 
-  size = 50;
+  size = 100;
   velocity = 1.5;
 
   constructor(ingredient: any, x: number, y: number) {
     this.name = ingredient.name;
-    this.img = ingredient.img;
-    this.imgHighlight = ingredient.img + "-highlighted";
+
+    this.img = new Image();
+    this.img.src = "/img/ingredients/" + ingredient.img + ".png";
+
+    this.imgHighlight = new Image();
+    this.img.src = "/img/ingredients/" + ingredient.img + "_cdp.png";
+
     this.x = x;
     this.y = y;
+
+    const alreadyLoaded = this.imageExists(
+      "/img/ingredients/" + ingredient.img + ".png"
+    );
+
+    if (!alreadyLoaded) {
+      this.imgLoaded = 0;
+      this.canBeDraw = false;
+
+      this.img.onload = () => {
+        this.imgLoaded++;
+        if (this.imgLoaded >= 1) {
+          this.canBeDraw = true;
+        }
+      };
+
+      this.imgHighlight.onload = () => {
+        this.imgLoaded++;
+        if (this.imgLoaded >= 2) {
+          this.canBeDraw = true;
+        }
+      };
+    } else {
+      this.imgLoaded = 2;
+      this.canBeDraw = true;
+    }
   }
 
   update(ctx: any, mouse: any, highlight: boolean) {
@@ -27,8 +60,9 @@ export default class Ingredient {
   }
 
   draw(ctx: any, highlight = false) {
-    ctx.fillStyle = highlight ? this.imgHighlight : this.img;
-    ctx.fillRect(this.x, this.y, this.size, this.size);
+    const imgToDraw = highlight ? this.imgHighlight : this.img;
+    ctx.drawImage(imgToDraw, this.x, this.y);
+    //ctx.fillRect(this.x, this.y, this.size, this.size);
   }
 
   isHover(mouse: any) {
@@ -41,5 +75,14 @@ export default class Ingredient {
       return true;
     }
     return false;
+  }
+
+  imageExists(image_url: string) {
+    const http = new XMLHttpRequest();
+
+    http.open("HEAD", image_url, false);
+    http.send();
+
+    return http.status != 404;
   }
 }
