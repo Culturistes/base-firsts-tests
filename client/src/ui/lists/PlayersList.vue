@@ -126,6 +126,8 @@ export default class playersList extends Vue {
   margin-top: 0;
   list-style: none;
   padding: 0;
+  position: relative;
+  z-index: 1;
 
   .playerName {
     position: relative;
