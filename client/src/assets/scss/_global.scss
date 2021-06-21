@@ -60,3 +60,26 @@ button {
 
     cursor: pointer;
 }
+
+#map {
+    .leaflet-popup-content-wrapper {
+        left: 90px;
+        position: relative;
+    }
+    .leaflet-popup-tip-container {
+        transform: rotateZ(90deg);
+        left: 80px;
+        top: 20px;
+    }
+    .leaflet-popup-content {
+        .gentile {
+            font-family: "Baloo";
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .username {
+            font-family: "Shadows Into Light";
+            font-size: 20px;
+        }
+    }
+}
