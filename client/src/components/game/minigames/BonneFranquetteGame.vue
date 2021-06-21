@@ -1,6 +1,14 @@
 <template>
   <div class="minigame mg-bonnefranquette">
     <canvas id="bonne-franquette-canvas"></canvas>
+    <div
+      v-show="
+        $store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT
+      "
+      class="panier-container"
+    >
+      <div class="panier"></div>
+    </div>
 
     <p class="recip-name">{{ recip.name }}</p>
 
@@ -27,7 +35,14 @@
       </ul>
       <div class="score">
         <p>Total</p>
-        <p>+ 200 km</p>
+        <p
+          v-if="
+            $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT
+          "
+        >
+          + {{ $store.state.player.scoreWon }} km
+        </p>
+        <p v-else>0</p>
       </div>
     </div>
     <div
@@ -50,6 +65,7 @@
     <StarBtn
       v-on:click="goNext"
       :valid="$store.state.player?.isReady"
+      :absolute="true"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
       >Suivant</StarBtn
     >
@@ -69,6 +85,8 @@ export default class BonneFranquetteGame extends Vue {
   $store!: Store<StoreState>;
   steps = STEPS;
 
+  panier: any = null;
+
   cnv: any;
   ctx: any;
   rect: any;
@@ -85,6 +103,8 @@ export default class BonneFranquetteGame extends Vue {
   ingredientsFound = 0;
 
   gamePlaying = true;
+
+  delay = 30;
 
   /* recip = {
     name: "",
@@ -113,6 +133,7 @@ export default class BonneFranquetteGame extends Vue {
   };
 
   mounted() {
+    this.panier = document.querySelector(".panier-container");
     this.recip.name =
       this.$store.state.livegame.minigame.goodAnswer.recette.name;
     this.recip.possibleIngredients =
@@ -135,6 +156,7 @@ export default class BonneFranquetteGame extends Vue {
     store.watch(
       () => this.$store.state.livegame.minigame.goodAnswer.recette,
       (val, oldVal) => {
+        console.log(this.recip);
         this.catchedElements = [];
       }
     );
@@ -163,7 +185,9 @@ export default class BonneFranquetteGame extends Vue {
 
   animate() {
     if (this.gamePlaying) {
-      if (this.elements.length < this.maxElements) {
+      this.delay++;
+      if (this.elements.length < this.maxElements && this.delay >= 30) {
+        this.delay = 0;
         let i = Math.round(
           Math.random() * (this.recip.possibleIngredients.length - 1)
         );
@@ -202,9 +226,21 @@ export default class BonneFranquetteGame extends Vue {
             this.recip.possibleIngredients.findIndex((e: any) => {
               return e.name === el.name;
             });
-          this.catchedElements.push(
-            this.recip.possibleIngredients[indexPossibleIngredient]
+
+          const indexInCatchedElements = this.catchedElements.findIndex(
+            (e: any) => {
+              return e.name === el.name;
+            }
           );
+
+          if (
+            indexInCatchedElements < 0 &&
+            el.y >= window.innerHeight + 10000
+          ) {
+            this.catchedElements.push(
+              this.recip.possibleIngredients[indexPossibleIngredient]
+            );
+          }
 
           if (indexIngredient >= 0 && el.y >= window.innerHeight + 10000) {
             if (!this.recip.ingredients[indexIngredient].caught) {
@@ -246,11 +282,15 @@ export default class BonneFranquetteGame extends Vue {
   }
 
   getMousePos(evt: any) {
-    //console.log(this.mouse);
     this.mouse = {
       x: evt.clientX - this.rect.left,
       y: evt.clientY - this.rect.top,
     };
+
+    if (this.panier !== null) {
+      this.panier.style.top = this.mouse.y - 140 + "px";
+      this.panier.style.left = this.mouse.x - 140 + "px";
+    }
   }
 
   goNext(): void {
@@ -271,6 +311,39 @@ export default class BonneFranquetteGame extends Vue {
   inset: 0;
 }
 
+.panier-container {
+  position: fixed;
+  width: 280px;
+  height: 280px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 10000;
+
+  pointer-events: none;
+  .panier {
+    width: 140px;
+    height: 140px;
+    background-image: url("/img/divers/panier.svg");
+
+    transform-origin: center top;
+
+    animation: panierBalance 1s infinite alternate;
+  }
+
+  @keyframes panierBalance {
+    from {
+      transform: rotate(15deg);
+    }
+
+    to {
+      transform: rotate(-15deg);
+    }
+  }
+}
+
 .recip-name {
   position: relative;
   display: table;
@@ -278,9 +351,11 @@ export default class BonneFranquetteGame extends Vue {
   margin-right: auto;
   padding: 13px 22px;
   font-family: $btnFont;
-  font-size: 1.4rem;
+  font-size: 2rem;
   background: $color7;
   border-radius: 6px;
+
+  transform: translateX(-83%);
 
   &::before {
     position: absolute;
@@ -291,6 +366,23 @@ export default class BonneFranquetteGame extends Vue {
     height: calc(100% - 8px);
     border-radius: 6px;
     border: $color10 solid 1px;
+    z-index: -1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+
+    z-index: -1;
+    background-image: url("/img/divers/languette.svg");
+    background-size: 32px 32px;
+    background-position: center center;
+
+    transform: translate(-50%, 63%);
   }
 }
 
@@ -390,7 +482,7 @@ export default class BonneFranquetteGame extends Vue {
 .list-result {
   position: fixed;
   height: 338px;
-  width: 261px;
+  width: 287px;
   left: 50%;
   bottom: 150px;
   padding: 10px 5px;
@@ -400,6 +492,8 @@ export default class BonneFranquetteGame extends Vue {
   border-radius: 15px;
 
   transition: 0.3s;
+
+  overflow: auto;
 
   transform: translate(25%, -25%) rotate(3.29deg);
 
