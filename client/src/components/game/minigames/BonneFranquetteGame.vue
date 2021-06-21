@@ -80,7 +80,8 @@ export default class BonneFranquetteGame extends Vue {
   };
 
   mounted() {
-    this.recip.possibleIngredients = this.$store.state.livegame.minigame;
+    this.recip.name =
+      this.$store.state.livegame.minigame.goodAnswer.recette.name;
     this.recip.possibleIngredients =
       this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;
     this.recip.ingredients =
