@@ -33,6 +33,7 @@
           ($store.state.avatarUrl === 'garcon' ||
             $store.state.avatarUrl === 'camping')) ||
         ($store.state.livegame.currentStep !== steps.TUTORIAL &&
+          $store.state.livegame.currentStep !== steps.MINI_GAME_RESULT &&
           $store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'lbf'),
       'background-color9':

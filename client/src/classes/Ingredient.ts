@@ -4,7 +4,6 @@ export default class Ingredient {
   imgHighlight: any;
   x: number;
   y: number;
-  imgLoaded: number;
   canBeDraw: boolean;
 
   size = 100;
@@ -16,9 +15,6 @@ export default class Ingredient {
     this.img = new Image();
     this.img.src = "/img/ingredients/" + ingredient.img + ".png";
 
-    this.imgHighlight = new Image();
-    this.img.src = "/img/ingredients/" + ingredient.img + "_cdp.png";
-
     this.x = x;
     this.y = y;
 
@@ -27,24 +23,12 @@ export default class Ingredient {
     );
 
     if (!alreadyLoaded) {
-      this.imgLoaded = 0;
       this.canBeDraw = false;
 
       this.img.onload = () => {
-        this.imgLoaded++;
-        if (this.imgLoaded >= 1) {
-          this.canBeDraw = true;
-        }
-      };
-
-      this.imgHighlight.onload = () => {
-        this.imgLoaded++;
-        if (this.imgLoaded >= 2) {
-          this.canBeDraw = true;
-        }
+        this.canBeDraw = true;
       };
     } else {
-      this.imgLoaded = 2;
       this.canBeDraw = true;
     }
   }
@@ -53,7 +37,7 @@ export default class Ingredient {
     this.y = Math.round(this.y + this.velocity);
 
     if (this.isHover(mouse)) {
-      this.y = window.innerHeight + 1000;
+      this.y = window.innerHeight + 100000;
     }
 
     this.draw(ctx, highlight);
