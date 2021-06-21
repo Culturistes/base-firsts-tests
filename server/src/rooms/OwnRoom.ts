@@ -416,6 +416,7 @@ export default class OwnRoom extends Room<RoomState> {
                                 round.goodAnswer = {
                                     content: [],
                                     recette: {
+                                        name: data.name,
                                         possibleIngredients: data.possibleIngredients,
                                         ingredients: data.ingredients
                                     }
