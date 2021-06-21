@@ -180,6 +180,12 @@ export default class MapGame extends Vue {
       this.$store.state.livegame.currentStep ==
       this.steps.MINI_GAME_ROUND_RESULT
     ) {
+      this.myMap.eachLayer((layer: any) => {
+        if (layer.options.alt != undefined) {
+          layer.remove();
+        }
+      });
+
       L.marker(this.$store.state.livegame.minigame.goodAnswer.latLng, {
         icon: this.iconTrue,
       }).addTo(this.myMap);
@@ -189,11 +195,38 @@ export default class MapGame extends Vue {
           player.chosenAnswer != null &&
           player.chosenAnswer.latLng.length > 0
         ) {
+          let popup = L.popup({
+            closeOnClick: true,
+            autoClose: false,
+            closeButton: false,
+          })
+            .setLatLng(player.chosenAnswer.latLng)
+            .setContent(
+              `<p>${
+                player.chosenAnswer.gentile
+                  ? '<span class="gentile">' +
+                    player.chosenAnswer.gentile +
+                    "</span><br />"
+                  : ""
+              }<span class="username">@${player.username}</span></p>`
+            )
+            .openOn(this.myMap);
+          let icon = L.icon({
+            iconUrl: `/img/map/icons/${player.avatarURL}.svg`,
+            iconSize: [64, 114],
+            iconAnchor: [32, 114],
+          });
           let marker = L.marker(player.chosenAnswer.latLng, {
-            icon: this.iconAnswer,
+            icon: icon,
             alt: player.username,
-          }).addTo(this.myMap);
-          marker.bindTooltip(player.username).openTooltip();
+          })
+            .addTo(this.myMap)
+            .on("mouseover", () => {
+              popup.openOn(this.myMap);
+            })
+            .on("mouseout", () => {
+              this.myMap.closePopup();
+            });
         }
       });
 
