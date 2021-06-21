@@ -2,20 +2,48 @@
   <div class="minigame mg-bonnefranquette">
     <canvas id="bonne-franquette-canvas"></canvas>
 
-    <div class="list-ingredients">
+    <div
+      class="list-ingredients"
+      :class="{
+        final:
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT,
+      }"
+    >
       <p class="title">La liste de course:</p>
       <ul class="list">
-        <li :key="i" v-for="(ingredient, i) in recip.ingredients">
+        <li :key="i" v-for="(ingredient, i) in catchedElements">
           <img
             class="img-ingredient"
             :src="'/img/ingredients/' + ingredient.img + '.png'"
-          />{{ ingredient.name }} - {{ ingredient.caught }}
+          />{{ ingredient.name }}
+          <img
+            v-if="ingredient.isGoodAnswer"
+            src="/img/divers/check_vert.svg"
+          />
+          <img v-else src="/img/divers/croix_rouge.svg" />
         </li>
       </ul>
       <div class="score">
         <p>Total</p>
         <p>+ 200 km</p>
       </div>
+    </div>
+    <div
+      class="list-result"
+      :class="{
+        final:
+          $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT,
+      }"
+      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
+    >
+      <ul>
+        <li :key="i" v-for="(ingredient, i) in recip.ingredients">
+          <img
+            class="img-ingredient"
+            :src="'/img/ingredients/' + ingredient.img + '.png'"
+          />{{ ingredient.name }}
+        </li>
+      </ul>
     </div>
     <StarBtn
       v-on:click="goNext"
@@ -32,6 +60,7 @@ import Ingredient from "@/classes/Ingredient";
 import { Store } from "vuex/types";
 import StoreState from "@/interfaces/StoreState";
 import { STEPS } from "../../../views/Game.vue";
+import store from "@/store";
 
 @Options({})
 export default class BonneFranquetteGame extends Vue {
@@ -48,6 +77,8 @@ export default class BonneFranquetteGame extends Vue {
 
   maxElements = 10;
   elements: Array<Ingredient> = [];
+
+  catchedElements: Array<any> = [];
 
   ingredientsFound = 0;
 
@@ -95,6 +126,13 @@ export default class BonneFranquetteGame extends Vue {
     window.addEventListener("mousemove", this.getMousePos);
 
     this.animate();
+
+    store.watch(
+      () => this.$store.state.livegame.minigame.goodAnswer.recette,
+      (val, oldVal) => {
+        this.catchedElements = [];
+      }
+    );
   }
 
   updated(): void {
@@ -137,7 +175,6 @@ export default class BonneFranquetteGame extends Vue {
       this.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
       this.elements.forEach((el: any, i: number) => {
-        console.log(el.canBeDraw, el.imgLoaded, el.img, el.imgHighlight);
         if (el.canBeDraw) {
           el.update(
             this.ctx,
@@ -156,7 +193,15 @@ export default class BonneFranquetteGame extends Vue {
             return e.name === el.name;
           });
 
-          if (indexIngredient >= 0) {
+          const indexPossibleIngredient =
+            this.recip.possibleIngredients.findIndex((e: any) => {
+              return e.name === el.name;
+            });
+          this.catchedElements.push(
+            this.recip.possibleIngredients[indexPossibleIngredient]
+          );
+
+          if (indexIngredient >= 0 && el.y >= window.innerHeight + 10000) {
             if (!this.recip.ingredients[indexIngredient].caught) {
               this.recip.ingredients[indexIngredient].caught = true;
               this.ingredientsFound++;
@@ -222,15 +267,48 @@ export default class BonneFranquetteGame extends Vue {
 }
 
 .list-ingredients {
-  width: 261px;
-  height: 338px;
+  position: fixed;
+  right: 30px;
+  bottom: 150px;
   padding: 30px 20px;
   background: $color7;
+  height: 338px;
+  width: 261px;
 
   border-radius: 15px;
 
+  transition: 0.3s;
+
+  &.final {
+    right: 50%;
+
+    transform: translate(-25%, -25%) rotate(-3.29deg);
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    width: 38px;
+    height: 38px;
+
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+
+    background: $color8;
+  }
+
+  &::after {
+    top: unset;
+    bottom: 0;
+    transform: translate(-50%, 50%);
+  }
+
   .title {
     font-size: 2rem;
+    margin: 10px 0;
   }
 
   .list {
@@ -241,8 +319,28 @@ export default class BonneFranquetteGame extends Vue {
     text-align: left;
 
     list-style: none;
-    padding: 0;
+    padding: 20px 0;
     margin: 0;
+
+    border-top: solid 0.5px black;
+    border-bottom: solid 0.5px black;
+
+    overflow: auto;
+
+    li {
+      display: flex;
+      align-items: center;
+
+      margin-bottom: 10px;
+
+      :first-child {
+        margin-right: 20px;
+      }
+
+      :last-child {
+        margin-left: auto;
+      }
+    }
 
     .img-ingredient {
       width: 27px;
@@ -258,6 +356,50 @@ export default class BonneFranquetteGame extends Vue {
     font-family: $btnFont;
     font-weight: bold;
     text-align: left;
+  }
+}
+
+.list-result {
+  position: fixed;
+  height: 338px;
+  width: 261px;
+  left: 50%;
+  bottom: 150px;
+  padding: 10px 5px;
+  border: solid 10px $color7;
+  background: $color8;
+
+  border-radius: 15px;
+
+  transition: 0.3s;
+
+  transform: translate(25%, -25%) rotate(3.29deg);
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    margin: 0;
+    width: 100%;
+    height: 100%;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      margin-right: 10px;
+
+      font-size: 2rem;
+
+      img {
+        width: 70px;
+        height: 70px;
+      }
+    }
   }
 }
 </style>
