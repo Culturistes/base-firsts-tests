@@ -67,13 +67,11 @@ export default class MapGame extends Vue {
     iconUrl: "/img/map/icon_answer.svg",
     iconSize: [40, 40],
     iconAnchor: [20, 40],
-    popupAnchor: [0, -76],
   });
   iconTrue = L.icon({
     iconUrl: "/img/divers/sun.svg",
     iconSize: [40, 40],
-    iconAnchor: [0, 0],
-    popupAnchor: [0, -76],
+    iconAnchor: [20, 20],
   });
 
   steps = STEPS;
@@ -213,8 +211,8 @@ export default class MapGame extends Vue {
             .openOn(this.myMap);
           let icon = L.icon({
             iconUrl: `/img/map/icons/${player.avatarURL}.svg`,
-            iconSize: [64, 114],
-            iconAnchor: [32, 114],
+            iconSize: [76, 136],
+            iconAnchor: [38, 132],
           });
           let marker = L.marker(player.chosenAnswer.latLng, {
             icon: icon,
@@ -227,6 +225,15 @@ export default class MapGame extends Vue {
             .on("mouseout", () => {
               this.myMap.closePopup();
             });
+          let polylinePoints = [
+            player.chosenAnswer.latLng,
+            this.$store.state.livegame.minigame.goodAnswer.latLng,
+          ];
+          let polyline = L.polyline(polylinePoints, {
+            color: "#2C2C2C",
+            dashArray: "13",
+            lineCap: "round",
+          }).addTo(this.myMap);
         }
       });
 
@@ -276,10 +283,15 @@ export default class MapGame extends Vue {
 #map {
   width: 990px;
   height: 870px;
-  transform: scale(0.7) translate(-30%, -30%);
 
   margin: auto;
   margin-bottom: 40px;
+
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
 
   cursor: crosshair;
 }

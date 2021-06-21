@@ -44,6 +44,7 @@ export class RoundState extends Schema {
     gentileF?: string,
     latLng?: Array<string>,
     recette?: {
+      name: string,
       possibleIngredients: Array<{ name: string, img: string }>,
       ingredients: Array<{ name: string, img: string, caught: boolean }>
     }
