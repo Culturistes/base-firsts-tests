@@ -2,6 +2,8 @@
   <div class="minigame mg-bonnefranquette">
     <canvas id="bonne-franquette-canvas"></canvas>
 
+    <p class="recip-name">{{ recip.name }}</p>
+
     <div
       class="list-ingredients"
       :class="{
@@ -126,6 +128,8 @@ export default class BonneFranquetteGame extends Vue {
     window.addEventListener("mousemove", this.getMousePos);
 
     this.animate();
+
+    console.log(this.recip);
 
     store.watch(
       () => this.$store.state.livegame.minigame.goodAnswer.recette,
@@ -266,6 +270,29 @@ export default class BonneFranquetteGame extends Vue {
   inset: 0;
 }
 
+.recip-name {
+  position: relative;
+  display: table;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 13px 22px;
+  font-family: $btnFont;
+  font-size: 1.4rem;
+  background: $color7;
+  border-radius: 6px;
+
+  &::before {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    content: "";
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+    border-radius: 6px;
+    border: $color10 solid 1px;
+  }
+}
+
 .list-ingredients {
   position: fixed;
   right: 30px;
@@ -387,6 +414,8 @@ export default class BonneFranquetteGame extends Vue {
     height: 100%;
 
     li {
+      width: 70px;
+
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -394,6 +423,8 @@ export default class BonneFranquetteGame extends Vue {
       margin-right: 10px;
 
       font-size: 2rem;
+
+      font-family: "Shadows Into Light";
 
       img {
         width: 70px;
