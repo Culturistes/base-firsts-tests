@@ -4,6 +4,7 @@
     <QuizBlock :fit="true" :isTimer="true">
       {{ $store.state.livegame.minigame.title }} ?</QuizBlock
     >
+    <img class="annotation-1" src="/img/annotations/lp_village.svg" />
     <div id="map"></div>
     <div
       v-if="$store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT"
@@ -276,6 +277,11 @@ export default class MapGame extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.annotation-1 {
+  top: 80px;
+  left: 200px;
+  z-index: 1;
+}
 .mg-map {
   max-height: 600px;
 }
