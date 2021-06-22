@@ -81,13 +81,13 @@ export default class MiniGameTitle extends Vue {
 
   instructions: any = {
     quiz: [
-      "Choisi la bonne réponse à l’aide de ta souris.",
-      "Dépêche toi de répondre, le temps est compté.",
+      "Choisis la bonne réponse à l’aide de ta souris.",
+      "Dépêches toi de répondre, le temps est compté.",
       "Cumules un maximum de bonnes réponses !",
     ],
     lme: [
-      "Choisi ta réponse favorite à l’aide de ta souris.",
-      "Tentes d’influencer le choix de tes adversaires.",
+      "Choisis ta réponse favorite à l’aide de ta souris.",
+      "Tente d’influencer le choix de tes adversaires.",
       "Choisis ton camp, camarade !",
     ],
     coc: [

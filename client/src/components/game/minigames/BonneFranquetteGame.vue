@@ -11,17 +11,13 @@
       <div class="panier"></div>
     </div>
 
-    <img
-      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND"
-      class="annotation-1"
-      src="/img/annotations/lbf_consigne.svg"
-    />
-    <p class="recip-name">{{ recip.name }}</p>
-    <img
-      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
-      class="annotation-2"
-      src="/img/annotations/lbf_resultat.svg"
-    />
+    <p class="recip-name">
+      <img
+        v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND"
+        class="annotation-1"
+        src="/img/annotations/lbf_consigne.svg"
+      />{{ recip.name }}
+    </p>
 
     <div
       class="list-ingredients"
@@ -64,6 +60,11 @@
       }"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
+      <img
+        v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
+        class="annotation-2"
+        src="/img/annotations/lbf_resultat.svg"
+      />
       <ul>
         <li :key="i" v-for="(ingredient, i) in recip.ingredients">
           <img
@@ -320,13 +321,14 @@ export default class BonneFranquetteGame extends Vue {
 }
 
 .annotation-1 {
-  top: 50px;
-  left: 300px;
+  top: -30px;
+  left: -10px;
+  transform: translateX(-100%);
 }
 .annotation-2 {
   position: absolute;
-  top: 290px;
-  right: 450px;
+  top: -20px;
+  left: 30%;
 }
 #bonne-franquette-canvas {
   position: fixed;
@@ -469,10 +471,10 @@ export default class BonneFranquetteGame extends Vue {
     padding: 20px 0;
     margin: 0;
 
+    overflow: auto;
+
     border-top: solid 0.5px black;
     border-bottom: solid 0.5px black;
-
-    overflow: auto;
 
     li {
       display: flex;
@@ -520,11 +522,10 @@ export default class BonneFranquetteGame extends Vue {
 
   transition: 0.3s;
 
-  overflow: auto;
-
   transform: translate(25%, -25%) rotate(3.29deg);
 
   ul {
+    overflow: auto;
     list-style: none;
     padding: 0;
 

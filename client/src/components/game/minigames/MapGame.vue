@@ -2,9 +2,11 @@
   <div class="minigame mg-map">
     <RoundList :result="$store.state.player.answersRecord" />
     <QuizBlock :fit="true" :isTimer="true">
-      {{ $store.state.livegame.minigame.title }} ?</QuizBlock
-    >
-    <img class="annotation-1" src="/img/annotations/lp_village.svg" />
+      {{ $store.state.livegame.minigame.title }} ?
+      <div class="ano-container">
+        <img class="annotation-1" src="/img/annotations/lp_village.svg" />
+      </div>
+    </QuizBlock>
     <div id="map"></div>
     <div
       v-if="$store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT"
@@ -17,7 +19,7 @@
           habitants ?
         </p>
         <div class="input-btn user">
-          <TextInput color="black" v-model="gentile">Saisi le nom</TextInput>
+          <TextInput color="black" v-model="gentile">Saisis le nom</TextInput>
           <StarBtn
             :little="true"
             @click="validateAnswer"
@@ -289,13 +291,25 @@ export default class MapGame extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.annotation-1 {
-  top: 80px;
-  left: 400px;
-  z-index: 1;
-}
 .mg-map {
   max-height: 600px;
+
+  .ano-container {
+    position: relative;
+    width: 0;
+    height: 0;
+  }
+  .annotation-1 {
+    top: 0;
+    left: 0;
+    z-index: 1;
+    transform: translate(-120%, -50%);
+  }
+
+  .answers {
+    z-index: 1;
+    position: relative;
+  }
 }
 #map {
   width: 990px;
