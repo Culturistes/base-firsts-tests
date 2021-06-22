@@ -14,6 +14,7 @@
       big: big,
       absolute: absolute,
       centered: centered,
+      'fixed-center': fixedCenter,
     }"
     :disabled="disabled"
   >
@@ -51,6 +52,10 @@ import { Options, Vue } from "vue-class-component";
       type: Boolean,
       default: false,
     },
+    fixedCenter: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class StarBtn extends Vue {}
@@ -81,6 +86,13 @@ export default class StarBtn extends Vue {}
   }
 
   &.centered {
+    transform: translateX(-50%);
+  }
+
+  &.fixed-center {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
     transform: translateX(-50%);
   }
 

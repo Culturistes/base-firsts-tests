@@ -1,5 +1,15 @@
 <template>
   <li class="list-block" :class="{ minigameresult: minigameresult }">
+    <img
+      v-if="isFirst"
+      class="first"
+      src="/img/annotations/classement_premier.svg"
+    />
+    <img
+      v-if="isLast"
+      class="last"
+      src="/img/annotations/classement_dernier.svg"
+    />
     <p class="rank">{{ rank }}</p>
     <img class="img" :src="'/img/stamps/' + perso + '-s.svg'" />
     <div v-if="!minigameresult" class="info">
@@ -72,6 +82,14 @@ import { STEPS } from "@/views/Game.vue";
       type: Boolean,
       default: false,
     },
+    isFirst: {
+      type: Boolean,
+      default: false,
+    },
+    isLast: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class QuizBlock extends Vue {
@@ -91,6 +109,18 @@ export default class QuizBlock extends Vue {
   margin-bottom: 6px;
 
   font-family: $btnFont;
+
+  .first {
+    position: absolute;
+    top: -105%;
+    left: -41%;
+  }
+
+  .last {
+    position: absolute;
+    bottom: -100%;
+    right: -43%;
+  }
 
   .rank {
     margin-right: 16px;
