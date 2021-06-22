@@ -391,6 +391,10 @@ export default class QuizGame extends Vue {
   top: 50%;
   transform: translate(-50%, -50%);
 
+  .answers {
+    margin-bottom: 200px;
+  }
+
   .ui-result,
   .ui-valid {
     margin: auto;

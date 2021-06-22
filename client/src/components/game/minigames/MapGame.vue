@@ -4,6 +4,7 @@
     <QuizBlock :fit="true" :isTimer="true">
       {{ $store.state.livegame.minigame.title }} ?</QuizBlock
     >
+    <img class="annotation-1" src="/img/annotations/lp_village.svg" />
     <div id="map"></div>
     <div
       v-if="$store.state.livegame.currentStep !== steps.MINI_GAME_ROUND_RESULT"
@@ -92,6 +93,12 @@ export default class MapGame extends Vue {
     }).setView([46.9063027184389, 2.1972656250000004], 6);
 
     L.tileLayer("/img/map/{x}/{y}.png", {}).addTo(this.myMap);
+
+    this.iconAnswer = L.icon({
+      iconUrl: `/img/map/icons/${this.$store.state.player.avatarURL}.svg`,
+      iconSize: [76, 136],
+      iconAnchor: [38, 132],
+    });
 
     this.marker = L.marker([0, 0], { icon: this.iconAnswer }).addTo(this.myMap);
 
@@ -276,6 +283,11 @@ export default class MapGame extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+.annotation-1 {
+  top: 80px;
+  left: 400px;
+  z-index: 1;
+}
 .mg-map {
   max-height: 600px;
 }

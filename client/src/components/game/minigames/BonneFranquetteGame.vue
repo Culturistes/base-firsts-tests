@@ -1,5 +1,6 @@
 <template>
   <div class="minigame mg-bonnefranquette">
+    <RoundList :result="$store.state.player.answersRecord" />
     <canvas id="bonne-franquette-canvas"></canvas>
     <div
       v-show="
@@ -10,7 +11,17 @@
       <div class="panier"></div>
     </div>
 
+    <img
+      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND"
+      class="annotation-1"
+      src="/img/annotations/lbf_consigne.svg"
+    />
     <p class="recip-name">{{ recip.name }}</p>
+    <img
+      v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
+      class="annotation-2"
+      src="/img/annotations/lbf_resultat.svg"
+    />
 
     <div
       class="list-ingredients"
@@ -303,7 +314,20 @@ export default class BonneFranquetteGame extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.answers {
+  transform: translateX(-95px);
+}
+
+.annotation-1 {
+  top: 50px;
+  left: 300px;
+}
+.annotation-2 {
+  position: absolute;
+  top: 290px;
+  right: 450px;
+}
 #bonne-franquette-canvas {
   position: fixed;
   top: 0;
