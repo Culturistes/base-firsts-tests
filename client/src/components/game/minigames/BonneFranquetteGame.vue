@@ -320,11 +320,12 @@ export default class BonneFranquetteGame extends Vue {
 
 .annotation-1 {
   top: 50px;
-  left: 100px;
+  left: 300px;
 }
 .annotation-2 {
   position: absolute;
   top: 290px;
+  right: 450px;
 }
 #bonne-franquette-canvas {
   position: fixed;

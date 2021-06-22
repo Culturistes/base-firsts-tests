@@ -383,16 +383,17 @@ export default class QuizGame extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-.answers {
-  margin-bottom: 200px;
-}
+<style lang="scss">
 .mg-quiz {
   max-width: 625px;
   position: relative;
   left: 45%;
   top: 50%;
   transform: translate(-50%, -50%);
+
+  .answers {
+    margin-bottom: 200px;
+  }
 
   .ui-result,
   .ui-valid {

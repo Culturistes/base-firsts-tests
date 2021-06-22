@@ -285,7 +285,7 @@ export default class MapGame extends Vue {
 <style scoped lang="scss">
 .annotation-1 {
   top: 80px;
-  left: 200px;
+  left: 400px;
   z-index: 1;
 }
 .mg-map {
