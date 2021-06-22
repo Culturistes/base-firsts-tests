@@ -139,11 +139,12 @@ export default class MiniGameTitle extends Vue {
 }
 .timer {
   background-color: rgba(#2c2c2c, 0.3);
-  width: 100%;
+  width: 65%;
   height: 4px;
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
 
   span {
     position: absolute;

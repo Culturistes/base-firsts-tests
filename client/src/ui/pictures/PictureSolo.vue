@@ -18,8 +18,15 @@
         <p><slot></slot></p>
       </div>
       <div class="info">
-        <p v-if="isQuestion">{{ result }}</p>
-        <p v-else>0</p>
+        <p
+          v-if="
+            isQuestion &&
+            ($store.state.livegame.jokersParams.showOthersChoice ||
+              $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT)
+          "
+        >
+          {{ result }}
+        </p>
         <img v-if="!isQuestion" :src="'/img/divers/like_empty.svg'" />
         <img
           v-if="!selected && !showAnswer && isQuestion"
@@ -44,6 +51,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import { STEPS } from "../../views/Game.vue";
 
 @Options({
   props: {
@@ -79,7 +87,9 @@ import { Options, Vue } from "vue-class-component";
     },
   },
 })
-export default class Picture extends Vue {}
+export default class Picture extends Vue {
+  steps = STEPS;
+}
 </script>
 
 <style lang="scss" scoped>

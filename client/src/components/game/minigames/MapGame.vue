@@ -194,7 +194,7 @@ export default class MapGame extends Vue {
           player.chosenAnswer.latLng.length > 0
         ) {
           let popup = L.popup({
-            closeOnClick: true,
+            closeOnClick: false,
             autoClose: false,
             closeButton: false,
           })
@@ -244,7 +244,7 @@ export default class MapGame extends Vue {
       !this.hasBeenReset
     ) {
       this.myMap.eachLayer((layer: any) => {
-        if (layer.options.alt != undefined) {
+        if (layer.options.subdomains == undefined) {
           layer.remove();
         }
       });
