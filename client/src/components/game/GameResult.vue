@@ -8,6 +8,10 @@
       <div class="podium-container">
         <div class="podium">
           <img
+            class="img-first"
+            src="/img/annotations/classement_premier.svg"
+          />
+          <img
             :src="'/img/players/' + $store.state.players[0].avatarURL + '.svg'"
             class="img-classement classement-1"
           />
@@ -108,6 +112,12 @@ export default class GameResult extends Vue {
       width: 486px;
       background-image: url("/img/divers/podium.svg");
       position: relative;
+
+      .img-first {
+        position: absolute;
+        top: -157%;
+        left: -13%;
+      }
 
       .img-classement {
         position: absolute;

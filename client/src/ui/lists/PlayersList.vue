@@ -32,6 +32,8 @@
         :scoreWon="player.scoreWon"
         :perso="player.avatarURL"
         :minigameresult="minigameresult"
+        :isFirst="i === 0"
+        :isLast="i === $store.state.players.length - 1"
       >
       </ListBlock>
     </ul>

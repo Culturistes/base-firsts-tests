@@ -66,6 +66,7 @@
       v-on:click="goNext"
       :valid="$store.state.player?.isReady"
       :absolute="true"
+      :fixedCenter="true"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
       >Suivant</StarBtn
     >
@@ -522,6 +523,7 @@ export default class BonneFranquetteGame extends Vue {
       font-size: 2rem;
 
       font-family: "Shadows Into Light";
+      font-weight: normal;
 
       img {
         width: 70px;
