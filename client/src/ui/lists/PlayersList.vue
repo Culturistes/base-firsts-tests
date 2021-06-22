@@ -76,6 +76,9 @@ export default class playersList extends Vue {
   steps = STEPS;
 
   get playersByColumn() {
+    if (this.$store.state.players.length <= 5) {
+      return this.$store.state.players.length;
+    }
     return Math.round(this.$store.state.players.length / 2);
   }
 
