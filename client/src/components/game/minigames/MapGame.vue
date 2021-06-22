@@ -18,7 +18,10 @@
         </p>
         <div class="input-btn user">
           <TextInput color="black" v-model="gentile">Saisi le nom</TextInput>
-          <StarBtn @click="validateAnswer" :valid="$store.state.player?.isReady"
+          <StarBtn
+            :little="true"
+            @click="validateAnswer"
+            :valid="$store.state.player?.isReady"
             >Valider</StarBtn
           >
         </div>
@@ -40,7 +43,10 @@
             {{ $store.state.livegame.minigame.goodAnswer.gentileM }}
             !</TextInput
           >
-          <StarBtn @click="goNext" :valid="$store.state.player.isReady"
+          <StarBtn
+            @click="goNext"
+            :valid="$store.state.player.isReady"
+            :little="true"
             >suivant</StarBtn
           >
         </div>
@@ -342,9 +348,6 @@ body.leaflet-dragging {
     }
 
     .star-btn {
-      width: 80px;
-      height: 80px;
-
       font-size: 1.3rem;
 
       &::before {

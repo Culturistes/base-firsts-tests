@@ -15,6 +15,7 @@
       absolute: absolute,
       centered: centered,
       'fixed-center': fixedCenter,
+      little: little,
     }"
     :disabled="disabled"
   >
@@ -56,6 +57,10 @@ import { Options, Vue } from "vue-class-component";
       type: Boolean,
       default: false,
     },
+    little: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class StarBtn extends Vue {}
@@ -87,6 +92,15 @@ export default class StarBtn extends Vue {}
 
   &.centered {
     transform: translateX(-50%);
+  }
+
+  &.little {
+    width: 80px;
+    height: 80px;
+
+    img {
+      transform: scale(0.7);
+    }
   }
 
   &.fixed-center {
