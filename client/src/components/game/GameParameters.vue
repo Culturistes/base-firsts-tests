@@ -4,8 +4,10 @@
       <div class="players">
         <ArrowBtn @click="copyToClipboard" class="invite" :validate="linkCopied"
           >Inviter des <br />
-          vacanciers</ArrowBtn
-        >
+          vacanciers<img
+            class="annotation-1"
+            src="/img/annotations/copie_lien.svg"
+        /></ArrowBtn>
         <ul class="players-list">
           <li v-for="player in $store.state.players" v-bind:key="player.id">
             <StampS
@@ -175,6 +177,11 @@ export default class GameParameters extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+.annotation-1 {
+  position: absolute;
+  top: -68%;
+  right: -60%;
+}
 .gameParameters-content {
   display: flex;
 

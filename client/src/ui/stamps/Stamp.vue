@@ -7,6 +7,11 @@
     }"
     :style="{ transform: 'translateX(' + translate + '%)' }"
   >
+    <img
+      class="annotation"
+      :src="'/img/players-annotations/' + people + '.svg'"
+      :class="[selected == pos ? 'show' : null]"
+    />
     <div class="stamp-border">
       <div
         class="stamp-bg"
@@ -59,6 +64,7 @@ export default class Stamp extends Vue {
 
 <style lang="scss" scoped>
 .stamp {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -67,6 +73,21 @@ export default class Stamp extends Vue {
   opacity: 1;
 
   transition: opacity, transform 0.3s;
+
+  .annotation {
+    position: absolute;
+
+    top: -23%;
+    right: -10%;
+
+    transition: 0.3s;
+
+    opacity: 0;
+
+    &.show {
+      opacity: 1;
+    }
+  }
 
   &-border {
     position: relative;

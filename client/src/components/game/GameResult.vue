@@ -17,8 +17,8 @@
             class="img-classement classement-2"
           />
           <img
-            v-if="$store.state.players[3]"
-            :src="'/img/players/' + $store.state.players[3].avatarURL + '.svg'"
+            v-if="$store.state.players[2]"
+            :src="'/img/players/' + $store.state.players[2].avatarURL + '.svg'"
             class="img-classement classement-3"
           />
           <div class="classement classement-1">
