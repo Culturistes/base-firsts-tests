@@ -24,6 +24,7 @@
       </div>
 
       <div class="parameters">
+        <img class="annotation-2" src="/img/annotations/mode_de_jeu.svg" />
         <div
           class="parameters-container"
           :class="{ canInteract: this.$store.state.player.isMDR }"
@@ -181,6 +182,11 @@ export default class GameParameters extends Vue {
   position: absolute;
   top: -68%;
   right: -60%;
+}
+.annotation-2 {
+  position: absolute;
+  right: 230px;
+  top: 230px;
 }
 .gameParameters-content {
   display: flex;
