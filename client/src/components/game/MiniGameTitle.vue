@@ -12,11 +12,18 @@
     <img :src="'/img/titles/' + $store.state.livegame.minigame.type + '.svg'" />
     <div class="instructions-video">
       <div class="video">
-        <img
+        <!-- <img
           :src="
             '/img/animations/' + $store.state.livegame.minigame.type + '.gif'
           "
-        />
+        /> -->
+        <video autoplay loop>
+          <source
+            :src="
+              '/img/animations/' + $store.state.livegame.minigame.type + '.mp4'
+            "
+          />
+        </video>
       </div>
       <div class="instructions">
         <p class="title">Contexte</p>
