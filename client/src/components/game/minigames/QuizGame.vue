@@ -383,7 +383,10 @@ export default class QuizGame extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.answers {
+  margin-bottom: 200px;
+}
 .mg-quiz {
   max-width: 625px;
   position: relative;

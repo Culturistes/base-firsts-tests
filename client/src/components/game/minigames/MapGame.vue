@@ -94,6 +94,12 @@ export default class MapGame extends Vue {
 
     L.tileLayer("/img/map/{x}/{y}.png", {}).addTo(this.myMap);
 
+    this.iconAnswer = L.icon({
+      iconUrl: `/img/map/icons/${this.$store.state.player.avatarURL}.svg`,
+      iconSize: [76, 136],
+      iconAnchor: [38, 132],
+    });
+
     this.marker = L.marker([0, 0], { icon: this.iconAnswer }).addTo(this.myMap);
 
     let jokerRadius = this.mapRangeRadius * 1000;
