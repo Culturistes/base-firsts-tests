@@ -399,7 +399,7 @@ export default class BonneFranquetteGame extends Vue {
   &::after {
     content: "";
     position: absolute;
-    bottom: 0;
+    bottom: -7px;
     left: 50%;
     width: 32px;
     height: 32px;

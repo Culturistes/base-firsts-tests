@@ -388,12 +388,8 @@ export default class QuizGame extends Vue {
   max-width: 625px;
   position: relative;
   left: 45%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  .answers {
-    margin-bottom: 200px;
-  }
+  /* top: 50%; */
+  transform: translateX(-50%);
 
   .ui-result,
   .ui-valid {
