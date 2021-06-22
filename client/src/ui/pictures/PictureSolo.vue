@@ -94,7 +94,7 @@ export default class Picture extends Vue {
 
 <style lang="scss" scoped>
 .slide-container {
-  transition: transform 0.5s;
+  transition: transform 2.5s;
 
   &.rose {
     transition-delay: 0.1s;
@@ -165,8 +165,8 @@ export default class Picture extends Vue {
 
   .info {
     position: absolute;
-    bottom: 14px;
-    right: 14px;
+    bottom: 19px;
+    right: 20px;
     display: flex;
     font-family: $btnFont;
     font-weight: bold;
