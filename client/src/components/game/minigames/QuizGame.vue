@@ -98,15 +98,7 @@
               }
             }
           "
-          >{{ answers[0] }}
-          <span
-            v-if="
-              $store.state.livegame.minigame.type == 'lme' &&
-              $store.state.livegame.jokersParams.showOthersChoice
-            "
-          >
-            | {{ actualLMEAnswers[0] }}
-          </span></PictureSolo
+          >{{ answers[0] }}</PictureSolo
         >
       </div>
       <VSStamp />
@@ -147,15 +139,7 @@
               }
             }
           "
-          >{{ answers[1] }}
-          <span
-            v-if="
-              $store.state.livegame.minigame.type == 'lme' &&
-              $store.state.livegame.jokersParams.showOthersChoice
-            "
-          >
-            | {{ actualLMEAnswers[1] }}
-          </span></PictureSolo
+          >{{ answers[1] }}</PictureSolo
         >
       </div>
     </div>
@@ -164,7 +148,11 @@
       class="ui-result"
       v-if="$store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT"
     >
-      <StarBtn v-on:click="goNext" :valid="$store.state.player?.isReady"
+      <StarBtn
+        v-on:click="goNext"
+        :valid="$store.state.player?.isReady"
+        :absolute="true"
+        :centered="true"
         >Suivant</StarBtn
       >
     </div>

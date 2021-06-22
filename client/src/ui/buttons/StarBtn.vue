@@ -2,14 +2,19 @@
   <router-link
     v-if="routerLink"
     class="star-btn"
-    :class="{ disabled: disabled, absolute: absolute }"
+    :class="{ disabled: disabled, absolute: absolute, centered: centered }"
   >
     <span><slot></slot></span>
   </router-link>
   <button
     v-else
     class="star-btn"
-    :class="{ disabled: disabled, big: big, absolute: absolute }"
+    :class="{
+      disabled: disabled,
+      big: big,
+      absolute: absolute,
+      centered: centered,
+    }"
     :disabled="disabled"
   >
     <span v-if="!valid"><slot></slot></span>
@@ -42,6 +47,10 @@ import { Options, Vue } from "vue-class-component";
       type: Boolean,
       default: false,
     },
+    centered: {
+      type: Boolean,
+      default: false,
+    },
   },
 })
 export default class StarBtn extends Vue {}
@@ -67,6 +76,10 @@ export default class StarBtn extends Vue {}
 
   &.absolute {
     position: absolute;
+  }
+
+  &.centered {
+    transform: translateX(-50%);
   }
 
   &::before {

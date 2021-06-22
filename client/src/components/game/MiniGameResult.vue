@@ -8,8 +8,22 @@
       v-on:click="readyForNext"
       :valid="$store.state.player?.isReady"
       :absolute="true"
+      v-if="
+        $store.state.livegame.currentMiniGame !=
+        $store.state.livegame.chosenParams.minigameNumber
+      "
       >Mini-jeu<br />suivant</StarBtn
     >
+    <StarBtn
+      class="btn"
+      :big="true"
+      v-on:click="readyForNext"
+      :valid="$store.state.player?.isReady"
+      :absolute="true"
+      v-else
+    >
+      Résultats
+    </StarBtn>
   </div>
 </template>
 
