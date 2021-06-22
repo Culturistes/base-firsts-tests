@@ -1,6 +1,6 @@
 <template>
   <div class="gameResult step">
-    <video class="confettis" autoplay>
+    <video class="confettis" autoplay loop>
       <source src="/img/divers/confettis.mp4" />
     </video>
     <img src="/img/titles/final.svg" />

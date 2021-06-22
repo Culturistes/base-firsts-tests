@@ -24,7 +24,6 @@
       </div>
 
       <div class="parameters">
-        <img class="annotation-2" src="/img/annotations/mode_de_jeu.svg" />
         <div
           class="parameters-container"
           :class="{ canInteract: this.$store.state.player.isMDR }"
@@ -33,7 +32,9 @@
             @click="changeSelectedMod(0)"
             :active="selectedMod == 0"
             title="Mode Autoroute"
-            >Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
+          >
+            <img class="annotation-2" src="/img/annotations/mode_de_jeu.svg" />
+            Appuie sur le champignon ! Ce mode de jeu s’adresse aux touristes
             pressés...</PanneauBtn
           >
           <PanneauBtn
@@ -185,8 +186,8 @@ export default class GameParameters extends Vue {
 }
 .annotation-2 {
   position: absolute;
-  right: 230px;
-  top: 230px;
+  left: 100%;
+  transform: translateY(-100%);
 }
 .gameParameters-content {
   display: flex;
@@ -243,6 +244,7 @@ export default class GameParameters extends Vue {
         width: 315px;
         height: 104px;
         margin-left: 26%;
+        position: relative;
 
         &:first-child {
           margin-top: 47px;

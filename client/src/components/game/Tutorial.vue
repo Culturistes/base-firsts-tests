@@ -24,7 +24,7 @@
           <img src="/img/animations/tuto1.gif" />
           <p>
             C’est le début des vacances !<br />Vous allez vous affronter dans
-            des minis jeux.
+            des minis-jeux.
           </p>
         </div>
         <div
