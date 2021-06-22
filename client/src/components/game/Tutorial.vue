@@ -45,8 +45,8 @@
           <img src="/img/animations/tuto3.gif" />
           <p class="tuto-subtitle">Le coup de pouce</p>
           <p>
-            Votre GPS ne marche plus et vous êtes un peu perdu ? Le coup de
-            pouce vous vient en aide !
+            Votre GPS ne marche plus et vous êtes un peu perdu ?<br />
+            Le coup de pouce vous vient en aide !
           </p>
         </div>
         <div

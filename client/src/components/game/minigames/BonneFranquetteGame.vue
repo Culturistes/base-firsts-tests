@@ -164,6 +164,8 @@ export default class BonneFranquetteGame extends Vue {
 
   updated(): void {
     if (this.$store.state.livegame.currentStep == this.steps.MINI_GAME_ROUND) {
+      this.recip.name =
+        this.$store.state.livegame.minigame.goodAnswer.recette.name;
       this.recip.possibleIngredients = this.$store.state.livegame.minigame;
       this.recip.possibleIngredients =
         this.$store.state.livegame.minigame.goodAnswer.recette.possibleIngredients;

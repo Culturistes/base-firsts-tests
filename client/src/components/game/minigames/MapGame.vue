@@ -289,7 +289,7 @@ export default class MapGame extends Vue {
 
   position: absolute;
   z-index: 0;
-  top: 50%;
+  top: 55%;
   left: 40%;
   transform: translate(-50%, -50%);
 
