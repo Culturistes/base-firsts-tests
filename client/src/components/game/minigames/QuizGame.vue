@@ -398,6 +398,11 @@ export default class QuizGame extends Vue {
 <style lang="scss">
 .mg-quiz {
   max-width: 625px;
+  position: relative;
+  left: 45%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
   .ui-result,
   .ui-valid {
     margin: auto;
@@ -427,11 +432,19 @@ export default class QuizGame extends Vue {
   position: relative;
   top: 50%;
   transform: translateY(-60%);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
 
   .ui-question {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .answers {
+    margin-bottom: 200px;
   }
 
   .pictures-container {

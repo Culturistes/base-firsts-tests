@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <div class="logo">
-      <img src="/img/car/semi-car.png" />
-      <h1>Chassé<br />croisé</h1>
+      <img src="/img/logo.png" />
+      <!-- <h1>Chassé<br />croisé</h1> -->
     </div>
     <p class="baseline" v-if="$route.params.code == undefined">
       Le jeu 100% français
@@ -41,6 +41,14 @@ export default class Home extends Vue {
 
 <style lang="scss" scoped>
 .home {
+  height: 100vh;
+  background: url("/img/home/background.png");
+  background-position: center center;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
   .logo {
     display: flex;
     flex-direction: column;

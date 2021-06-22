@@ -65,21 +65,27 @@ button {
     .leaflet-popup-content-wrapper {
         left: 90px;
         position: relative;
+        padding: 5px 15px 5px 10px;
+        border-radius: 7px;
     }
     .leaflet-popup-tip-container {
-        transform: rotateZ(90deg);
-        left: 80px;
-        top: 20px;
+        transform: rotateZ(90deg) scale(0.8);
+        left: 82px;
+        top: 20%;
     }
     .leaflet-popup-content {
+        margin: 0;
+        p {
+            margin: 0;
+        }
         .gentile {
             font-family: "Baloo";
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
         }
         .username {
             font-family: "Shadows Into Light";
-            font-size: 20px;
+            font-size: 18px;
         }
     }
 }

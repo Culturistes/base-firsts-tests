@@ -36,7 +36,7 @@
           <PanneauBtn
             @click="changeSelectedMod(1)"
             :active="selectedMod == 1"
-            title="Mode Départemental"
+            title="Mode Départementale"
             >Qui se presse n’arrive pas ! Ce mode de jeu permet d’explorer le
             paysage.</PanneauBtn
           >
