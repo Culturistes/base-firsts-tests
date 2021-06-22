@@ -74,6 +74,8 @@ export default class StarBtn extends Vue {}
   text-transform: uppercase;
   text-decoration: none;
 
+  z-index: 3;
+
   &.absolute {
     position: absolute;
   }

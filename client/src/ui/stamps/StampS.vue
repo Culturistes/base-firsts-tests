@@ -68,7 +68,7 @@ export default class StampS extends Vue {
   .ready {
     position: absolute;
     top: 0;
-    right: -30px;
+    right: -20px;
     z-index: 1;
     transform: scale(1.2);
 

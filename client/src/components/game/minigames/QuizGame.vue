@@ -413,6 +413,21 @@ export default class QuizGame extends Vue {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      top: 85%;
+      width: 862px;
+      height: 445px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: url(/img/car/full-car.svg);
+      background-position: top center;
+      background-size: cover;
+    }
   }
 }
 

@@ -207,8 +207,7 @@ export default class MapGame extends Vue {
                     "</span><br />"
                   : ""
               }<span class="username">@${player.username}</span></p>`
-            )
-            .openOn(this.myMap);
+            );
           let icon = L.icon({
             iconUrl: `/img/map/icons/${player.avatarURL}.svg`,
             iconSize: [76, 136],

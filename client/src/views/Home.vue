@@ -1,12 +1,10 @@
 <template>
   <div class="home">
     <div class="logo">
-      <img src="/img/logo.png" />
+      <img src="/img/logo_home.svg" />
       <!-- <h1>Chassé<br />croisé</h1> -->
     </div>
-    <p class="baseline" v-if="$route.params.code == undefined">
-      Le jeu 100% français
-    </p>
+    <!-- <p class="baseline" v-if="$route.params.code == undefined">&nbsp;</p> -->
     <p class="baseline" v-if="$route.params.code != undefined">
       Prêt à partir en vacances avec {{ name }} !
     </p>
@@ -15,7 +13,7 @@
         :routerLink="true"
         :to="'/game/' + code"
         @click="$store.state.sounds.cta.howl.play()"
-        >C'est parti</StarBtn
+        >C'est <br />parti !</StarBtn
       >
     </p>
   </div>
@@ -42,7 +40,7 @@ export default class Home extends Vue {
 <style lang="scss" scoped>
 .home {
   height: 100vh;
-  background: url("/img/home/background.png");
+  background: url("/img/home/background_home.svg");
   background-position: center center;
   background-size: cover;
   display: flex;

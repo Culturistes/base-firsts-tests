@@ -19,7 +19,7 @@
           $store.state.livegame.currentStep == steps.MINI_GAME_ROUND_RESULT,
       }"
     >
-      <p class="title">La liste de course:</p>
+      <p class="title">La liste de course :</p>
       <ul class="list">
         <li :key="i" v-for="(ingredient, i) in catchedElements">
           <img
