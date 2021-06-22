@@ -1,6 +1,6 @@
 <template>
   <div class="minigameResult step">
-    <p class="title">L'air des <Rect :notEmpty="true">résultats</Rect></p>
+    <p class="title">L'aire des <Rect :notEmpty="true">résultats</Rect></p>
     <PlayersList :minigameresult="true" />
     <StarBtn
       class="btn"

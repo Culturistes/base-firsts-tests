@@ -20,12 +20,14 @@
         ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
           $store.state.avatarUrl === 'skieuse') ||
         ($store.state.livegame.currentStep !== steps.TUTORIAL &&
+          $store.state.livegame.currentStep !== steps.GAME_RESULT &&
           $store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'quiz'),
       'background-color6':
         ($store.state.livegame.currentStep === steps.JOIN_OR_CREATE &&
           $store.state.avatarUrl === 'surfeuse') ||
         ($store.state.livegame.currentStep !== steps.TUTORIAL &&
+          $store.state.livegame.currentStep !== steps.GAME_RESULT &&
           $store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'coc'),
       'background-color8':
@@ -34,6 +36,7 @@
             $store.state.avatarUrl === 'camping')) ||
         ($store.state.livegame.currentStep !== steps.TUTORIAL &&
           $store.state.livegame.currentStep !== steps.MINI_GAME_RESULT &&
+          $store.state.livegame.currentStep !== steps.GAME_RESULT &&
           $store.state.livegame.minigame &&
           $store.state.livegame.minigame.type === 'lbf'),
       'background-color9':
@@ -45,6 +48,7 @@
       'background-color7':
         $store.state.livegame.currentStep === steps.GAME_PARAMETERS ||
         $store.state.livegame.currentStep === steps.MINI_GAME_RESULT ||
+        $store.state.livegame.currentStep === steps.GAME_RESULT ||
         $store.state.livegame.currentStep === steps.TUTORIAL,
     }"
   >
